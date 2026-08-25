@@ -1,0 +1,30 @@
+Este documento estabelece o processo de pré-qualificação de novos parceiros de distribuição da Sound Agriculture. O objetivo é filtrar leads antes do contato comercial, garantindo foco em parceiros com perfil adequado e evitando o desperdício de tempo operacional.
+1. O Questionário (Visão do Lead)
+
+O formulário é composto por 9 perguntas projetadas para avaliar fit (perfil), território, capacidade e intenção. As perguntas obrigatórias são Cidade e Momento da empresa.
+Perfil Atuação da empresa (Distribuidor, Revenda, Cooperativa, RTV, Outro).
+Território Estado de atuação (Foco em MT, GO, MS, PR).
+Roteamento CidadeMunicípio base (obrigatória).
+Fit de Cultura Culturas atendidas (Soja, Milho, Algodão, Outras).
+Capacidade Número de produtores atendidos e estrutura de equipe (comercialtécnica).
+Intenção Comercialização de produtos de nutriçãofisiologia e interesse em novos fornecedores.
+Decisão Nível de responsabilidade sobre o portfólio.
+Contato Dados para retorno (Nome, Empresa, WhatsApp, E-mail).
+2. Uso Interno Chave de Pontuação
+
+Os leads são classificados através de um sistema de pontos (máximo de 22) para definir a prioridade
+Critérios de Pontuação Avalia tipo de empresa, localização, culturas, alcance (número de produtores), estrutura da equipe, categoria de produtos e momento de compra.
+Desqualificadores Automáticos Leads que selecionarem Não temos interesse (pergunta 7), Outro estado ou Outro (tipo de empresa) são automaticamente classificados como fora do escopo ou frio.
+3. Classificação e Roteamento
+
+O resultado da pontuação define a ação do comercial
+Classificação | Critério | Ação
+Quente | Nota ≥ 16 | Direto para o WhatsApp comercial (Prioridade máxima).
+Morno | Nota 11 a 15 | Nutrição (conteúdorelacionamento) por 1-2 semanas antes do contato.
+Frio/Fora | Nota ≤ 10 | Não avança agora; mantido na base para reciclagem futura.
+
+Boas Práticas
+Gestão de CRM Todos os leads devem ser registrados no CRM, independentemente da temperatura.
+Velocidade Respostas rápidas aumentam a conversão; o ideal é o contato no mesmo dia para leads quentes.
+Roteamento O cruzamento da cidade com o mapa de praças (classe ABC) é essencial para o direcionamento correto ao RC (Representante Comercial).
+Ajuste Contínuo Os pesos da pontuação devem ser revisados periodicamente conforme a conversão real em parcerias.
