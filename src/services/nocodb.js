@@ -112,6 +112,60 @@ export function getClassificacao(lead) {
 }
 
 /**
+ * Helpers para correspondência de filtros nos componentes
+ */
+export function matchTipoEmpresa(lead, filter) {
+  if (!filter || filter === 'ALL') return true;
+  const tipo = norm(getTipoEmpresa(lead));
+  const f = norm(filter);
+  if (f === 'distribuidor') return tipo.includes('distribuidor');
+  if (f === 'revenda') return tipo.includes('revenda');
+  if (f === 'cooperativa') return tipo.includes('cooperativa');
+  if (f === 'rtv' || f === 'representante') return tipo.includes('representante') || tipo.includes('rtv');
+  if (f === 'outro') return tipo.includes('outro') || (!tipo.includes('distribuidor') && !tipo.includes('revenda') && !tipo.includes('cooperativa') && !tipo.includes('representante'));
+  return tipo.includes(f);
+}
+
+export function matchCultura(lead, filter) {
+  if (!filter || filter === 'ALL') return true;
+  const c = norm(lead.Cultura || lead.culturas || '');
+  const f = norm(filter);
+  if (f === 'outras') return !c.includes('soja') && !c.includes('milho') && !c.includes('algod');
+  return c.includes(f);
+}
+
+export function matchProdutores(lead, filter) {
+  if (!filter || filter === 'ALL') return true;
+  const p = norm(lead.qtd_produtores || lead.produtores || '');
+  const f = norm(filter);
+  if (f === 'ate_50') return p.includes('até 50') || p.includes('ate 50');
+  if (f === '51_150') return p.includes('51 a 150');
+  if (f === 'acima_150') return p.includes('acima de 150');
+  return p.includes(f);
+}
+
+export function matchEquipe(lead, filter) {
+  if (!filter || filter === 'ALL') return true;
+  const eq = norm(lead.equipe || lead.equipe_campo || '');
+  const f = norm(filter);
+  if (f === 'completa') return eq.includes('comercial e téc') || eq.includes('comercial e tec');
+  if (f === 'somente') return eq.includes('somente');
+  if (f === 'estruturando') return eq.includes('estruturando');
+  return eq.includes(f);
+}
+
+export function matchMomento(lead, filter) {
+  if (!filter || filter === 'ALL') return true;
+  const m = norm(lead.momento_empresa || lead.momento || '');
+  const f = norm(filter);
+  if (f === 'agora') return m.includes('agora');
+  if (f === 'avaliando') return m.includes('avaliando');
+  if (f === 'conhecendo') return m.includes('conhecendo');
+  return m.includes(f);
+}
+
+
+/**
  * Retorna o emoji respectivo para cada cultura agrícola
  */
 export function getCulturaEmoji(cultura = '') {

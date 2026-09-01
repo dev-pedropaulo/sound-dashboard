@@ -27,4 +27,4 @@ Boas Práticas
 Gestão de CRM Todos os leads devem ser registrados no CRM, independentemente da temperatura.
 Velocidade Respostas rápidas aumentam a conversão; o ideal é o contato no mesmo dia para leads quentes.
 Roteamento O cruzamento da cidade com o mapa de praças (classe ABC) é essencial para o direcionamento correto ao RC (Representante Comercial).
-Ajuste Contínuo Os pesos da pontuação devem ser revisados periodicamente conforme a conversão real em parcerias.
+Ajuste Contínuo Os pesos da pontuação devem ser revisados periodicamente conforme a conversão real em parceri

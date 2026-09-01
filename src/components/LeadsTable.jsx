@@ -1,9 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import {
   Search, Download, Flame, Sparkles, Snowflake,
-  Phone, Mail, ExternalLink, ArrowUpDown, MapPin
+  Phone, Mail, ExternalLink, ArrowUpDown, MapPin,
+  Filter, SlidersHorizontal, ChevronDown, ChevronUp, X
 } from 'lucide-react';
-import { getTipoEmpresa, getClassificacao, norm, formatCulturaLabel } from '../services/nocodb';
+import {
+  getTipoEmpresa, getClassificacao, norm, formatCulturaLabel,
+  matchTipoEmpresa, matchCultura, matchProdutores, matchEquipe, matchMomento
+} from '../services/nocodb';
 import { normalizeState } from '../utils/normalizeState';
 
 export default function LeadsTable({
@@ -13,12 +17,19 @@ export default function LeadsTable({
   selectedStateFilter,   // UF code string ('MT') ou null
   selectedClassFilter    // 'ALL' | 'Quente' | 'Morno' | 'Frio / Fora'
 }) {
-  const [searchTerm, setSearchTerm]     = useState('');
-  const [filterClass, setFilterClass]   = useState('ALL');
-  const [filterState, setFilterState]   = useState('ALL');
-  const [filterStatus, setFilterStatus] = useState('ALL');
-  const [sortBy, setSortBy]             = useState('Pontuacao');
-  const [sortOrder, setSortOrder]       = useState('desc');
+  const [searchTerm, setSearchTerm]         = useState('');
+  const [filterClass, setFilterClass]       = useState('ALL');
+  const [filterState, setFilterState]       = useState('ALL');
+  const [filterStatus, setFilterStatus]     = useState('ALL');
+  const [filterTipo, setFilterTipo]         = useState('ALL');
+  const [filterCultura, setFilterCultura]   = useState('ALL');
+  const [filterProdutores, setFilterProdutores] = useState('ALL');
+  const [filterEquipe, setFilterEquipe]     = useState('ALL');
+  const [filterMomento, setFilterMomento]   = useState('ALL');
+
+  const [showAdvanced, setShowAdvanced]     = useState(false);
+  const [sortBy, setSortBy]                 = useState('Pontuacao');
+  const [sortOrder, setSortOrder]           = useState('desc');
 
   // Sincroniza filtro de classificação vindo de props (MetricCards)
   React.useEffect(() => {
@@ -41,17 +52,15 @@ export default function LeadsTable({
         (lead.Email && lead.Email.toLowerCase().includes(s)) ||
         (lead.WhatsApp && lead.WhatsApp.includes(s));
 
-      // Filtro de classificação — usa getClassificacao() para normalizar 'Frio / Fora'
+      // Filtro de classificação
       const matchClass = filterClass === 'ALL' || getClassificacao(lead) === filterClass;
 
-      // Filtro de estado — compara UF normalizada (vindo tanto do mapa quanto do select)
+      // Filtro de estado
       let matchState = true;
       if (filterState !== 'ALL') {
-        const leadUF = normalizeState(lead.Estado); // ex: 'MT'
-        // filterState pode ser UF ('MT') ou nome por extenso ('Mato Grosso')
-        const filterUF = normalizeState(filterState); // normaliza para UF também
+        const leadUF = normalizeState(lead.Estado);
+        const filterUF = normalizeState(filterState);
         if (filterState === 'OUTRO' || norm(filterState) === 'outro estado') {
-          // Leads de estados fora da lista prioritária
           const priorityUFs = ['MT', 'GO', 'MS', 'PR'];
           matchState = !priorityUFs.includes(leadUF);
         } else {
@@ -62,7 +71,14 @@ export default function LeadsTable({
       // Filtro de status CRM
       const matchStatus = filterStatus === 'ALL' || lead.Status_Lead === filterStatus;
 
-      return matchSearch && matchClass && matchState && matchStatus;
+      // Novos Filtros Expandidos
+      const mTipo       = matchTipoEmpresa(lead, filterTipo);
+      const mCultura    = matchCultura(lead, filterCultura);
+      const mProdutores = matchProdutores(lead, filterProdutores);
+      const mEquipe     = matchEquipe(lead, filterEquipe);
+      const mMomento    = matchMomento(lead, filterMomento);
+
+      return matchSearch && matchClass && matchState && matchStatus && mTipo && mCultura && mProdutores && mEquipe && mMomento;
     }).sort((a, b) => {
       let valA = a[sortBy], valB = b[sortBy];
       if (sortBy === 'Pontuacao' || sortBy === 'Id') {
@@ -75,7 +91,11 @@ export default function LeadsTable({
       if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
       return 0;
     });
-  }, [leads, searchTerm, filterClass, filterState, filterStatus, sortBy, sortOrder]);
+  }, [
+    leads, searchTerm, filterClass, filterState, filterStatus,
+    filterTipo, filterCultura, filterProdutores, filterEquipe, filterMomento,
+    sortBy, sortOrder
+  ]);
 
   const toggleSort = (field) => {
     if (sortBy === field) setSortOrder(o => o === 'asc' ? 'desc' : 'asc');
@@ -83,11 +103,11 @@ export default function LeadsTable({
   };
 
   const handleExportCSV = () => {
-    const headers = ['ID','Nome','Empresa','Cidade','Estado','Cultura','Produtores','Equipe','Pontuacao','Classificacao','Status','WhatsApp','Email'];
+    const headers = ['ID','Nome','Empresa','Tipo Empresa','Cidade','Estado','Cultura','Produtores','Equipe','Momento','Pontuacao','Classificacao','Status','WhatsApp','Email'];
     const rows = filteredLeads.map(l => [
-      l.Id, `"${l.Nome||''}"`, `"${l['Nome da Empresa']||''}"`,
+      l.Id, `"${l.Nome||''}"`, `"${l['Nome da Empresa']||''}"`, `"${getTipoEmpresa(l)}"`,
       `"${l.Cidade||''}"`, `"${l.Estado||''}"`, `"${l.Cultura||''}"`,
-      `"${l.qtd_produtores||''}"`, `"${l.equipe||''}"`,
+      `"${l.qtd_produtores||''}"`, `"${l.equipe||''}"`, `"${l.momento_empresa||''}"`,
       l.Pontuacao||0, `"${getClassificacao(l)}"`, `"${l.Status_Lead||''}"`,
       `"${l.WhatsApp||''}"`, `"${l.Email||''}"`
     ]);
@@ -124,12 +144,25 @@ export default function LeadsTable({
     );
   };
 
-  // Indicador de filtros ativos
-  const hasActiveFilters = filterClass !== 'ALL' || filterState !== 'ALL' || filterStatus !== 'ALL' || searchTerm;
+  // Número de filtros avançados ativos
+  const advancedActiveCount = (filterTipo !== 'ALL' ? 1 : 0) +
+    (filterCultura !== 'ALL' ? 1 : 0) +
+    (filterProdutores !== 'ALL' ? 1 : 0) +
+    (filterEquipe !== 'ALL' ? 1 : 0) +
+    (filterMomento !== 'ALL' ? 1 : 0);
+
+  const hasActiveFilters = filterClass !== 'ALL' || filterState !== 'ALL' || filterStatus !== 'ALL' ||
+    searchTerm || advancedActiveCount > 0;
+
   const clearFilters = () => {
     setFilterClass('ALL');
     setFilterState('ALL');
     setFilterStatus('ALL');
+    setFilterTipo('ALL');
+    setFilterCultura('ALL');
+    setFilterProdutores('ALL');
+    setFilterEquipe('ALL');
+    setFilterMomento('ALL');
     setSearchTerm('');
   };
 
@@ -141,7 +174,7 @@ export default function LeadsTable({
       borderRadius: 'var(--radius-lg)',
       overflow: 'hidden',
     }}>
-      {/* Toolbar */}
+      {/* Toolbar Principal */}
       <div style={{
         padding: '14px 18px',
         borderBottom: '1px solid var(--border-subtle)',
@@ -152,7 +185,7 @@ export default function LeadsTable({
         background: 'rgba(255,255,255,0.02)',
       }}>
         {/* Search */}
-        <div style={{ position: 'relative', flex: '1 1 220px', maxWidth: '360px' }}>
+        <div style={{ position: 'relative', flex: '1 1 200px', maxWidth: '320px' }}>
           <Search size={14} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
           <input
             type="text"
@@ -168,6 +201,16 @@ export default function LeadsTable({
           />
         </div>
 
+        {/* Filtro Tipo de Lead (Atuação) */}
+        <select value={filterTipo} onChange={e => setFilterTipo(e.target.value)} style={{ ...selectStyle, fontWeight: filterTipo !== 'ALL' ? '700' : 'normal', color: filterTipo !== 'ALL' ? '#3861FB' : selectStyle.color }}>
+          <option value="ALL">Todos os Tipos de Lead</option>
+          <option value="distribuidor">🏢 Distribuidor</option>
+          <option value="revenda">🏪 Revenda Agrícola</option>
+          <option value="cooperativa">🤝 Cooperativa</option>
+          <option value="rtv">💼 Representante (RTV)</option>
+          <option value="outro">📦 Outro Perfil</option>
+        </select>
+
         {/* Filtro Classificação */}
         <select value={filterClass} onChange={e => setFilterClass(e.target.value)} style={selectStyle}>
           <option value="ALL">Todas Classificações</option>
@@ -176,7 +219,7 @@ export default function LeadsTable({
           <option value="Frio / Fora">❄️ Frios / Fora</option>
         </select>
 
-        {/* Filtro Estado — usa UF code internamente */}
+        {/* Filtro Estado */}
         <select value={filterState} onChange={e => setFilterState(e.target.value)} style={selectStyle}>
           <option value="ALL">Todos os Estados</option>
           <option value="MT">Mato Grosso</option>
@@ -186,15 +229,37 @@ export default function LeadsTable({
           <option value="OUTRO">Outros Estados</option>
         </select>
 
-        {/* Filtro Status */}
-        <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)} style={selectStyle}>
-          <option value="ALL">Todos os Status</option>
-          <option value="Novo">Novo</option>
-          <option value="Em Contato">Em Contato</option>
-          <option value="Qualificado">Qualificado</option>
-          <option value="Convertido">Convertido</option>
-          <option value="Desqualificado">Desqualificado</option>
-        </select>
+        {/* Botão Filtros Avançados */}
+        <button
+          onClick={() => setShowAdvanced(!showAdvanced)}
+          className="btn btn-secondary"
+          style={{
+            padding: '7px 12px',
+            fontSize: '0.78rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            borderColor: advancedActiveCount > 0 ? '#3861FB' : 'var(--border-subtle)',
+            color: advancedActiveCount > 0 ? '#3861FB' : 'var(--text-secondary)',
+            background: advancedActiveCount > 0 ? 'rgba(56,97,251,0.08)' : 'rgba(255,255,255,0.04)',
+          }}
+        >
+          <SlidersHorizontal size={13} />
+          Filtros Avançados
+          {advancedActiveCount > 0 && (
+            <span style={{
+              background: '#3861FB',
+              color: '#fff',
+              borderRadius: '99px',
+              padding: '1px 6px',
+              fontSize: '0.68rem',
+              fontWeight: '700'
+            }}>
+              {advancedActiveCount}
+            </span>
+          )}
+          {showAdvanced ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+        </button>
 
         {/* Limpar filtros */}
         {hasActiveFilters && (
@@ -203,7 +268,7 @@ export default function LeadsTable({
             className="btn btn-secondary"
             style={{ padding: '7px 10px', fontSize: '0.78rem', color: '#EF5B47', borderColor: 'rgba(239,91,71,0.3)' }}
           >
-            Limpar
+            Limpar Todos
           </button>
         )}
 
@@ -217,6 +282,80 @@ export default function LeadsTable({
         </button>
       </div>
 
+      {/* Painel Avançado de Filtros (Expansível) */}
+      {showAdvanced && (
+        <div style={{
+          padding: '14px 18px',
+          background: 'rgba(56, 97, 251, 0.03)',
+          borderBottom: '1px solid var(--border-subtle)',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gap: '12px',
+          animation: 'fadeIn 0.2s ease',
+        }}>
+          {/* Status CRM */}
+          <div>
+            <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '4px', fontWeight: '600', textTransform: 'uppercase' }}>Status no CRM</label>
+            <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)} style={{ ...selectStyle, width: '100%' }}>
+              <option value="ALL">Todos os Status</option>
+              <option value="Novo">Novo</option>
+              <option value="Em Contato">Em Contato</option>
+              <option value="Qualificado">Qualificado</option>
+              <option value="Convertido">Convertido</option>
+              <option value="Desqualificado">Desqualificado</option>
+            </select>
+          </div>
+
+          {/* Cultura Atendida */}
+          <div>
+            <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '4px', fontWeight: '600', textTransform: 'uppercase' }}>Cultura Atendida</label>
+            <select value={filterCultura} onChange={e => setFilterCultura(e.target.value)} style={{ ...selectStyle, width: '100%' }}>
+              <option value="ALL">Todas as Culturas</option>
+              <option value="soja">🌱 Soja</option>
+              <option value="milho">🌽 Milho</option>
+              <option value="algod">☁️ Algodão</option>
+              <option value="cafe">☕ Café</option>
+              <option value="trigo">🌾 Trigo</option>
+              <option value="cana">🎋 Cana</option>
+              <option value="outras">🌾 Outras Culturas</option>
+            </select>
+          </div>
+
+          {/* Produtores Atendidos */}
+          <div>
+            <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '4px', fontWeight: '600', textTransform: 'uppercase' }}>Nº de Produtores</label>
+            <select value={filterProdutores} onChange={e => setFilterProdutores(e.target.value)} style={{ ...selectStyle, width: '100%' }}>
+              <option value="ALL">Qualquer alcance</option>
+              <option value="acima_150">👥 Acima de 150 produtores</option>
+              <option value="51_150">👥 51 a 150 produtores</option>
+              <option value="ate_50">👥 Até 50 produtores</option>
+            </select>
+          </div>
+
+          {/* Equipe Comercial/Técnica */}
+          <div>
+            <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '4px', fontWeight: '600', textTransform: 'uppercase' }}>Estrutura de Equipe</label>
+            <select value={filterEquipe} onChange={e => setFilterEquipe(e.target.value)} style={{ ...selectStyle, width: '100%' }}>
+              <option value="ALL">Qualquer equipe</option>
+              <option value="completa">🏆 Comercial e Técnica</option>
+              <option value="somente">👤 Somente Comercial ou Técnica</option>
+              <option value="estruturando">🛠️ Estruturando Equipe</option>
+            </select>
+          </div>
+
+          {/* Momento da Empresa */}
+          <div>
+            <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '4px', fontWeight: '600', textTransform: 'uppercase' }}>Momento de Compra</label>
+            <select value={filterMomento} onChange={e => setFilterMomento(e.target.value)} style={{ ...selectStyle, width: '100%' }}>
+              <option value="ALL">Qualquer momento</option>
+              <option value="agora">🔥 Fechar parceria agora</option>
+              <option value="avaliando">⚡ Avaliando fornecedores</option>
+              <option value="conhecendo">👀 Só conhecendo mercado</option>
+            </select>
+          </div>
+        </div>
+      )}
+
       {/* Indicador de filtros ativos */}
       {hasActiveFilters && (
         <div style={{
@@ -228,17 +367,69 @@ export default function LeadsTable({
           display: 'flex',
           alignItems: 'center',
           gap: '8px',
+          flexWrap: 'wrap',
         }}>
           <span style={{ color: '#4F8EF7', fontWeight: '600' }}>Filtros ativos:</span>
-          {filterClass !== 'ALL' && <span className="badge badge-frio" style={{ padding: '1px 7px', fontSize: '0.68rem' }}>{filterClass}</span>}
-          {filterState !== 'ALL' && <span className="badge badge-frio" style={{ padding: '1px 7px', fontSize: '0.68rem' }}>{filterState}</span>}
-          {filterStatus !== 'ALL' && <span className="badge badge-frio" style={{ padding: '1px 7px', fontSize: '0.68rem' }}>{filterStatus}</span>}
-          {searchTerm && <span className="badge badge-frio" style={{ padding: '1px 7px', fontSize: '0.68rem' }}>"{searchTerm}"</span>}
+          {filterTipo !== 'ALL' && (
+            <span className="badge badge-frio" style={{ padding: '2px 8px', fontSize: '0.7rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              Tipo: {filterTipo}
+              <X size={10} style={{ cursor: 'pointer' }} onClick={() => setFilterTipo('ALL')} />
+            </span>
+          )}
+          {filterClass !== 'ALL' && (
+            <span className="badge badge-frio" style={{ padding: '2px 8px', fontSize: '0.7rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              {filterClass}
+              <X size={10} style={{ cursor: 'pointer' }} onClick={() => setFilterClass('ALL')} />
+            </span>
+          )}
+          {filterState !== 'ALL' && (
+            <span className="badge badge-frio" style={{ padding: '2px 8px', fontSize: '0.7rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              UF: {filterState}
+              <X size={10} style={{ cursor: 'pointer' }} onClick={() => setFilterState('ALL')} />
+            </span>
+          )}
+          {filterStatus !== 'ALL' && (
+            <span className="badge badge-frio" style={{ padding: '2px 8px', fontSize: '0.7rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              Status: {filterStatus}
+              <X size={10} style={{ cursor: 'pointer' }} onClick={() => setFilterStatus('ALL')} />
+            </span>
+          )}
+          {filterCultura !== 'ALL' && (
+            <span className="badge badge-frio" style={{ padding: '2px 8px', fontSize: '0.7rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              Cultura: {filterCultura}
+              <X size={10} style={{ cursor: 'pointer' }} onClick={() => setFilterCultura('ALL')} />
+            </span>
+          )}
+          {filterProdutores !== 'ALL' && (
+            <span className="badge badge-frio" style={{ padding: '2px 8px', fontSize: '0.7rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              Produtores: {filterProdutores}
+              <X size={10} style={{ cursor: 'pointer' }} onClick={() => setFilterProdutores('ALL')} />
+            </span>
+          )}
+          {filterEquipe !== 'ALL' && (
+            <span className="badge badge-frio" style={{ padding: '2px 8px', fontSize: '0.7rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              Equipe: {filterEquipe}
+              <X size={10} style={{ cursor: 'pointer' }} onClick={() => setFilterEquipe('ALL')} />
+            </span>
+          )}
+          {filterMomento !== 'ALL' && (
+            <span className="badge badge-frio" style={{ padding: '2px 8px', fontSize: '0.7rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              Momento: {filterMomento}
+              <X size={10} style={{ cursor: 'pointer' }} onClick={() => setFilterMomento('ALL')} />
+            </span>
+          )}
+          {searchTerm && (
+            <span className="badge badge-frio" style={{ padding: '2px 8px', fontSize: '0.7rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              "{searchTerm}"
+              <X size={10} style={{ cursor: 'pointer' }} onClick={() => setSearchTerm('')} />
+            </span>
+          )}
           <span style={{ marginLeft: 'auto' }}>
             Exibindo <strong style={{ color: 'var(--text-primary)' }}>{filteredLeads.length}</strong> de {leads.length} leads
           </span>
         </div>
       )}
+
 
       {/* Table */}
       <div style={{ overflowX: 'auto' }}>

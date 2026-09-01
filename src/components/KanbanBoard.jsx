@@ -4,7 +4,8 @@ import {
   ExternalLink, MapPin, CheckCircle2, XCircle, Clock, Send,
   Search, ChevronDown, ChevronUp, Filter, Check, X, PlusCircle
 } from 'lucide-react';
-import { getClassificacao, getTipoEmpresa, norm, formatCulturaLabel } from '../services/nocodb';
+import { getClassificacao, getTipoEmpresa, norm, formatCulturaLabel, matchTipoEmpresa, matchCultura } from '../services/nocodb';
+import { normalizeState } from '../utils/normalizeState';
 
 const COLUMNS = [
   { id: 'Novo',           label: 'Novos Inscritos',          color: '#4F8EF7', icon: Clock },
@@ -27,8 +28,12 @@ export default function KanbanBoard({ leads = [], onUpdateStatus, onOpenLeadDeta
   const [visibleCounts, setVisibleCounts] = useState({});
 
   // Filtros locais
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedTemps, setSelectedTemps] = useState(new Set(ALL_TEMPS));
+  const [searchTerm, setSearchTerm]         = useState('');
+  const [selectedTemps, setSelectedTemps]   = useState(new Set(ALL_TEMPS));
+  const [filterTipo, setFilterTipo]         = useState('ALL');
+  const [filterState, setFilterState]       = useState('ALL');
+  const [filterCultura, setFilterCultura]   = useState('ALL');
+
   const [tempDropdownOpen, setTempDropdownOpen] = useState(false);
   const tempDropdownRef = useRef(null);
 
@@ -97,9 +102,24 @@ export default function KanbanBoard({ leads = [], onUpdateStatus, onOpenLeadDeta
       const cls = getClassificacao(lead);
       const matchTemp = selectedTemps.has(cls);
 
-      return matchSearch && matchTemp;
+      const mTipo = matchTipoEmpresa(lead, filterTipo);
+      const mCultura = matchCultura(lead, filterCultura);
+
+      let matchState = true;
+      if (filterState !== 'ALL') {
+        const leadUF = normalizeState(lead.Estado);
+        const filterUF = normalizeState(filterState);
+        if (filterState === 'OUTRO' || norm(filterState) === 'outro estado') {
+          const priorityUFs = ['MT', 'GO', 'MS', 'PR'];
+          matchState = !priorityUFs.includes(leadUF);
+        } else {
+          matchState = leadUF === filterUF;
+        }
+      }
+
+      return matchSearch && matchTemp && mTipo && mCultura && matchState;
     });
-  }, [leads, searchTerm, selectedTemps]);
+  }, [leads, searchTerm, selectedTemps, filterTipo, filterState, filterCultura]);
 
   const ClassBadge = ({ lead }) => {
     const cls = getClassificacao(lead);
@@ -108,7 +128,16 @@ export default function KanbanBoard({ leads = [], onUpdateStatus, onOpenLeadDeta
     return <span className="badge badge-frio" style={{ padding: '2px 6px', fontSize: '0.65rem' }}><Snowflake size={9}/> {lead.Pontuacao||0}</span>;
   };
 
-  const hasActiveFilters = searchTerm || selectedTemps.size < ALL_TEMPS.length;
+  const hasActiveFilters = searchTerm || selectedTemps.size < ALL_TEMPS.length || filterTipo !== 'ALL' || filterState !== 'ALL' || filterCultura !== 'ALL';
+
+  const clearKanbanFilters = () => {
+    setSearchTerm('');
+    setSelectedTemps(new Set(ALL_TEMPS));
+    setFilterTipo('ALL');
+    setFilterState('ALL');
+    setFilterCultura('ALL');
+  };
+
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', margin: '0 20px 24px 20px' }}>
@@ -151,6 +180,80 @@ export default function KanbanBoard({ leads = [], onUpdateStatus, onOpenLeadDeta
             </button>
           )}
         </div>
+
+        {/* Filtro Tipo de Lead */}
+        <select
+          value={filterTipo}
+          onChange={e => setFilterTipo(e.target.value)}
+          style={{
+            padding: '7px 10px',
+            background: filterTipo !== 'ALL' ? 'rgba(56,97,251,0.08)' : 'rgba(255,255,255,0.04)',
+            border: `1px solid ${filterTipo !== 'ALL' ? '#3861FB' : 'var(--border-subtle)'}`,
+            borderRadius: 'var(--radius-md)',
+            color: filterTipo !== 'ALL' ? '#3861FB' : 'var(--text-secondary)',
+            fontSize: '0.8rem',
+            fontWeight: filterTipo !== 'ALL' ? '700' : 'normal',
+            cursor: 'pointer',
+            outline: 'none',
+          }}
+        >
+          <option value="ALL">Todos os Tipos de Lead</option>
+          <option value="distribuidor">🏢 Distribuidor</option>
+          <option value="revenda">🏪 Revenda Agrícola</option>
+          <option value="cooperativa">🤝 Cooperativa</option>
+          <option value="rtv">💼 Representante (RTV)</option>
+          <option value="outro">📦 Outro Perfil</option>
+        </select>
+
+        {/* Filtro Estado */}
+        <select
+          value={filterState}
+          onChange={e => setFilterState(e.target.value)}
+          style={{
+            padding: '7px 10px',
+            background: filterState !== 'ALL' ? 'rgba(79,142,247,0.08)' : 'rgba(255,255,255,0.04)',
+            border: `1px solid ${filterState !== 'ALL' ? '#4F8EF7' : 'var(--border-subtle)'}`,
+            borderRadius: 'var(--radius-md)',
+            color: filterState !== 'ALL' ? '#4F8EF7' : 'var(--text-secondary)',
+            fontSize: '0.8rem',
+            fontWeight: filterState !== 'ALL' ? '700' : 'normal',
+            cursor: 'pointer',
+            outline: 'none',
+          }}
+        >
+          <option value="ALL">Todos os Estados</option>
+          <option value="MT">Mato Grosso</option>
+          <option value="GO">Goiás</option>
+          <option value="MS">Mato Grosso do Sul</option>
+          <option value="PR">Paraná</option>
+          <option value="OUTRO">Outros Estados</option>
+        </select>
+
+        {/* Filtro Cultura */}
+        <select
+          value={filterCultura}
+          onChange={e => setFilterCultura(e.target.value)}
+          style={{
+            padding: '7px 10px',
+            background: filterCultura !== 'ALL' ? 'rgba(34,200,122,0.08)' : 'rgba(255,255,255,0.04)',
+            border: `1px solid ${filterCultura !== 'ALL' ? '#22C87A' : 'var(--border-subtle)'}`,
+            borderRadius: 'var(--radius-md)',
+            color: filterCultura !== 'ALL' ? '#22C87A' : 'var(--text-secondary)',
+            fontSize: '0.8rem',
+            fontWeight: filterCultura !== 'ALL' ? '700' : 'normal',
+            cursor: 'pointer',
+            outline: 'none',
+          }}
+        >
+          <option value="ALL">Todas as Culturas</option>
+          <option value="soja">🌱 Soja</option>
+          <option value="milho">🌽 Milho</option>
+          <option value="algod">☁️ Algodão</option>
+          <option value="cafe">☕ Café</option>
+          <option value="trigo">🌾 Trigo</option>
+          <option value="cana">🎋 Cana</option>
+          <option value="outras">🌾 Outras</option>
+        </select>
 
         {/* Seletor Múltiplo de Temperatura (Dropdown com Multiple Selection) */}
         <div style={{ position: 'relative' }} ref={tempDropdownRef}>
@@ -201,48 +304,38 @@ export default function KanbanBoard({ leads = [], onUpdateStatus, onOpenLeadDeta
                   onClick={selectAllTemps}
                   style={{ background: 'none', border: 'none', color: '#4F8EF7', fontSize: '0.7rem', cursor: 'pointer', fontWeight: '600' }}
                 >
-                  Todas
+                  Marcar todas
                 </button>
               </div>
-
-              {[
-                { id: 'Quente', label: 'Quentes (≥16 pts)', icon: Flame, color: '#EF5B47' },
-                { id: 'Morno', label: 'Mornos (11-15 pts)', icon: Sparkles, color: '#F5B731' },
-                { id: 'Frio / Fora', label: 'Frio / Fora (≤10 pts)', icon: Snowflake, color: '#8E97AB' },
-              ].map(item => {
-                const checked = selectedTemps.has(item.id);
-                const Icon = item.icon;
+              {ALL_TEMPS.map(t => {
+                const isSelected = selectedTemps.has(t);
                 return (
                   <div
-                    key={item.id}
-                    onClick={() => toggleTempFilter(item.id)}
+                    key={t}
+                    onClick={() => toggleTempFilter(t)}
                     style={{
                       display: 'flex',
                       alignItems: 'center',
                       gap: '8px',
                       padding: '6px 8px',
                       borderRadius: 'var(--radius-sm)',
-                      background: checked ? 'rgba(255,255,255,0.04)' : 'transparent',
                       cursor: 'pointer',
+                      background: isSelected ? 'rgba(255,255,255,0.05)' : 'transparent',
                       fontSize: '0.78rem',
-                      color: checked ? 'var(--text-primary)' : 'var(--text-muted)',
-                      transition: 'background 0.12s',
+                      color: 'var(--text-primary)',
+                      transition: 'background 0.1s',
                     }}
                   >
                     <div style={{
-                      width: '14px',
-                      height: '14px',
+                      width: '14px', height: '14px',
                       borderRadius: '3px',
-                      border: `1px solid ${checked ? item.color : 'rgba(255,255,255,0.2)'}`,
-                      background: checked ? item.color : 'transparent',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
+                      border: `1px solid ${isSelected ? '#4F8EF7' : 'var(--border-medium)'}`,
+                      background: isSelected ? '#4F8EF7' : 'transparent',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center'
                     }}>
-                      {checked && <Check size={10} color="#000" strokeWidth={3} />}
+                      {isSelected && <Check size={10} color="#fff" />}
                     </div>
-                    <Icon size={12} color={item.color} />
-                    <span>{item.label}</span>
+                    {t === 'Quente' ? '🔥 Quente (≥16)' : t === 'Morno' ? '⚡ Morno (11-15)' : '❄️ Frio / Fora (≤10)'}
                   </div>
                 );
               })}
@@ -250,10 +343,10 @@ export default function KanbanBoard({ leads = [], onUpdateStatus, onOpenLeadDeta
           )}
         </div>
 
-        {/* Limpar Filtros */}
+        {/* Limpar Filtros do Kanban */}
         {hasActiveFilters && (
           <button
-            onClick={() => { setSearchTerm(''); selectAllTemps(); }}
+            onClick={clearKanbanFilters}
             className="btn btn-secondary"
             style={{ padding: '6px 10px', fontSize: '0.75rem', color: '#EF5B47', borderColor: 'rgba(239,91,71,0.3)' }}
           >
