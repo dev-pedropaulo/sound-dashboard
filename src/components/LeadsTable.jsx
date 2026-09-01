@@ -2,13 +2,73 @@ import React, { useState, useMemo } from 'react';
 import {
   Search, Download, Flame, Sparkles, Snowflake,
   Phone, Mail, ExternalLink, ArrowUpDown, MapPin,
-  Filter, SlidersHorizontal, ChevronDown, ChevronUp, X
+  Filter, SlidersHorizontal, ChevronDown, ChevronUp, X,
+  Building2, Sprout, Users, ShieldCheck, Clock
 } from 'lucide-react';
 import {
   getTipoEmpresa, getClassificacao, norm, formatCulturaLabel,
   matchTipoEmpresa, matchCultura, matchProdutores, matchEquipe, matchMomento
 } from '../services/nocodb';
 import { normalizeState } from '../utils/normalizeState';
+import MultiSelectDropdown from './MultiSelectDropdown';
+
+const TIPO_OPTIONS = [
+  { id: 'distribuidor', label: '🏢 Distribuidor' },
+  { id: 'revenda',      label: '🏪 Revenda Agrícola' },
+  { id: 'cooperativa',  label: '🤝 Cooperativa' },
+  { id: 'rtv',          label: '💼 Representante (RTV)' },
+  { id: 'outro',        label: '📦 Outro Perfil' },
+];
+
+const CLASS_OPTIONS = [
+  { id: 'Quente',      label: '🔥 Quentes (≥16 pts)' },
+  { id: 'Morno',       label: '⚡ Mornos (11-15 pts)' },
+  { id: 'Frio / Fora', label: '❄️ Frios / Fora (≤10 pts)' },
+];
+
+const STATE_OPTIONS = [
+  { id: 'MT',    label: 'Mato Grosso' },
+  { id: 'GO',    label: 'Goiás' },
+  { id: 'MS',    label: 'Mato Grosso do Sul' },
+  { id: 'PR',    label: 'Paraná' },
+  { id: 'OUTRO', label: 'Outros Estados' },
+];
+
+const STATUS_OPTIONS = [
+  { id: 'Novo',           label: 'Novo' },
+  { id: 'Em Contato',     label: 'Em Contato' },
+  { id: 'Qualificado',    label: 'Qualificado' },
+  { id: 'Convertido',     label: 'Convertido' },
+  { id: 'Desqualificado', label: 'Desqualificado' },
+];
+
+const CULTURA_OPTIONS = [
+  { id: 'soja',   label: '🌱 Soja' },
+  { id: 'milho',  label: '🌽 Milho' },
+  { id: 'algod',  label: '☁️ Algodão' },
+  { id: 'cafe',   label: '☕ Café' },
+  { id: 'trigo',  label: '🌾 Trigo' },
+  { id: 'cana',   label: '🎋 Cana' },
+  { id: 'outras', label: '🌾 Outras' },
+];
+
+const PRODUTORES_OPTIONS = [
+  { id: 'acima_150', label: '👥 Acima de 150 produtores' },
+  { id: '51_150',    label: '👥 51 a 150 produtores' },
+  { id: 'ate_50',     label: '👥 Até 50 produtores' },
+];
+
+const EQUIPE_OPTIONS = [
+  { id: 'completa',     label: '🏆 Comercial e Técnica' },
+  { id: 'somente',      label: '👤 Somente Comercial/Técnica' },
+  { id: 'estruturando', label: '🛠️ Estruturando Equipe' },
+];
+
+const MOMENTO_OPTIONS = [
+  { id: 'agora',      label: '🔥 Fechar parceria agora' },
+  { id: 'avaliando',   label: '⚡ Avaliando fornecedores' },
+  { id: 'conhecendo',  label: '👀 Só conhecendo mercado' },
+];
 
 export default function LeadsTable({
   leads = [],
@@ -18,14 +78,14 @@ export default function LeadsTable({
   selectedClassFilter    // 'ALL' | 'Quente' | 'Morno' | 'Frio / Fora'
 }) {
   const [searchTerm, setSearchTerm]         = useState('');
-  const [filterClass, setFilterClass]       = useState('ALL');
-  const [filterState, setFilterState]       = useState('ALL');
-  const [filterStatus, setFilterStatus]     = useState('ALL');
-  const [filterTipo, setFilterTipo]         = useState('ALL');
-  const [filterCultura, setFilterCultura]   = useState('ALL');
-  const [filterProdutores, setFilterProdutores] = useState('ALL');
-  const [filterEquipe, setFilterEquipe]     = useState('ALL');
-  const [filterMomento, setFilterMomento]   = useState('ALL');
+  const [selectedClasses, setSelectedClasses] = useState(new Set());
+  const [selectedStates, setSelectedStates]   = useState(new Set());
+  const [selectedStatuses, setSelectedStatuses] = useState(new Set());
+  const [selectedTipos, setSelectedTipos]     = useState(new Set());
+  const [selectedCulturas, setSelectedCulturas] = useState(new Set());
+  const [selectedProdutores, setSelectedProdutores] = useState(new Set());
+  const [selectedEquipes, setSelectedEquipes] = useState(new Set());
+  const [selectedMomentos, setSelectedMomentos] = useState(new Set());
 
   const [showAdvanced, setShowAdvanced]     = useState(false);
   const [sortBy, setSortBy]                 = useState('Pontuacao');
@@ -33,12 +93,20 @@ export default function LeadsTable({
 
   // Sincroniza filtro de classificação vindo de props (MetricCards)
   React.useEffect(() => {
-    setFilterClass(selectedClassFilter || 'ALL');
+    if (selectedClassFilter && selectedClassFilter !== 'ALL') {
+      setSelectedClasses(new Set([selectedClassFilter]));
+    } else if (selectedClassFilter === 'ALL') {
+      setSelectedClasses(new Set());
+    }
   }, [selectedClassFilter]);
 
   // Sincroniza filtro de estado vindo do mapa (UF code ou null)
   React.useEffect(() => {
-    setFilterState(selectedStateFilter || 'ALL');
+    if (selectedStateFilter && selectedStateFilter !== 'ALL') {
+      setSelectedStates(new Set([selectedStateFilter]));
+    } else if (selectedStateFilter === 'ALL') {
+      setSelectedStates(new Set());
+    }
   }, [selectedStateFilter]);
 
   const filteredLeads = useMemo(() => {
@@ -52,31 +120,36 @@ export default function LeadsTable({
         (lead.Email && lead.Email.toLowerCase().includes(s)) ||
         (lead.WhatsApp && lead.WhatsApp.includes(s));
 
-      // Filtro de classificação
-      const matchClass = filterClass === 'ALL' || getClassificacao(lead) === filterClass;
-
-      // Filtro de estado
-      let matchState = true;
-      if (filterState !== 'ALL') {
-        const leadUF = normalizeState(lead.Estado);
-        const filterUF = normalizeState(filterState);
-        if (filterState === 'OUTRO' || norm(filterState) === 'outro estado') {
-          const priorityUFs = ['MT', 'GO', 'MS', 'PR'];
-          matchState = !priorityUFs.includes(leadUF);
-        } else {
-          matchState = leadUF === filterUF;
-        }
+      // Filtro de classificação multi-select
+      let matchClass = true;
+      if (selectedClasses.size > 0 && selectedClasses.size < CLASS_OPTIONS.length) {
+        const leadCls = getClassificacao(lead);
+        matchClass = selectedClasses.has(leadCls);
       }
 
-      // Filtro de status CRM
-      const matchStatus = filterStatus === 'ALL' || lead.Status_Lead === filterStatus;
+      // Filtro de estado multi-select
+      let matchState = true;
+      if (selectedStates.size > 0 && selectedStates.size < STATE_OPTIONS.length) {
+        const leadUF = normalizeState(lead.Estado);
+        const priorityUFs = ['MT', 'GO', 'MS', 'PR'];
+        matchState = Array.from(selectedStates).some(st => {
+          if (st === 'OUTRO') return !priorityUFs.includes(leadUF);
+          return leadUF === normalizeState(st);
+        });
+      }
 
-      // Novos Filtros Expandidos
-      const mTipo       = matchTipoEmpresa(lead, filterTipo);
-      const mCultura    = matchCultura(lead, filterCultura);
-      const mProdutores = matchProdutores(lead, filterProdutores);
-      const mEquipe     = matchEquipe(lead, filterEquipe);
-      const mMomento    = matchMomento(lead, filterMomento);
+      // Filtro de status CRM multi-select
+      let matchStatus = true;
+      if (selectedStatuses.size > 0 && selectedStatuses.size < STATUS_OPTIONS.length) {
+        matchStatus = selectedStatuses.has(lead.Status_Lead);
+      }
+
+      // Novos Filtros Multi-select
+      const mTipo       = matchTipoEmpresa(lead, selectedTipos);
+      const mCultura    = matchCultura(lead, selectedCulturas);
+      const mProdutores = matchProdutores(lead, selectedProdutores);
+      const mEquipe     = matchEquipe(lead, selectedEquipes);
+      const mMomento    = matchMomento(lead, selectedMomentos);
 
       return matchSearch && matchClass && matchState && matchStatus && mTipo && mCultura && mProdutores && mEquipe && mMomento;
     }).sort((a, b) => {
@@ -92,8 +165,8 @@ export default function LeadsTable({
       return 0;
     });
   }, [
-    leads, searchTerm, filterClass, filterState, filterStatus,
-    filterTipo, filterCultura, filterProdutores, filterEquipe, filterMomento,
+    leads, searchTerm, selectedClasses, selectedStates, selectedStatuses,
+    selectedTipos, selectedCulturas, selectedProdutores, selectedEquipes, selectedMomentos,
     sortBy, sortOrder
   ]);
 
@@ -144,25 +217,27 @@ export default function LeadsTable({
     );
   };
 
-  // Número de filtros avançados ativos
-  const advancedActiveCount = (filterTipo !== 'ALL' ? 1 : 0) +
-    (filterCultura !== 'ALL' ? 1 : 0) +
-    (filterProdutores !== 'ALL' ? 1 : 0) +
-    (filterEquipe !== 'ALL' ? 1 : 0) +
-    (filterMomento !== 'ALL' ? 1 : 0);
+  // Contagem de filtros avançados ativos
+  const advancedActiveCount = (selectedStatuses.size > 0 && selectedStatuses.size < STATUS_OPTIONS.length ? 1 : 0) +
+    (selectedCulturas.size > 0 && selectedCulturas.size < CULTURA_OPTIONS.length ? 1 : 0) +
+    (selectedProdutores.size > 0 && selectedProdutores.size < PRODUTORES_OPTIONS.length ? 1 : 0) +
+    (selectedEquipes.size > 0 && selectedEquipes.size < EQUIPE_OPTIONS.length ? 1 : 0) +
+    (selectedMomentos.size > 0 && selectedMomentos.size < MOMENTO_OPTIONS.length ? 1 : 0);
 
-  const hasActiveFilters = filterClass !== 'ALL' || filterState !== 'ALL' || filterStatus !== 'ALL' ||
+  const hasActiveFilters = (selectedClasses.size > 0 && selectedClasses.size < CLASS_OPTIONS.length) ||
+    (selectedStates.size > 0 && selectedStates.size < STATE_OPTIONS.length) ||
+    (selectedTipos.size > 0 && selectedTipos.size < TIPO_OPTIONS.length) ||
     searchTerm || advancedActiveCount > 0;
 
   const clearFilters = () => {
-    setFilterClass('ALL');
-    setFilterState('ALL');
-    setFilterStatus('ALL');
-    setFilterTipo('ALL');
-    setFilterCultura('ALL');
-    setFilterProdutores('ALL');
-    setFilterEquipe('ALL');
-    setFilterMomento('ALL');
+    setSelectedClasses(new Set());
+    setSelectedStates(new Set());
+    setSelectedStatuses(new Set());
+    setSelectedTipos(new Set());
+    setSelectedCulturas(new Set());
+    setSelectedProdutores(new Set());
+    setSelectedEquipes(new Set());
+    setSelectedMomentos(new Set());
     setSearchTerm('');
   };
 
@@ -185,7 +260,7 @@ export default function LeadsTable({
         background: 'rgba(255,255,255,0.02)',
       }}>
         {/* Search */}
-        <div style={{ position: 'relative', flex: '1 1 200px', maxWidth: '320px' }}>
+        <div style={{ position: 'relative', flex: '1 1 200px', maxWidth: '300px' }}>
           <Search size={14} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
           <input
             type="text"
@@ -201,33 +276,38 @@ export default function LeadsTable({
           />
         </div>
 
-        {/* Filtro Tipo de Lead (Atuação) */}
-        <select value={filterTipo} onChange={e => setFilterTipo(e.target.value)} style={{ ...selectStyle, fontWeight: filterTipo !== 'ALL' ? '700' : 'normal', color: filterTipo !== 'ALL' ? '#3861FB' : selectStyle.color }}>
-          <option value="ALL">Todos os Tipos de Lead</option>
-          <option value="distribuidor">🏢 Distribuidor</option>
-          <option value="revenda">🏪 Revenda Agrícola</option>
-          <option value="cooperativa">🤝 Cooperativa</option>
-          <option value="rtv">💼 Representante (RTV)</option>
-          <option value="outro">📦 Outro Perfil</option>
-        </select>
+        {/* Multi-Select Tipo de Lead */}
+        <MultiSelectDropdown
+          label="Tipo de Lead"
+          options={TIPO_OPTIONS}
+          selectedValues={selectedTipos}
+          onChange={setSelectedTipos}
+          placeholder="Todos os Tipos"
+          color="#3861FB"
+          icon={Building2}
+        />
 
-        {/* Filtro Classificação */}
-        <select value={filterClass} onChange={e => setFilterClass(e.target.value)} style={selectStyle}>
-          <option value="ALL">Todas Classificações</option>
-          <option value="Quente">🔥 Quentes</option>
-          <option value="Morno">⚡ Mornos</option>
-          <option value="Frio / Fora">❄️ Frios / Fora</option>
-        </select>
+        {/* Multi-Select Classificação */}
+        <MultiSelectDropdown
+          label="Classificação"
+          options={CLASS_OPTIONS}
+          selectedValues={selectedClasses}
+          onChange={setSelectedClasses}
+          placeholder="Todas Classificações"
+          color="#EF5B47"
+          icon={Flame}
+        />
 
-        {/* Filtro Estado */}
-        <select value={filterState} onChange={e => setFilterState(e.target.value)} style={selectStyle}>
-          <option value="ALL">Todos os Estados</option>
-          <option value="MT">Mato Grosso</option>
-          <option value="GO">Goiás</option>
-          <option value="MS">Mato Grosso do Sul</option>
-          <option value="PR">Paraná</option>
-          <option value="OUTRO">Outros Estados</option>
-        </select>
+        {/* Multi-Select Estado */}
+        <MultiSelectDropdown
+          label="Estado / UF"
+          options={STATE_OPTIONS}
+          selectedValues={selectedStates}
+          onChange={setSelectedStates}
+          placeholder="Todos os Estados"
+          color="#4F8EF7"
+          icon={MapPin}
+        />
 
         {/* Botão Filtros Avançados */}
         <button
@@ -235,7 +315,7 @@ export default function LeadsTable({
           className="btn btn-secondary"
           style={{
             padding: '7px 12px',
-            fontSize: '0.78rem',
+            fontSize: '0.8rem',
             display: 'flex',
             alignItems: 'center',
             gap: '6px',
@@ -261,7 +341,7 @@ export default function LeadsTable({
           {showAdvanced ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
         </button>
 
-        {/* Limpar filtros */}
+        {/* Limpar todos os filtros */}
         {hasActiveFilters && (
           <button
             onClick={clearFilters}
@@ -296,70 +376,78 @@ export default function LeadsTable({
           {/* Status CRM */}
           <div>
             <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '4px', fontWeight: '600', textTransform: 'uppercase' }}>Status no CRM</label>
-            <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)} style={{ ...selectStyle, width: '100%' }}>
-              <option value="ALL">Todos os Status</option>
-              <option value="Novo">Novo</option>
-              <option value="Em Contato">Em Contato</option>
-              <option value="Qualificado">Qualificado</option>
-              <option value="Convertido">Convertido</option>
-              <option value="Desqualificado">Desqualificado</option>
-            </select>
+            <MultiSelectDropdown
+              label="Status CRM"
+              options={STATUS_OPTIONS}
+              selectedValues={selectedStatuses}
+              onChange={setSelectedStatuses}
+              placeholder="Todos os Status"
+              color="#22C87A"
+            />
           </div>
 
           {/* Cultura Atendida */}
           <div>
             <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '4px', fontWeight: '600', textTransform: 'uppercase' }}>Cultura Atendida</label>
-            <select value={filterCultura} onChange={e => setFilterCultura(e.target.value)} style={{ ...selectStyle, width: '100%' }}>
-              <option value="ALL">Todas as Culturas</option>
-              <option value="soja">🌱 Soja</option>
-              <option value="milho">🌽 Milho</option>
-              <option value="algod">☁️ Algodão</option>
-              <option value="cafe">☕ Café</option>
-              <option value="trigo">🌾 Trigo</option>
-              <option value="cana">🎋 Cana</option>
-              <option value="outras">🌾 Outras Culturas</option>
-            </select>
+            <MultiSelectDropdown
+              label="Cultura"
+              options={CULTURA_OPTIONS}
+              selectedValues={selectedCulturas}
+              onChange={setSelectedCulturas}
+              placeholder="Todas as Culturas"
+              color="#22C87A"
+              icon={Sprout}
+            />
           </div>
 
           {/* Produtores Atendidos */}
           <div>
             <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '4px', fontWeight: '600', textTransform: 'uppercase' }}>Nº de Produtores</label>
-            <select value={filterProdutores} onChange={e => setFilterProdutores(e.target.value)} style={{ ...selectStyle, width: '100%' }}>
-              <option value="ALL">Qualquer alcance</option>
-              <option value="acima_150">👥 Acima de 150 produtores</option>
-              <option value="51_150">👥 51 a 150 produtores</option>
-              <option value="ate_50">👥 Até 50 produtores</option>
-            </select>
+            <MultiSelectDropdown
+              label="Produtores"
+              options={PRODUTORES_OPTIONS}
+              selectedValues={selectedProdutores}
+              onChange={setSelectedProdutores}
+              placeholder="Qualquer alcance"
+              color="#F5B731"
+              icon={Users}
+            />
           </div>
 
           {/* Equipe Comercial/Técnica */}
           <div>
             <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '4px', fontWeight: '600', textTransform: 'uppercase' }}>Estrutura de Equipe</label>
-            <select value={filterEquipe} onChange={e => setFilterEquipe(e.target.value)} style={{ ...selectStyle, width: '100%' }}>
-              <option value="ALL">Qualquer equipe</option>
-              <option value="completa">🏆 Comercial e Técnica</option>
-              <option value="somente">👤 Somente Comercial ou Técnica</option>
-              <option value="estruturando">🛠️ Estruturando Equipe</option>
-            </select>
+            <MultiSelectDropdown
+              label="Equipe"
+              options={EQUIPE_OPTIONS}
+              selectedValues={selectedEquipes}
+              onChange={setSelectedEquipes}
+              placeholder="Qualquer equipe"
+              color="#8B7CF8"
+              icon={ShieldCheck}
+            />
           </div>
 
           {/* Momento da Empresa */}
           <div>
             <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '4px', fontWeight: '600', textTransform: 'uppercase' }}>Momento de Compra</label>
-            <select value={filterMomento} onChange={e => setFilterMomento(e.target.value)} style={{ ...selectStyle, width: '100%' }}>
-              <option value="ALL">Qualquer momento</option>
-              <option value="agora">🔥 Fechar parceria agora</option>
-              <option value="avaliando">⚡ Avaliando fornecedores</option>
-              <option value="conhecendo">👀 Só conhecendo mercado</option>
-            </select>
+            <MultiSelectDropdown
+              label="Momento"
+              options={MOMENTO_OPTIONS}
+              selectedValues={selectedMomentos}
+              onChange={setSelectedMomentos}
+              placeholder="Qualquer momento"
+              color="#EF5B47"
+              icon={Clock}
+            />
           </div>
         </div>
       )}
 
-      {/* Indicador de filtros ativos */}
+      {/* Indicador de filtros ativos e badges */}
       {hasActiveFilters && (
         <div style={{
-          padding: '7px 18px',
+          padding: '8px 18px',
           background: 'rgba(79,142,247,0.05)',
           borderBottom: '1px solid var(--border-subtle)',
           fontSize: '0.75rem',
@@ -370,65 +458,76 @@ export default function LeadsTable({
           flexWrap: 'wrap',
         }}>
           <span style={{ color: '#4F8EF7', fontWeight: '600' }}>Filtros ativos:</span>
-          {filterTipo !== 'ALL' && (
+          
+          {selectedTipos.size > 0 && selectedTipos.size < TIPO_OPTIONS.length && (
             <span className="badge badge-frio" style={{ padding: '2px 8px', fontSize: '0.7rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-              Tipo: {filterTipo}
-              <X size={10} style={{ cursor: 'pointer' }} onClick={() => setFilterTipo('ALL')} />
+              Tipos ({selectedTipos.size})
+              <X size={10} style={{ cursor: 'pointer' }} onClick={() => setSelectedTipos(new Set())} />
             </span>
           )}
-          {filterClass !== 'ALL' && (
-            <span className="badge badge-frio" style={{ padding: '2px 8px', fontSize: '0.7rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-              {filterClass}
-              <X size={10} style={{ cursor: 'pointer' }} onClick={() => setFilterClass('ALL')} />
+
+          {selectedClasses.size > 0 && selectedClasses.size < CLASS_OPTIONS.length && (
+            <span className="badge badge-quente" style={{ padding: '2px 8px', fontSize: '0.7rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              Classif. ({selectedClasses.size})
+              <X size={10} style={{ cursor: 'pointer' }} onClick={() => setSelectedClasses(new Set())} />
             </span>
           )}
-          {filterState !== 'ALL' && (
+
+          {selectedStates.size > 0 && selectedStates.size < STATE_OPTIONS.length && (
             <span className="badge badge-frio" style={{ padding: '2px 8px', fontSize: '0.7rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-              UF: {filterState}
-              <X size={10} style={{ cursor: 'pointer' }} onClick={() => setFilterState('ALL')} />
+              Estados ({selectedStates.size})
+              <X size={10} style={{ cursor: 'pointer' }} onClick={() => setSelectedStates(new Set())} />
             </span>
           )}
-          {filterStatus !== 'ALL' && (
-            <span className="badge badge-frio" style={{ padding: '2px 8px', fontSize: '0.7rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-              Status: {filterStatus}
-              <X size={10} style={{ cursor: 'pointer' }} onClick={() => setFilterStatus('ALL')} />
+
+          {selectedStatuses.size > 0 && selectedStatuses.size < STATUS_OPTIONS.length && (
+            <span className="badge badge-morno" style={{ padding: '2px 8px', fontSize: '0.7rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              Status ({selectedStatuses.size})
+              <X size={10} style={{ cursor: 'pointer' }} onClick={() => setSelectedStatuses(new Set())} />
             </span>
           )}
-          {filterCultura !== 'ALL' && (
+
+          {selectedCulturas.size > 0 && selectedCulturas.size < CULTURA_OPTIONS.length && (
             <span className="badge badge-frio" style={{ padding: '2px 8px', fontSize: '0.7rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-              Cultura: {filterCultura}
-              <X size={10} style={{ cursor: 'pointer' }} onClick={() => setFilterCultura('ALL')} />
+              Culturas ({selectedCulturas.size})
+              <X size={10} style={{ cursor: 'pointer' }} onClick={() => setSelectedCulturas(new Set())} />
             </span>
           )}
-          {filterProdutores !== 'ALL' && (
-            <span className="badge badge-frio" style={{ padding: '2px 8px', fontSize: '0.7rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-              Produtores: {filterProdutores}
-              <X size={10} style={{ cursor: 'pointer' }} onClick={() => setFilterProdutores('ALL')} />
+
+          {selectedProdutores.size > 0 && selectedProdutores.size < PRODUTORES_OPTIONS.length && (
+            <span className="badge badge-morno" style={{ padding: '2px 8px', fontSize: '0.7rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              Produtores ({selectedProdutores.size})
+              <X size={10} style={{ cursor: 'pointer' }} onClick={() => setSelectedProdutores(new Set())} />
             </span>
           )}
-          {filterEquipe !== 'ALL' && (
+
+          {selectedEquipes.size > 0 && selectedEquipes.size < EQUIPE_OPTIONS.length && (
             <span className="badge badge-frio" style={{ padding: '2px 8px', fontSize: '0.7rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-              Equipe: {filterEquipe}
-              <X size={10} style={{ cursor: 'pointer' }} onClick={() => setFilterEquipe('ALL')} />
+              Equipes ({selectedEquipes.size})
+              <X size={10} style={{ cursor: 'pointer' }} onClick={() => setSelectedEquipes(new Set())} />
             </span>
           )}
-          {filterMomento !== 'ALL' && (
-            <span className="badge badge-frio" style={{ padding: '2px 8px', fontSize: '0.7rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-              Momento: {filterMomento}
-              <X size={10} style={{ cursor: 'pointer' }} onClick={() => setFilterMomento('ALL')} />
+
+          {selectedMomentos.size > 0 && selectedMomentos.size < MOMENTO_OPTIONS.length && (
+            <span className="badge badge-quente" style={{ padding: '2px 8px', fontSize: '0.7rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              Momentos ({selectedMomentos.size})
+              <X size={10} style={{ cursor: 'pointer' }} onClick={() => setSelectedMomentos(new Set())} />
             </span>
           )}
+
           {searchTerm && (
             <span className="badge badge-frio" style={{ padding: '2px 8px', fontSize: '0.7rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
               "{searchTerm}"
               <X size={10} style={{ cursor: 'pointer' }} onClick={() => setSearchTerm('')} />
             </span>
           )}
+
           <span style={{ marginLeft: 'auto' }}>
             Exibindo <strong style={{ color: 'var(--text-primary)' }}>{filteredLeads.length}</strong> de {leads.length} leads
           </span>
         </div>
       )}
+
 
 
       {/* Table */}

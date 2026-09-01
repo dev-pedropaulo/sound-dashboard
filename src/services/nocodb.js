@@ -112,9 +112,9 @@ export function getClassificacao(lead) {
 }
 
 /**
- * Helpers para correspondência de filtros nos componentes
+ * Helpers para correspondência de filtros nos componentes (suporta Set, Array ou String)
  */
-export function matchTipoEmpresa(lead, filter) {
+function matchSingleTipo(lead, filter) {
   if (!filter || filter === 'ALL') return true;
   const tipo = norm(getTipoEmpresa(lead));
   const f = norm(filter);
@@ -126,7 +126,15 @@ export function matchTipoEmpresa(lead, filter) {
   return tipo.includes(f);
 }
 
-export function matchCultura(lead, filter) {
+export function matchTipoEmpresa(lead, filter) {
+  if (!filter) return true;
+  if (typeof filter === 'string') return matchSingleTipo(lead, filter);
+  const arr = Array.from(filter);
+  if (arr.length === 0) return true;
+  return arr.some(f => matchSingleTipo(lead, f));
+}
+
+function matchSingleCultura(lead, filter) {
   if (!filter || filter === 'ALL') return true;
   const c = norm(lead.Cultura || lead.culturas || '');
   const f = norm(filter);
@@ -134,7 +142,15 @@ export function matchCultura(lead, filter) {
   return c.includes(f);
 }
 
-export function matchProdutores(lead, filter) {
+export function matchCultura(lead, filter) {
+  if (!filter) return true;
+  if (typeof filter === 'string') return matchSingleCultura(lead, filter);
+  const arr = Array.from(filter);
+  if (arr.length === 0) return true;
+  return arr.some(f => matchSingleCultura(lead, f));
+}
+
+function matchSingleProdutores(lead, filter) {
   if (!filter || filter === 'ALL') return true;
   const p = norm(lead.qtd_produtores || lead.produtores || '');
   const f = norm(filter);
@@ -144,7 +160,15 @@ export function matchProdutores(lead, filter) {
   return p.includes(f);
 }
 
-export function matchEquipe(lead, filter) {
+export function matchProdutores(lead, filter) {
+  if (!filter) return true;
+  if (typeof filter === 'string') return matchSingleProdutores(lead, filter);
+  const arr = Array.from(filter);
+  if (arr.length === 0) return true;
+  return arr.some(f => matchSingleProdutores(lead, f));
+}
+
+function matchSingleEquipe(lead, filter) {
   if (!filter || filter === 'ALL') return true;
   const eq = norm(lead.equipe || lead.equipe_campo || '');
   const f = norm(filter);
@@ -154,7 +178,15 @@ export function matchEquipe(lead, filter) {
   return eq.includes(f);
 }
 
-export function matchMomento(lead, filter) {
+export function matchEquipe(lead, filter) {
+  if (!filter) return true;
+  if (typeof filter === 'string') return matchSingleEquipe(lead, filter);
+  const arr = Array.from(filter);
+  if (arr.length === 0) return true;
+  return arr.some(f => matchSingleEquipe(lead, f));
+}
+
+function matchSingleMomento(lead, filter) {
   if (!filter || filter === 'ALL') return true;
   const m = norm(lead.momento_empresa || lead.momento || '');
   const f = norm(filter);
@@ -163,6 +195,15 @@ export function matchMomento(lead, filter) {
   if (f === 'conhecendo') return m.includes('conhecendo');
   return m.includes(f);
 }
+
+export function matchMomento(lead, filter) {
+  if (!filter) return true;
+  if (typeof filter === 'string') return matchSingleMomento(lead, filter);
+  const arr = Array.from(filter);
+  if (arr.length === 0) return true;
+  return arr.some(f => matchSingleMomento(lead, f));
+}
+
 
 
 /**
