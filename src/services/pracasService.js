@@ -343,3 +343,79 @@ export function exportPracasExcel(pracas) {
 
   XLSX.writeFile(wb, `pracas_sound_agriculture_${new Date().toISOString().split('T')[0]}.xlsx`);
 }
+
+/**
+ * Gera e faz o download de uma planilha modelo (.xlsx) para facilitar a importação
+ */
+export function downloadPracasTemplate() {
+  const wb = XLSX.utils.book_new();
+
+  // 1. Aba Resumo
+  const resumoData = [
+    {
+      'Praça': 'Sorriso',
+      'UF': 'MT',
+      'Código': 'SOR',
+      'Responsável': 'Leonardo',
+      'Cidades no raio 250km': 3
+    },
+    {
+      'Praça': 'Cascavel',
+      'UF': 'PR',
+      'Código': 'CVL',
+      'Responsável': 'Andrei',
+      'Cidades no raio 250km': 2
+    },
+    {
+      'Praça': 'Exemplo Polo Novo',
+      'UF': 'GO',
+      'Código': 'EXM',
+      'Responsável': 'Nome do RC ou a definir',
+      'Cidades no raio 250km': 2
+    }
+  ];
+  const wsResumo = XLSX.utils.json_to_sheet(resumoData);
+  XLSX.utils.book_append_sheet(wb, wsResumo, 'Resumo');
+
+  // 2. Aba da praça exemplo (Múltiplas abas)
+  const cidadesExm = [
+    { 'Cidade': 'Exemplo Polo Novo', 'UF': 'GO', 'dist_km': 0 },
+    { 'Cidade': 'Cidade Vizinha A', 'UF': 'GO', 'dist_km': 34.8 },
+    { 'Cidade': 'Cidade Vizinha B', 'UF': 'GO', 'dist_km': 85.2 }
+  ];
+  const wsExm = XLSX.utils.json_to_sheet(cidadesExm);
+  XLSX.utils.book_append_sheet(wb, wsExm, 'EXM - Exemplo Polo Novo');
+
+  // 3. Aba Formato Alternativo (Planilha única / Plana)
+  const formatoPlano = [
+    {
+      'Código': 'EXM',
+      'Praça': 'Exemplo Polo Novo',
+      'UF': 'GO',
+      'Responsável': 'Nome do RC',
+      'Cidade': 'Exemplo Polo Novo',
+      'dist_km': 0
+    },
+    {
+      'Código': 'EXM',
+      'Praça': 'Exemplo Polo Novo',
+      'UF': 'GO',
+      'Responsável': 'Nome do RC',
+      'Cidade': 'Cidade Vizinha A',
+      'dist_km': 34.8
+    },
+    {
+      'Código': 'EXM',
+      'Praça': 'Exemplo Polo Novo',
+      'UF': 'GO',
+      'Responsável': 'Nome do RC',
+      'Cidade': 'Cidade Vizinha B',
+      'dist_km': 85.2
+    }
+  ];
+  const wsPlano = XLSX.utils.json_to_sheet(formatoPlano);
+  XLSX.utils.book_append_sheet(wb, wsPlano, 'Modelo Tabela Única');
+
+  XLSX.writeFile(wb, 'template_modelo_pracas_sound.xlsx');
+}
+

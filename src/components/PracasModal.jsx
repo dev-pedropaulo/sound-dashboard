@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import {
   parsePracasExcel, exportPracasExcel, saveStoredPracas,
-  resetToDefaultPracas
+  resetToDefaultPracas, downloadPracasTemplate
 } from '../services/pracasService';
 
 export default function PracasModal({
@@ -577,6 +577,64 @@ export default function PracasModal({
           {/* ABA 2: IMPORTAR PLANILHA EXCEL */}
           {activeTab === 'import' && (
             <div style={{ maxWidth: '640px', margin: '0 auto' }}>
+              {/* Card de Download do Template Modelo */}
+              <div style={{
+                background: 'linear-gradient(135deg, rgba(34, 200, 122, 0.08) 0%, rgba(56, 97, 251, 0.05) 100%)',
+                border: '1px solid rgba(34, 200, 122, 0.3)',
+                borderRadius: 'var(--radius-lg)',
+                padding: '16px 20px',
+                marginBottom: '20px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: '14px',
+                boxShadow: '0 4px 16px rgba(0,0,0,0.15)'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: '1 1 320px' }}>
+                  <div style={{
+                    background: 'rgba(34, 200, 122, 0.15)',
+                    color: '#22C87A',
+                    padding: '10px',
+                    borderRadius: '10px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <FileSpreadsheet size={22} />
+                  </div>
+                  <div>
+                    <h4 style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '3px' }}>
+                      Baixar Planilha Modelo (.xlsx)
+                    </h4>
+                    <p style={{ fontSize: '0.74rem', color: 'var(--text-secondary)', lineHeight: '1.3' }}>
+                      Faça o download do template oficial pré-configurado com as colunas certas, abas de exemplo e formato alternativo em tabela única.
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={downloadPracasTemplate}
+                  className="btn btn-secondary"
+                  style={{
+                    padding: '8px 16px',
+                    fontSize: '0.78rem',
+                    fontWeight: 700,
+                    color: '#22C87A',
+                    background: 'rgba(34, 200, 122, 0.12)',
+                    borderColor: 'rgba(34, 200, 122, 0.4)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '7px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <Download size={14} />
+                  Baixar Template
+                </button>
+              </div>
+
               <div style={{
                 background: 'rgba(56, 97, 251, 0.05)',
                 border: '1px dashed #3861FB',
