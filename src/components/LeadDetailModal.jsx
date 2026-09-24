@@ -2,11 +2,11 @@ import React from 'react';
 import {
   X, Flame, Sparkles, Snowflake, Phone, Mail,
   Building2, MapPin, Sprout, Users, ShieldCheck,
-  Briefcase, Clock, UserCheck, ListChecks
+  Briefcase, Clock, UserCheck, ListChecks, Compass, Navigation
 } from 'lucide-react';
 import { getClassificacao, getTipoEmpresa, formatCulturaLabel } from '../services/nocodb';
 
-export default function LeadDetailModal({ lead, onClose, onUpdateStatus }) {
+export default function LeadDetailModal({ lead, onClose, onUpdateStatus, leadPraca }) {
   if (!lead) return null;
 
   const cleanPhone = (lead.WhatsApp || '').replace(/\D/g, '');
@@ -156,6 +156,72 @@ export default function LeadDetailModal({ lead, onClose, onUpdateStatus }) {
 
         {/* Body */}
         <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: '18px' }}>
+
+          {/* Roteamento Territorial & Praça RC */}
+          <div style={{
+            background: leadPraca ? 'linear-gradient(135deg, rgba(0, 148, 110, 0.1) 0%, rgba(56, 97, 251, 0.08) 100%)' : 'rgba(255,255,255,0.02)',
+            border: `1px solid ${leadPraca ? 'rgba(0, 148, 110, 0.3)' : 'var(--border-subtle)'}`,
+            borderRadius: 'var(--radius-lg)',
+            padding: '16px 18px',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', marginBottom: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Compass size={18} color={leadPraca ? '#22C87A' : 'var(--text-muted)'} />
+                <span style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  Roteamento Territorial & Praça Comercial (Raio 250 km)
+                </span>
+              </div>
+              <span style={{
+                background: leadPraca ? 'rgba(34, 200, 122, 0.15)' : 'rgba(255,255,255,0.06)',
+                color: leadPraca ? '#22C87A' : 'var(--text-muted)',
+                padding: '3px 10px',
+                borderRadius: '12px',
+                fontSize: '0.72rem',
+                fontWeight: 700
+              }}>
+                {leadPraca ? '✓ Dentro do Raio de Atendimento' : '⚡ Fora do Raio de 250km das Praças Ativas'}
+              </span>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
+              {/* Praça Polo */}
+              <div style={{ background: 'rgba(0,0,0,0.2)', padding: '10px 14px', borderRadius: 'var(--radius-md)' }}>
+                <span style={{ display: 'block', fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', marginBottom: '2px' }}>
+                  Praça / Polo Comercial
+                </span>
+                <span style={{ fontSize: '0.92rem', fontWeight: 800, color: leadPraca ? '#3861FB' : 'var(--text-secondary)' }}>
+                  {leadPraca ? `${leadPraca.codigo} - ${leadPraca.nome} (${leadPraca.uf})` : 'Sem praça vinculada'}
+                </span>
+              </div>
+
+              {/* RC Responsável */}
+              <div style={{ background: 'rgba(0,0,0,0.2)', padding: '10px 14px', borderRadius: 'var(--radius-md)' }}>
+                <span style={{ display: 'block', fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', marginBottom: '2px' }}>
+                  Representante Comercial (RC)
+                </span>
+                <span style={{ fontSize: '0.92rem', fontWeight: 800, color: leadPraca?.responsavel && leadPraca.responsavel !== 'a definir' ? '#22C87A' : '#F5B731' }}>
+                  {leadPraca?.responsavel || 'A definir'}
+                </span>
+              </div>
+
+              {/* Distância */}
+              <div style={{ background: 'rgba(0,0,0,0.2)', padding: '10px 14px', borderRadius: 'var(--radius-md)' }}>
+                <span style={{ display: 'block', fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', marginBottom: '2px' }}>
+                  Distância até a Cidade Polo
+                </span>
+                <span style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
+                  {leadPraca ? (leadPraca.dist_km === 0 ? 'Cidade Polo (0 km)' : `${leadPraca.dist_km} km`) : '—'}
+                </span>
+              </div>
+            </div>
+
+            {/* Outras praças cobrindo */}
+            {leadPraca?.outrasPracas && leadPraca.outrasPracas.length > 0 && (
+              <div style={{ marginTop: '10px', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                Também coberto secundariamente por: {leadPraca.outrasPracas.map(o => `${o.codigo} (${o.dist_km} km)`).join(', ')}
+              </div>
+            )}
+          </div>
 
           {/* Respostas do Formulário */}
           <div>

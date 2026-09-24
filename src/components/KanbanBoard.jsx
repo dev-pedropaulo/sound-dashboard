@@ -3,10 +3,11 @@ import {
   Flame, Sparkles, Snowflake, Mail,
   ExternalLink, MapPin, CheckCircle2, XCircle, Clock, Send,
   Search, ChevronDown, ChevronUp, Filter, Check, X, PlusCircle,
-  Building2, Sprout
+  Building2, Sprout, Compass
 } from 'lucide-react';
 import { getClassificacao, getTipoEmpresa, norm, formatCulturaLabel, matchTipoEmpresa, matchCultura } from '../services/nocodb';
 import { normalizeState } from '../utils/normalizeState';
+import { getLeadPraca } from '../services/pracasService';
 import MultiSelectDropdown from './MultiSelectDropdown';
 
 const COLUMNS = [
@@ -51,7 +52,13 @@ const CULTURA_OPTIONS = [
 
 const PAGE_SIZE = 15;
 
-export default function KanbanBoard({ leads = [], onUpdateStatus, onOpenLeadDetail }) {
+export default function KanbanBoard({
+  leads = [],
+  onUpdateStatus,
+  onOpenLeadDetail,
+  pracas = [],
+  cityIndex = {}
+}) {
   const [updatingId, setUpdatingId] = useState(null);
   const [draggedId, setDraggedId] = useState(null);
   const [dragOverCol, setDragOverCol] = useState(null);
@@ -93,14 +100,27 @@ export default function KanbanBoard({ leads = [], onUpdateStatus, onOpenLeadDeta
     }));
   };
 
+  // Anexa dados geográficos da Praça e RC a cada lead
+  const leadsWithPraca = useMemo(() => {
+    return leads.map(lead => ({
+      ...lead,
+      _praca: getLeadPraca(lead, cityIndex)
+    }));
+  }, [leads, cityIndex]);
+
   // Filtragem dos leads
   const filteredLeads = useMemo(() => {
-    return leads.filter(lead => {
+    return leadsWithPraca.filter(lead => {
       const s = searchTerm.toLowerCase();
       const matchSearch = !s ||
         (lead.Nome && lead.Nome.toLowerCase().includes(s)) ||
         (lead['Nome da Empresa'] && lead['Nome da Empresa'].toLowerCase().includes(s)) ||
-        (lead.Cidade && lead.Cidade.toLowerCase().includes(s));
+        (lead.Cidade && lead.Cidade.toLowerCase().includes(s)) ||
+        (lead._praca && (
+          lead._praca.nome.toLowerCase().includes(s) ||
+          lead._praca.codigo.toLowerCase().includes(s) ||
+          lead._praca.responsavel.toLowerCase().includes(s)
+        ));
 
       let matchTemp = true;
       if (selectedTemps.size > 0 && selectedTemps.size < TEMP_OPTIONS.length) {
@@ -123,7 +143,7 @@ export default function KanbanBoard({ leads = [], onUpdateStatus, onOpenLeadDeta
 
       return matchSearch && matchTemp && mTipo && mCultura && matchState;
     });
-  }, [leads, searchTerm, selectedTemps, selectedTipos, selectedStates, selectedCulturas]);
+  }, [leadsWithPraca, searchTerm, selectedTemps, selectedTipos, selectedStates, selectedCulturas]);
 
   const ClassBadge = ({ lead }) => {
     const cls = getClassificacao(lead);
@@ -414,10 +434,32 @@ export default function KanbanBoard({ leads = [], onUpdateStatus, onOpenLeadDeta
                           </div>
 
                           {/* Localização */}
-                          <div style={{ fontSize: '0.73rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '8px' }}>
+                          <div style={{ fontSize: '0.73rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '6px' }}>
                             <MapPin size={11} color="#4F8EF7" />
-                            {lead.Cidade || 'N/I'} — {lead.Estado || 'N/I'}
+                            <span>{lead.Cidade || 'N/I'} — {lead.Estado || 'N/I'}</span>
                           </div>
+
+                          {/* Praça / RC Badge */}
+                          {lead._praca ? (
+                            <div style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '4px',
+                              background: 'rgba(0, 148, 110, 0.12)',
+                              color: '#22C87A',
+                              padding: '2px 6px',
+                              borderRadius: '4px',
+                              fontSize: '0.67rem',
+                              fontWeight: 700,
+                              marginBottom: '8px'
+                            }}>
+                              📍 {lead._praca.codigo} ({lead._praca.responsavel}) · {lead._praca.dist_km === 0 ? 'Polo' : `${lead._praca.dist_km}km`}
+                            </div>
+                          ) : (
+                            <div style={{ fontSize: '0.67rem', color: 'var(--text-muted)', marginBottom: '8px', opacity: 0.65 }}>
+                              ⚡ Fora de raio (250km)
+                            </div>
+                          )}
 
                           {/* Tags Principais */}
                           <div style={{ display: 'flex', gap: '4px', marginBottom: '10px', flexWrap: 'wrap' }}>

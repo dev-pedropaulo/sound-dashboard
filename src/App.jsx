@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Header from './components/Header';
 import MetricCards from './components/MetricCards';
 import BrazilMap from './components/BrazilMap';
@@ -7,7 +7,9 @@ import KanbanBoard from './components/KanbanBoard';
 import LeadsTable from './components/LeadsTable';
 import LeadDetailModal from './components/LeadDetailModal';
 import NewLeadModal from './components/NewLeadModal';
+import PracasModal from './components/PracasModal';
 import { fetchLeads, updateLead, createLead } from './services/nocodb';
+import { getStoredPracas, buildCityIndex, getLeadPraca } from './services/pracasService';
 import { AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
 
 export default function App() {
@@ -17,6 +19,13 @@ export default function App() {
   const [currentTab, setCurrentTab] = useState('dashboard'); // dashboard, map, kanban, table
   const [selectedState, setSelectedState] = useState(null);
   const [selectedClassFilter, setSelectedClassFilter] = useState('ALL');
+  
+  // Gestão de Praças Comerciais e RCs (raio 250km)
+  const [pracas, setPracas] = useState(() => getStoredPracas());
+  const [isPracasModalOpen, setIsPracasModalOpen] = useState(false);
+
+  // Índice geográfico reativo das praças
+  const cityIndex = useMemo(() => buildCityIndex(pracas), [pracas]);
   
   const [activeLeadDetail, setActiveLeadDetail] = useState(null);
   const [isNewModalOpen, setIsNewModalOpen] = useState(false);
@@ -122,6 +131,8 @@ export default function App() {
         loading={loading}
         onOpenNewModal={() => setIsNewModalOpen(true)}
         totalLeads={leads.length}
+        onOpenPracasModal={() => setIsPracasModalOpen(true)}
+        pracasCount={pracas.length}
       />
 
       {/* Alerta de Erro de Conexão */}
@@ -190,6 +201,8 @@ export default function App() {
                   onOpenLeadDetail={setActiveLeadDetail}
                   selectedStateFilter={selectedState}
                   selectedClassFilter={selectedClassFilter}
+                  pracas={pracas}
+                  cityIndex={cityIndex}
                 />
               </>
             )}
@@ -200,6 +213,8 @@ export default function App() {
                 leads={leads}
                 onUpdateStatus={handleUpdateStatus}
                 onOpenLeadDetail={setActiveLeadDetail}
+                pracas={pracas}
+                cityIndex={cityIndex}
               />
             )}
 
@@ -211,6 +226,8 @@ export default function App() {
                 onOpenLeadDetail={setActiveLeadDetail}
                 selectedStateFilter={selectedState}
                 selectedClassFilter={selectedClassFilter}
+                pracas={pracas}
+                cityIndex={cityIndex}
               />
             )}
           </>
@@ -221,6 +238,7 @@ export default function App() {
       {activeLeadDetail && (
         <LeadDetailModal
           lead={activeLeadDetail}
+          leadPraca={getLeadPraca(activeLeadDetail, cityIndex)}
           onClose={() => setActiveLeadDetail(null)}
           onUpdateStatus={handleUpdateStatus}
         />
@@ -232,6 +250,14 @@ export default function App() {
           onSubmit={handleCreateLead}
         />
       )}
+
+      {/* Modal de Gestão & Importação de Praças */}
+      <PracasModal
+        isOpen={isPracasModalOpen}
+        onClose={() => setIsPracasModalOpen(false)}
+        pracas={pracas}
+        onUpdatePracas={setPracas}
+      />
 
       {/* Footer */}
       <footer style={{

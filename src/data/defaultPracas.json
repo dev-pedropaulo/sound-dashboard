@@ -1,0 +1,6300 @@
+[
+  {
+    "codigo": "SOR",
+    "nome": "Sorriso",
+    "uf": "MT",
+    "responsavel": "Leonardo",
+    "cidades": [
+      {
+        "cidade": "Sorriso",
+        "uf": "MT",
+        "dist_km": 0.3
+      },
+      {
+        "cidade": "Vera",
+        "uf": "MT",
+        "dist_km": 52.6
+      },
+      {
+        "cidade": "Ipiranga do Norte",
+        "uf": "MT",
+        "dist_km": 57.4
+      },
+      {
+        "cidade": "Lucas do Rio Verde",
+        "uf": "MT",
+        "dist_km": 60.9
+      },
+      {
+        "cidade": "Nova Ubiratã",
+        "uf": "MT",
+        "dist_km": 70.6
+      },
+      {
+        "cidade": "Sinop",
+        "uf": "MT",
+        "dist_km": 79.1
+      },
+      {
+        "cidade": "Tapurah",
+        "uf": "MT",
+        "dist_km": 88.0
+      },
+      {
+        "cidade": "Santa Carmem",
+        "uf": "MT",
+        "dist_km": 88.3
+      },
+      {
+        "cidade": "Feliz Natal",
+        "uf": "MT",
+        "dist_km": 88.6
+      },
+      {
+        "cidade": "Itanhangá",
+        "uf": "MT",
+        "dist_km": 106.2
+      },
+      {
+        "cidade": "Boa Esperança do Norte",
+        "uf": "MT",
+        "dist_km": 124.1
+      },
+      {
+        "cidade": "Cláudia",
+        "uf": "MT",
+        "dist_km": 146.7
+      },
+      {
+        "cidade": "São José do Rio Claro",
+        "uf": "MT",
+        "dist_km": 147.4
+      },
+      {
+        "cidade": "Nova Mutum",
+        "uf": "MT",
+        "dist_km": 149.1
+      },
+      {
+        "cidade": "Santa Rita do Trivelato",
+        "uf": "MT",
+        "dist_km": 149.9
+      },
+      {
+        "cidade": "Nova Maringá",
+        "uf": "MT",
+        "dist_km": 157.4
+      },
+      {
+        "cidade": "Itaúba",
+        "uf": "MT",
+        "dist_km": 171.5
+      },
+      {
+        "cidade": "Tabaporã",
+        "uf": "MT",
+        "dist_km": 183.2
+      },
+      {
+        "cidade": "União do Sul",
+        "uf": "MT",
+        "dist_km": 185.8
+      },
+      {
+        "cidade": "Colíder",
+        "uf": "MT",
+        "dist_km": 194.2
+      },
+      {
+        "cidade": "Nova Santa Helena",
+        "uf": "MT",
+        "dist_km": 195.2
+      },
+      {
+        "cidade": "Porto dos Gaúchos",
+        "uf": "MT",
+        "dist_km": 215.3
+      },
+      {
+        "cidade": "Novo Horizonte do Norte",
+        "uf": "MT",
+        "dist_km": 217.1
+      },
+      {
+        "cidade": "Marcelândia",
+        "uf": "MT",
+        "dist_km": 217.2
+      },
+      {
+        "cidade": "Diamantino",
+        "uf": "MT",
+        "dist_km": 221.1
+      },
+      {
+        "cidade": "Nova Canaã do Norte",
+        "uf": "MT",
+        "dist_km": 221.9
+      },
+      {
+        "cidade": "Terra Nova do Norte",
+        "uf": "MT",
+        "dist_km": 231.3
+      },
+      {
+        "cidade": "Alto Paraguai",
+        "uf": "MT",
+        "dist_km": 234.1
+      },
+      {
+        "cidade": "Juara",
+        "uf": "MT",
+        "dist_km": 242.0
+      },
+      {
+        "cidade": "Nortelândia",
+        "uf": "MT",
+        "dist_km": 242.3
+      },
+      {
+        "cidade": "Nova Marilândia",
+        "uf": "MT",
+        "dist_km": 242.8
+      },
+      {
+        "cidade": "Arenápolis",
+        "uf": "MT",
+        "dist_km": 244.2
+      },
+      {
+        "cidade": "Brasnorte",
+        "uf": "MT",
+        "dist_km": 249.4
+      }
+    ],
+    "total_cidades": 33
+  },
+  {
+    "codigo": "LRV",
+    "nome": "Lucas do Rio Verde",
+    "uf": "MT",
+    "responsavel": "a definir",
+    "cidades": [
+      {
+        "cidade": "Lucas do Rio Verde",
+        "uf": "MT",
+        "dist_km": 2.0
+      },
+      {
+        "cidade": "Sorriso",
+        "uf": "MT",
+        "dist_km": 62.8
+      },
+      {
+        "cidade": "Nova Ubiratã",
+        "uf": "MT",
+        "dist_km": 71.6
+      },
+      {
+        "cidade": "Tapurah",
+        "uf": "MT",
+        "dist_km": 78.4
+      },
+      {
+        "cidade": "Nova Mutum",
+        "uf": "MT",
+        "dist_km": 86.5
+      },
+      {
+        "cidade": "Boa Esperança do Norte",
+        "uf": "MT",
+        "dist_km": 95.2
+      },
+      {
+        "cidade": "Ipiranga do Norte",
+        "uf": "MT",
+        "dist_km": 96.6
+      },
+      {
+        "cidade": "São José do Rio Claro",
+        "uf": "MT",
+        "dist_km": 96.8
+      },
+      {
+        "cidade": "Santa Rita do Trivelato",
+        "uf": "MT",
+        "dist_km": 107.3
+      },
+      {
+        "cidade": "Vera",
+        "uf": "MT",
+        "dist_km": 108.3
+      },
+      {
+        "cidade": "Itanhangá",
+        "uf": "MT",
+        "dist_km": 123.8
+      },
+      {
+        "cidade": "Nova Maringá",
+        "uf": "MT",
+        "dist_km": 128.2
+      },
+      {
+        "cidade": "Feliz Natal",
+        "uf": "MT",
+        "dist_km": 131.8
+      },
+      {
+        "cidade": "Sinop",
+        "uf": "MT",
+        "dist_km": 142.0
+      },
+      {
+        "cidade": "Santa Carmem",
+        "uf": "MT",
+        "dist_km": 149.2
+      },
+      {
+        "cidade": "Diamantino",
+        "uf": "MT",
+        "dist_km": 158.2
+      },
+      {
+        "cidade": "Alto Paraguai",
+        "uf": "MT",
+        "dist_km": 171.2
+      },
+      {
+        "cidade": "Nortelândia",
+        "uf": "MT",
+        "dist_km": 180.6
+      },
+      {
+        "cidade": "Nova Marilândia",
+        "uf": "MT",
+        "dist_km": 182.7
+      },
+      {
+        "cidade": "Arenápolis",
+        "uf": "MT",
+        "dist_km": 182.8
+      },
+      {
+        "cidade": "Nobres",
+        "uf": "MT",
+        "dist_km": 188.2
+      },
+      {
+        "cidade": "Santo Afonso",
+        "uf": "MT",
+        "dist_km": 197.4
+      },
+      {
+        "cidade": "Rosário Oeste",
+        "uf": "MT",
+        "dist_km": 202.3
+      },
+      {
+        "cidade": "Cláudia",
+        "uf": "MT",
+        "dist_km": 207.0
+      },
+      {
+        "cidade": "Planalto da Serra",
+        "uf": "MT",
+        "dist_km": 213.3
+      },
+      {
+        "cidade": "Tabaporã",
+        "uf": "MT",
+        "dist_km": 221.4
+      },
+      {
+        "cidade": "Denise",
+        "uf": "MT",
+        "dist_km": 222.0
+      },
+      {
+        "cidade": "Campo Novo do Parecis",
+        "uf": "MT",
+        "dist_km": 223.9
+      },
+      {
+        "cidade": "Nova Brasilândia",
+        "uf": "MT",
+        "dist_km": 232.9
+      },
+      {
+        "cidade": "Itaúba",
+        "uf": "MT",
+        "dist_km": 234.4
+      },
+      {
+        "cidade": "Porto dos Gaúchos",
+        "uf": "MT",
+        "dist_km": 236.9
+      },
+      {
+        "cidade": "União do Sul",
+        "uf": "MT",
+        "dist_km": 240.4
+      },
+      {
+        "cidade": "Acorizal",
+        "uf": "MT",
+        "dist_km": 240.5
+      },
+      {
+        "cidade": "Nova Olímpia",
+        "uf": "MT",
+        "dist_km": 241.7
+      },
+      {
+        "cidade": "Tangará da Serra",
+        "uf": "MT",
+        "dist_km": 242.5
+      },
+      {
+        "cidade": "Novo Horizonte do Norte",
+        "uf": "MT",
+        "dist_km": 242.6
+      },
+      {
+        "cidade": "Brasnorte",
+        "uf": "MT",
+        "dist_km": 247.6
+      },
+      {
+        "cidade": "Jangada",
+        "uf": "MT",
+        "dist_km": 248.1
+      }
+    ],
+    "total_cidades": 38
+  },
+  {
+    "codigo": "SNP",
+    "nome": "Sinop",
+    "uf": "MT",
+    "responsavel": "a definir",
+    "cidades": [
+      {
+        "cidade": "Sinop",
+        "uf": "MT",
+        "dist_km": 0.7
+      },
+      {
+        "cidade": "Santa Carmem",
+        "uf": "MT",
+        "dist_km": 31.6
+      },
+      {
+        "cidade": "Vera",
+        "uf": "MT",
+        "dist_km": 54.5
+      },
+      {
+        "cidade": "Cláudia",
+        "uf": "MT",
+        "dist_km": 78.4
+      },
+      {
+        "cidade": "Sorriso",
+        "uf": "MT",
+        "dist_km": 79.9
+      },
+      {
+        "cidade": "Ipiranga do Norte",
+        "uf": "MT",
+        "dist_km": 82.1
+      },
+      {
+        "cidade": "Feliz Natal",
+        "uf": "MT",
+        "dist_km": 87.0
+      },
+      {
+        "cidade": "Itaúba",
+        "uf": "MT",
+        "dist_km": 91.8
+      },
+      {
+        "cidade": "Nova Santa Helena",
+        "uf": "MT",
+        "dist_km": 115.5
+      },
+      {
+        "cidade": "Colíder",
+        "uf": "MT",
+        "dist_km": 115.9
+      },
+      {
+        "cidade": "Nova Ubiratã",
+        "uf": "MT",
+        "dist_km": 128.6
+      },
+      {
+        "cidade": "União do Sul",
+        "uf": "MT",
+        "dist_km": 130.1
+      },
+      {
+        "cidade": "Itanhangá",
+        "uf": "MT",
+        "dist_km": 130.3
+      },
+      {
+        "cidade": "Lucas do Rio Verde",
+        "uf": "MT",
+        "dist_km": 140.6
+      },
+      {
+        "cidade": "Tapurah",
+        "uf": "MT",
+        "dist_km": 143.9
+      },
+      {
+        "cidade": "Marcelândia",
+        "uf": "MT",
+        "dist_km": 147.4
+      },
+      {
+        "cidade": "Terra Nova do Norte",
+        "uf": "MT",
+        "dist_km": 151.8
+      },
+      {
+        "cidade": "Nova Canaã do Norte",
+        "uf": "MT",
+        "dist_km": 152.0
+      },
+      {
+        "cidade": "Tabaporã",
+        "uf": "MT",
+        "dist_km": 156.5
+      },
+      {
+        "cidade": "Nova Guarita",
+        "uf": "MT",
+        "dist_km": 171.9
+      },
+      {
+        "cidade": "Boa Esperança do Norte",
+        "uf": "MT",
+        "dist_km": 187.9
+      },
+      {
+        "cidade": "Peixoto de Azevedo",
+        "uf": "MT",
+        "dist_km": 190.1
+      },
+      {
+        "cidade": "Matupá",
+        "uf": "MT",
+        "dist_km": 195.9
+      },
+      {
+        "cidade": "Novo Horizonte do Norte",
+        "uf": "MT",
+        "dist_km": 206.3
+      },
+      {
+        "cidade": "Porto dos Gaúchos",
+        "uf": "MT",
+        "dist_km": 210.3
+      },
+      {
+        "cidade": "Novo Mundo",
+        "uf": "MT",
+        "dist_km": 213.7
+      },
+      {
+        "cidade": "Nova Maringá",
+        "uf": "MT",
+        "dist_km": 214.6
+      },
+      {
+        "cidade": "Carlinda",
+        "uf": "MT",
+        "dist_km": 214.9
+      },
+      {
+        "cidade": "Santa Rita do Trivelato",
+        "uf": "MT",
+        "dist_km": 219.5
+      },
+      {
+        "cidade": "São José do Rio Claro",
+        "uf": "MT",
+        "dist_km": 219.9
+      },
+      {
+        "cidade": "Guarantã do Norte",
+        "uf": "MT",
+        "dist_km": 220.3
+      },
+      {
+        "cidade": "Nova Mutum",
+        "uf": "MT",
+        "dist_km": 228.8
+      },
+      {
+        "cidade": "Juara",
+        "uf": "MT",
+        "dist_km": 229.0
+      },
+      {
+        "cidade": "Alta Floresta",
+        "uf": "MT",
+        "dist_km": 229.8
+      }
+    ],
+    "total_cidades": 34
+  },
+  {
+    "codigo": "QUE",
+    "nome": "Querência",
+    "uf": "MT",
+    "responsavel": "a definir",
+    "cidades": [
+      {
+        "cidade": "Querência",
+        "uf": "MT",
+        "dist_km": 3.2
+      },
+      {
+        "cidade": "Ribeirão Cascalheira",
+        "uf": "MT",
+        "dist_km": 56.4
+      },
+      {
+        "cidade": "Bom Jesus do Araguaia",
+        "uf": "MT",
+        "dist_km": 89.9
+      },
+      {
+        "cidade": "Serra Nova Dourada",
+        "uf": "MT",
+        "dist_km": 103.9
+      },
+      {
+        "cidade": "Canarana",
+        "uf": "MT",
+        "dist_km": 106.6
+      },
+      {
+        "cidade": "Gaúcha do Norte",
+        "uf": "MT",
+        "dist_km": 119.1
+      },
+      {
+        "cidade": "Alto Boa Vista",
+        "uf": "MT",
+        "dist_km": 135.7
+      },
+      {
+        "cidade": "Novo Santo Antônio",
+        "uf": "MT",
+        "dist_km": 138.8
+      },
+      {
+        "cidade": "Nova Nazaré",
+        "uf": "MT",
+        "dist_km": 156.9
+      },
+      {
+        "cidade": "Água Boa",
+        "uf": "MT",
+        "dist_km": 162.1
+      },
+      {
+        "cidade": "Canabrava do Norte",
+        "uf": "MT",
+        "dist_km": 176.2
+      },
+      {
+        "cidade": "São Félix do Araguaia",
+        "uf": "MT",
+        "dist_km": 199.5
+      },
+      {
+        "cidade": "Porto Alegre do Norte",
+        "uf": "MT",
+        "dist_km": 201.0
+      },
+      {
+        "cidade": "São José do Xingu",
+        "uf": "MT",
+        "dist_km": 208.2
+      },
+      {
+        "cidade": "Campinápolis",
+        "uf": "MT",
+        "dist_km": 226.2
+      },
+      {
+        "cidade": "Luciara",
+        "uf": "MT",
+        "dist_km": 226.6
+      },
+      {
+        "cidade": "Confresa",
+        "uf": "MT",
+        "dist_km": 227.8
+      },
+      {
+        "cidade": "Nova Xavantina",
+        "uf": "MT",
+        "dist_km": 232.1
+      },
+      {
+        "cidade": "São Miguel do Araguaia",
+        "uf": "GO",
+        "dist_km": 234.1
+      },
+      {
+        "cidade": "Cocalinho",
+        "uf": "MT",
+        "dist_km": 238.6
+      },
+      {
+        "cidade": "Mundo Novo",
+        "uf": "GO",
+        "dist_km": 246.3
+      },
+      {
+        "cidade": "Sandolândia",
+        "uf": "TO",
+        "dist_km": 247.9
+      }
+    ],
+    "total_cidades": 22
+  },
+  {
+    "codigo": "ROO",
+    "nome": "Rondonópolis",
+    "uf": "MT",
+    "responsavel": "a definir",
+    "cidades": [
+      {
+        "cidade": "Rondonópolis",
+        "uf": "MT",
+        "dist_km": 0.3
+      },
+      {
+        "cidade": "Pedra Preta",
+        "uf": "MT",
+        "dist_km": 25.1
+      },
+      {
+        "cidade": "São José do Povo",
+        "uf": "MT",
+        "dist_km": 41.6
+      },
+      {
+        "cidade": "Juscimeira",
+        "uf": "MT",
+        "dist_km": 51.9
+      },
+      {
+        "cidade": "São Pedro da Cipa",
+        "uf": "MT",
+        "dist_km": 58.7
+      },
+      {
+        "cidade": "Jaciara",
+        "uf": "MT",
+        "dist_km": 67.1
+      },
+      {
+        "cidade": "Poxoréu",
+        "uf": "MT",
+        "dist_km": 74.4
+      },
+      {
+        "cidade": "Dom Aquino",
+        "uf": "MT",
+        "dist_km": 78.9
+      },
+      {
+        "cidade": "Guiratinga",
+        "uf": "MT",
+        "dist_km": 94.9
+      },
+      {
+        "cidade": "Itiquira",
+        "uf": "MT",
+        "dist_km": 98.7
+      },
+      {
+        "cidade": "Primavera do Leste",
+        "uf": "MT",
+        "dist_km": 109.4
+      },
+      {
+        "cidade": "Campo Verde",
+        "uf": "MT",
+        "dist_km": 116.7
+      },
+      {
+        "cidade": "Tesouro",
+        "uf": "MT",
+        "dist_km": 122.9
+      },
+      {
+        "cidade": "Sonora",
+        "uf": "MS",
+        "dist_km": 123.4
+      },
+      {
+        "cidade": "Alto Garças",
+        "uf": "MT",
+        "dist_km": 129.9
+      },
+      {
+        "cidade": "Barão de Melgaço",
+        "uf": "MT",
+        "dist_km": 144.1
+      },
+      {
+        "cidade": "Chapada dos Guimarães",
+        "uf": "MT",
+        "dist_km": 162.8
+      },
+      {
+        "cidade": "Santo Antônio do Leverger",
+        "uf": "MT",
+        "dist_km": 167.7
+      },
+      {
+        "cidade": "Nova Brasilândia",
+        "uf": "MT",
+        "dist_km": 171.0
+      },
+      {
+        "cidade": "Araguainha",
+        "uf": "MT",
+        "dist_km": 176.6
+      },
+      {
+        "cidade": "Alto Araguaia",
+        "uf": "MT",
+        "dist_km": 178.3
+      },
+      {
+        "cidade": "Santa Rita do Araguaia",
+        "uf": "GO",
+        "dist_km": 180.5
+      },
+      {
+        "cidade": "Pedro Gomes",
+        "uf": "MS",
+        "dist_km": 181.9
+      },
+      {
+        "cidade": "Cuiabá",
+        "uf": "MT",
+        "dist_km": 183.1
+      },
+      {
+        "cidade": "Várzea Grande",
+        "uf": "MT",
+        "dist_km": 183.8
+      },
+      {
+        "cidade": "Ponte Branca",
+        "uf": "MT",
+        "dist_km": 194.7
+      },
+      {
+        "cidade": "Nossa Senhora do Livramento",
+        "uf": "MT",
+        "dist_km": 197.7
+      },
+      {
+        "cidade": "Planalto da Serra",
+        "uf": "MT",
+        "dist_km": 202.3
+      },
+      {
+        "cidade": "Ribeirãozinho",
+        "uf": "MT",
+        "dist_km": 207.5
+      },
+      {
+        "cidade": "Alto Taquari",
+        "uf": "MT",
+        "dist_km": 209.0
+      },
+      {
+        "cidade": "Poconé",
+        "uf": "MT",
+        "dist_km": 213.2
+      },
+      {
+        "cidade": "Santo Antônio do Leste",
+        "uf": "MT",
+        "dist_km": 215.1
+      },
+      {
+        "cidade": "General Carneiro",
+        "uf": "MT",
+        "dist_km": 217.9
+      },
+      {
+        "cidade": "Torixoréu",
+        "uf": "MT",
+        "dist_km": 224.1
+      },
+      {
+        "cidade": "Baliza",
+        "uf": "GO",
+        "dist_km": 226.0
+      },
+      {
+        "cidade": "Coxim",
+        "uf": "MS",
+        "dist_km": 226.7
+      },
+      {
+        "cidade": "Alcinópolis",
+        "uf": "MS",
+        "dist_km": 229.4
+      },
+      {
+        "cidade": "Portelândia",
+        "uf": "GO",
+        "dist_km": 230.7
+      },
+      {
+        "cidade": "Acorizal",
+        "uf": "MT",
+        "dist_km": 232.4
+      },
+      {
+        "cidade": "Paranatinga",
+        "uf": "MT",
+        "dist_km": 235.3
+      },
+      {
+        "cidade": "Jangada",
+        "uf": "MT",
+        "dist_km": 240.8
+      },
+      {
+        "cidade": "Novo São Joaquim",
+        "uf": "MT",
+        "dist_km": 245.2
+      },
+      {
+        "cidade": "Doverlândia",
+        "uf": "GO",
+        "dist_km": 248.8
+      }
+    ],
+    "total_cidades": 43
+  },
+  {
+    "codigo": "PVA",
+    "nome": "Primavera do Leste",
+    "uf": "MT",
+    "responsavel": "a definir",
+    "cidades": [
+      {
+        "cidade": "Primavera do Leste",
+        "uf": "MT",
+        "dist_km": 2.3
+      },
+      {
+        "cidade": "Poxoréu",
+        "uf": "MT",
+        "dist_km": 33.1
+      },
+      {
+        "cidade": "Dom Aquino",
+        "uf": "MT",
+        "dist_km": 72.6
+      },
+      {
+        "cidade": "São Pedro da Cipa",
+        "uf": "MT",
+        "dist_km": 83.4
+      },
+      {
+        "cidade": "Juscimeira",
+        "uf": "MT",
+        "dist_km": 84.5
+      },
+      {
+        "cidade": "Jaciara",
+        "uf": "MT",
+        "dist_km": 84.8
+      },
+      {
+        "cidade": "Campo Verde",
+        "uf": "MT",
+        "dist_km": 92.7
+      },
+      {
+        "cidade": "Nova Brasilândia",
+        "uf": "MT",
+        "dist_km": 97.8
+      },
+      {
+        "cidade": "Tesouro",
+        "uf": "MT",
+        "dist_km": 98.2
+      },
+      {
+        "cidade": "São José do Povo",
+        "uf": "MT",
+        "dist_km": 100.0
+      },
+      {
+        "cidade": "Guiratinga",
+        "uf": "MT",
+        "dist_km": 105.0
+      },
+      {
+        "cidade": "Rondonópolis",
+        "uf": "MT",
+        "dist_km": 107.5
+      },
+      {
+        "cidade": "Santo Antônio do Leste",
+        "uf": "MT",
+        "dist_km": 111.7
+      },
+      {
+        "cidade": "Planalto da Serra",
+        "uf": "MT",
+        "dist_km": 113.3
+      },
+      {
+        "cidade": "Pedra Preta",
+        "uf": "MT",
+        "dist_km": 120.2
+      },
+      {
+        "cidade": "Paranatinga",
+        "uf": "MT",
+        "dist_km": 128.4
+      },
+      {
+        "cidade": "Novo São Joaquim",
+        "uf": "MT",
+        "dist_km": 155.1
+      },
+      {
+        "cidade": "Chapada dos Guimarães",
+        "uf": "MT",
+        "dist_km": 156.0
+      },
+      {
+        "cidade": "General Carneiro",
+        "uf": "MT",
+        "dist_km": 165.8
+      },
+      {
+        "cidade": "Alto Garças",
+        "uf": "MT",
+        "dist_km": 175.0
+      },
+      {
+        "cidade": "Itiquira",
+        "uf": "MT",
+        "dist_km": 185.1
+      },
+      {
+        "cidade": "Campinápolis",
+        "uf": "MT",
+        "dist_km": 190.1
+      },
+      {
+        "cidade": "Barão de Melgaço",
+        "uf": "MT",
+        "dist_km": 192.1
+      },
+      {
+        "cidade": "Cuiabá",
+        "uf": "MT",
+        "dist_km": 192.9
+      },
+      {
+        "cidade": "Santo Antônio do Leverger",
+        "uf": "MT",
+        "dist_km": 193.7
+      },
+      {
+        "cidade": "Várzea Grande",
+        "uf": "MT",
+        "dist_km": 196.7
+      },
+      {
+        "cidade": "Araguainha",
+        "uf": "MT",
+        "dist_km": 197.9
+      },
+      {
+        "cidade": "Torixoréu",
+        "uf": "MT",
+        "dist_km": 199.4
+      },
+      {
+        "cidade": "Ribeirãozinho",
+        "uf": "MT",
+        "dist_km": 200.2
+      },
+      {
+        "cidade": "Baliza",
+        "uf": "GO",
+        "dist_km": 201.0
+      },
+      {
+        "cidade": "Ponte Branca",
+        "uf": "MT",
+        "dist_km": 205.4
+      },
+      {
+        "cidade": "Pontal do Araguaia",
+        "uf": "MT",
+        "dist_km": 214.8
+      },
+      {
+        "cidade": "Santa Rita do Trivelato",
+        "uf": "MT",
+        "dist_km": 220.2
+      },
+      {
+        "cidade": "Nossa Senhora do Livramento",
+        "uf": "MT",
+        "dist_km": 220.3
+      },
+      {
+        "cidade": "Barra do Garças",
+        "uf": "MT",
+        "dist_km": 220.6
+      },
+      {
+        "cidade": "Aragarças",
+        "uf": "GO",
+        "dist_km": 223.7
+      },
+      {
+        "cidade": "Acorizal",
+        "uf": "MT",
+        "dist_km": 225.1
+      },
+      {
+        "cidade": "Alto Araguaia",
+        "uf": "MT",
+        "dist_km": 226.9
+      },
+      {
+        "cidade": "Santa Rita do Araguaia",
+        "uf": "GO",
+        "dist_km": 228.9
+      },
+      {
+        "cidade": "Sonora",
+        "uf": "MS",
+        "dist_km": 229.1
+      },
+      {
+        "cidade": "Nova Xavantina",
+        "uf": "MT",
+        "dist_km": 230.8
+      },
+      {
+        "cidade": "Nobres",
+        "uf": "MT",
+        "dist_km": 237.1
+      },
+      {
+        "cidade": "Jangada",
+        "uf": "MT",
+        "dist_km": 237.9
+      },
+      {
+        "cidade": "Bom Jardim de Goiás",
+        "uf": "GO",
+        "dist_km": 238.4
+      },
+      {
+        "cidade": "Rosário Oeste",
+        "uf": "MT",
+        "dist_km": 242.2
+      },
+      {
+        "cidade": "Boa Esperança do Norte",
+        "uf": "MT",
+        "dist_km": 245.7
+      },
+      {
+        "cidade": "Doverlândia",
+        "uf": "GO",
+        "dist_km": 247.7
+      }
+    ],
+    "total_cidades": 47
+  },
+  {
+    "codigo": "CNP",
+    "nome": "Campo Novo dos Parecis",
+    "uf": "MT",
+    "responsavel": "a definir",
+    "cidades": [
+      {
+        "cidade": "Campo Novo do Parecis",
+        "uf": "MT",
+        "dist_km": 0.6
+      },
+      {
+        "cidade": "Nova Maringá",
+        "uf": "MT",
+        "dist_km": 112.6
+      },
+      {
+        "cidade": "Tangará da Serra",
+        "uf": "MT",
+        "dist_km": 114.9
+      },
+      {
+        "cidade": "Sapezal",
+        "uf": "MT",
+        "dist_km": 120.9
+      },
+      {
+        "cidade": "Nova Marilândia",
+        "uf": "MT",
+        "dist_km": 125.6
+      },
+      {
+        "cidade": "São José do Rio Claro",
+        "uf": "MT",
+        "dist_km": 128.6
+      },
+      {
+        "cidade": "Santo Afonso",
+        "uf": "MT",
+        "dist_km": 132.4
+      },
+      {
+        "cidade": "Nova Olímpia",
+        "uf": "MT",
+        "dist_km": 140.8
+      },
+      {
+        "cidade": "Arenápolis",
+        "uf": "MT",
+        "dist_km": 142.5
+      },
+      {
+        "cidade": "Nortelândia",
+        "uf": "MT",
+        "dist_km": 147.1
+      },
+      {
+        "cidade": "Denise",
+        "uf": "MT",
+        "dist_km": 148.8
+      },
+      {
+        "cidade": "Campos de Júlio",
+        "uf": "MT",
+        "dist_km": 151.1
+      },
+      {
+        "cidade": "Salto do Céu",
+        "uf": "MT",
+        "dist_km": 165.2
+      },
+      {
+        "cidade": "Reserva do Cabaçal",
+        "uf": "MT",
+        "dist_km": 168.4
+      },
+      {
+        "cidade": "Brasnorte",
+        "uf": "MT",
+        "dist_km": 168.9
+      },
+      {
+        "cidade": "Barra do Bugres",
+        "uf": "MT",
+        "dist_km": 173.7
+      },
+      {
+        "cidade": "Diamantino",
+        "uf": "MT",
+        "dist_km": 176.9
+      },
+      {
+        "cidade": "Rio Branco",
+        "uf": "MT",
+        "dist_km": 178.0
+      },
+      {
+        "cidade": "Alto Paraguai",
+        "uf": "MT",
+        "dist_km": 179.1
+      },
+      {
+        "cidade": "Tapurah",
+        "uf": "MT",
+        "dist_km": 183.4
+      },
+      {
+        "cidade": "Lambari D'Oeste",
+        "uf": "MT",
+        "dist_km": 184.5
+      },
+      {
+        "cidade": "Nova Mutum",
+        "uf": "MT",
+        "dist_km": 196.9
+      },
+      {
+        "cidade": "Porto Estrela",
+        "uf": "MT",
+        "dist_km": 198.1
+      },
+      {
+        "cidade": "Conquista D'Oeste",
+        "uf": "MT",
+        "dist_km": 203.3
+      },
+      {
+        "cidade": "Rosário Oeste",
+        "uf": "MT",
+        "dist_km": 204.0
+      },
+      {
+        "cidade": "Comodoro",
+        "uf": "MT",
+        "dist_km": 204.9
+      },
+      {
+        "cidade": "Nobres",
+        "uf": "MT",
+        "dist_km": 205.1
+      },
+      {
+        "cidade": "Nova Lacerda",
+        "uf": "MT",
+        "dist_km": 205.3
+      },
+      {
+        "cidade": "Araputanga",
+        "uf": "MT",
+        "dist_km": 206.1
+      },
+      {
+        "cidade": "Itanhangá",
+        "uf": "MT",
+        "dist_km": 209.0
+      },
+      {
+        "cidade": "Jauru",
+        "uf": "MT",
+        "dist_km": 213.8
+      },
+      {
+        "cidade": "Curvelândia",
+        "uf": "MT",
+        "dist_km": 216.3
+      },
+      {
+        "cidade": "Indiavaí",
+        "uf": "MT",
+        "dist_km": 216.5
+      },
+      {
+        "cidade": "Figueirópolis D'Oeste",
+        "uf": "MT",
+        "dist_km": 218.1
+      },
+      {
+        "cidade": "São José dos Quatro Marcos",
+        "uf": "MT",
+        "dist_km": 220.6
+      },
+      {
+        "cidade": "Vale de São Domingos",
+        "uf": "MT",
+        "dist_km": 220.6
+      },
+      {
+        "cidade": "Mirassol d'Oeste",
+        "uf": "MT",
+        "dist_km": 224.8
+      },
+      {
+        "cidade": "Lucas do Rio Verde",
+        "uf": "MT",
+        "dist_km": 225.0
+      },
+      {
+        "cidade": "Jangada",
+        "uf": "MT",
+        "dist_km": 230.5
+      },
+      {
+        "cidade": "Pontes e Lacerda",
+        "uf": "MT",
+        "dist_km": 233.6
+      },
+      {
+        "cidade": "Acorizal",
+        "uf": "MT",
+        "dist_km": 236.5
+      },
+      {
+        "cidade": "Glória D'Oeste",
+        "uf": "MT",
+        "dist_km": 238.3
+      },
+      {
+        "cidade": "Porto dos Gaúchos",
+        "uf": "MT",
+        "dist_km": 242.5
+      },
+      {
+        "cidade": "Ipiranga do Norte",
+        "uf": "MT",
+        "dist_km": 245.8
+      }
+    ],
+    "total_cidades": 44
+  },
+  {
+    "codigo": "RVD",
+    "nome": "Rio Verde",
+    "uf": "GO",
+    "responsavel": "a definir",
+    "cidades": [
+      {
+        "cidade": "Rio Verde",
+        "uf": "GO",
+        "dist_km": 0.1
+      },
+      {
+        "cidade": "Santa Helena de Goiás",
+        "uf": "GO",
+        "dist_km": 34.1
+      },
+      {
+        "cidade": "Santo Antônio da Barra",
+        "uf": "GO",
+        "dist_km": 39.9
+      },
+      {
+        "cidade": "Montividiu",
+        "uf": "GO",
+        "dist_km": 47.2
+      },
+      {
+        "cidade": "Aparecida do Rio Doce",
+        "uf": "GO",
+        "dist_km": 60.9
+      },
+      {
+        "cidade": "Maurilândia",
+        "uf": "GO",
+        "dist_km": 64.6
+      },
+      {
+        "cidade": "Turvelândia",
+        "uf": "GO",
+        "dist_km": 65.6
+      },
+      {
+        "cidade": "Acreúna",
+        "uf": "GO",
+        "dist_km": 72.7
+      },
+      {
+        "cidade": "Porteirão",
+        "uf": "GO",
+        "dist_km": 79.9
+      },
+      {
+        "cidade": "Castelândia",
+        "uf": "GO",
+        "dist_km": 82.8
+      },
+      {
+        "cidade": "Jataí",
+        "uf": "GO",
+        "dist_km": 85.3
+      },
+      {
+        "cidade": "Quirinópolis",
+        "uf": "GO",
+        "dist_km": 87.8
+      },
+      {
+        "cidade": "Caçu",
+        "uf": "GO",
+        "dist_km": 88.2
+      },
+      {
+        "cidade": "Paraúna",
+        "uf": "GO",
+        "dist_km": 106.6
+      },
+      {
+        "cidade": "Cachoeira Alta",
+        "uf": "GO",
+        "dist_km": 107.8
+      },
+      {
+        "cidade": "Edéia",
+        "uf": "GO",
+        "dist_km": 116.4
+      },
+      {
+        "cidade": "Jandaia",
+        "uf": "GO",
+        "dist_km": 116.6
+      },
+      {
+        "cidade": "Itarumã",
+        "uf": "GO",
+        "dist_km": 117.2
+      },
+      {
+        "cidade": "Vicentinópolis",
+        "uf": "GO",
+        "dist_km": 118.3
+      },
+      {
+        "cidade": "São João da Paraúna",
+        "uf": "GO",
+        "dist_km": 121.7
+      },
+      {
+        "cidade": "Indiara",
+        "uf": "GO",
+        "dist_km": 122.8
+      },
+      {
+        "cidade": "Serranópolis",
+        "uf": "GO",
+        "dist_km": 123.8
+      },
+      {
+        "cidade": "Perolândia",
+        "uf": "GO",
+        "dist_km": 124.9
+      },
+      {
+        "cidade": "Inaciolândia",
+        "uf": "GO",
+        "dist_km": 125.0
+      },
+      {
+        "cidade": "Paranaiguara",
+        "uf": "GO",
+        "dist_km": 127.8
+      },
+      {
+        "cidade": "Gouvelândia",
+        "uf": "GO",
+        "dist_km": 128.0
+      },
+      {
+        "cidade": "Cachoeira de Goiás",
+        "uf": "GO",
+        "dist_km": 128.9
+      },
+      {
+        "cidade": "Amorinópolis",
+        "uf": "GO",
+        "dist_km": 132.2
+      },
+      {
+        "cidade": "Caiapônia",
+        "uf": "GO",
+        "dist_km": 132.7
+      },
+      {
+        "cidade": "Aurilândia",
+        "uf": "GO",
+        "dist_km": 133.1
+      },
+      {
+        "cidade": "Bom Jesus de Goiás",
+        "uf": "GO",
+        "dist_km": 133.4
+      },
+      {
+        "cidade": "Ivolândia",
+        "uf": "GO",
+        "dist_km": 133.4
+      },
+      {
+        "cidade": "Palestina de Goiás",
+        "uf": "GO",
+        "dist_km": 133.9
+      },
+      {
+        "cidade": "Palminópolis",
+        "uf": "GO",
+        "dist_km": 137.1
+      },
+      {
+        "cidade": "Joviânia",
+        "uf": "GO",
+        "dist_km": 137.6
+      },
+      {
+        "cidade": "Edealina",
+        "uf": "GO",
+        "dist_km": 139.2
+      },
+      {
+        "cidade": "São Simão",
+        "uf": "GO",
+        "dist_km": 139.4
+      },
+      {
+        "cidade": "Moiporá",
+        "uf": "GO",
+        "dist_km": 140.2
+      },
+      {
+        "cidade": "Ipiaçu",
+        "uf": "MG",
+        "dist_km": 143.7
+      },
+      {
+        "cidade": "Santa Vitória",
+        "uf": "MG",
+        "dist_km": 143.9
+      },
+      {
+        "cidade": "Firminópolis",
+        "uf": "GO",
+        "dist_km": 150.1
+      },
+      {
+        "cidade": "Cezarina",
+        "uf": "GO",
+        "dist_km": 151.9
+      },
+      {
+        "cidade": "Iporá",
+        "uf": "GO",
+        "dist_km": 151.9
+      },
+      {
+        "cidade": "Palmeiras de Goiás",
+        "uf": "GO",
+        "dist_km": 152.5
+      },
+      {
+        "cidade": "São Luís de Montes Belos",
+        "uf": "GO",
+        "dist_km": 152.9
+      },
+      {
+        "cidade": "Aloândia",
+        "uf": "GO",
+        "dist_km": 152.9
+      },
+      {
+        "cidade": "Turvânia",
+        "uf": "GO",
+        "dist_km": 155.4
+      },
+      {
+        "cidade": "Itajá",
+        "uf": "GO",
+        "dist_km": 156.5
+      },
+      {
+        "cidade": "Pontalina",
+        "uf": "GO",
+        "dist_km": 158.7
+      },
+      {
+        "cidade": "Varjão",
+        "uf": "GO",
+        "dist_km": 159.9
+      },
+      {
+        "cidade": "Mairipotaba",
+        "uf": "GO",
+        "dist_km": 161.3
+      },
+      {
+        "cidade": "Lagoa Santa",
+        "uf": "GO",
+        "dist_km": 162.7
+      },
+      {
+        "cidade": "Israelândia",
+        "uf": "GO",
+        "dist_km": 164.4
+      },
+      {
+        "cidade": "Goiatuba",
+        "uf": "GO",
+        "dist_km": 166.2
+      },
+      {
+        "cidade": "Aporé",
+        "uf": "GO",
+        "dist_km": 167.6
+      },
+      {
+        "cidade": "Cachoeira Dourada",
+        "uf": "MG",
+        "dist_km": 169.8
+      },
+      {
+        "cidade": "Cassilândia",
+        "uf": "MS",
+        "dist_km": 170.4
+      },
+      {
+        "cidade": "Arenópolis",
+        "uf": "GO",
+        "dist_km": 170.7
+      },
+      {
+        "cidade": "Cachoeira Dourada",
+        "uf": "GO",
+        "dist_km": 170.8
+      },
+      {
+        "cidade": "Panamá",
+        "uf": "GO",
+        "dist_km": 170.9
+      },
+      {
+        "cidade": "Córrego do Ouro",
+        "uf": "GO",
+        "dist_km": 171.5
+      },
+      {
+        "cidade": "Cromínia",
+        "uf": "GO",
+        "dist_km": 172.6
+      },
+      {
+        "cidade": "Adelândia",
+        "uf": "GO",
+        "dist_km": 173.1
+      },
+      {
+        "cidade": "Campestre de Goiás",
+        "uf": "GO",
+        "dist_km": 173.3
+      },
+      {
+        "cidade": "Capinópolis",
+        "uf": "MG",
+        "dist_km": 173.7
+      },
+      {
+        "cidade": "Nazário",
+        "uf": "GO",
+        "dist_km": 174.1
+      },
+      {
+        "cidade": "Mineiros",
+        "uf": "GO",
+        "dist_km": 175.0
+      },
+      {
+        "cidade": "Diorama",
+        "uf": "GO",
+        "dist_km": 177.1
+      },
+      {
+        "cidade": "Anicuns",
+        "uf": "GO",
+        "dist_km": 179.4
+      },
+      {
+        "cidade": "Fazenda Nova",
+        "uf": "GO",
+        "dist_km": 179.6
+      },
+      {
+        "cidade": "Jaupaci",
+        "uf": "GO",
+        "dist_km": 179.7
+      },
+      {
+        "cidade": "Piranhas",
+        "uf": "GO",
+        "dist_km": 179.8
+      },
+      {
+        "cidade": "Guapó",
+        "uf": "GO",
+        "dist_km": 181.9
+      },
+      {
+        "cidade": "Aragoiânia",
+        "uf": "GO",
+        "dist_km": 184.6
+      },
+      {
+        "cidade": "Chapadão do Céu",
+        "uf": "GO",
+        "dist_km": 185.3
+      },
+      {
+        "cidade": "Buriti de Goiás",
+        "uf": "GO",
+        "dist_km": 186.8
+      },
+      {
+        "cidade": "Professor Jamil",
+        "uf": "GO",
+        "dist_km": 187.7
+      },
+      {
+        "cidade": "Santa Bárbara de Goiás",
+        "uf": "GO",
+        "dist_km": 188.0
+      },
+      {
+        "cidade": "Sanclerlândia",
+        "uf": "GO",
+        "dist_km": 188.8
+      },
+      {
+        "cidade": "Doverlândia",
+        "uf": "GO",
+        "dist_km": 190.6
+      },
+      {
+        "cidade": "Morrinhos",
+        "uf": "GO",
+        "dist_km": 192.2
+      },
+      {
+        "cidade": "Avelinópolis",
+        "uf": "GO",
+        "dist_km": 192.3
+      },
+      {
+        "cidade": "Itumbiara",
+        "uf": "GO",
+        "dist_km": 192.7
+      },
+      {
+        "cidade": "Portelândia",
+        "uf": "GO",
+        "dist_km": 192.8
+      },
+      {
+        "cidade": "Abadia de Goiás",
+        "uf": "GO",
+        "dist_km": 194.7
+      },
+      {
+        "cidade": "Araporã",
+        "uf": "MG",
+        "dist_km": 196.8
+      },
+      {
+        "cidade": "Novo Brasil",
+        "uf": "GO",
+        "dist_km": 197.1
+      },
+      {
+        "cidade": "Trindade",
+        "uf": "GO",
+        "dist_km": 197.6
+      },
+      {
+        "cidade": "Gurinhatã",
+        "uf": "MG",
+        "dist_km": 198.1
+      },
+      {
+        "cidade": "Americano do Brasil",
+        "uf": "GO",
+        "dist_km": 198.2
+      },
+      {
+        "cidade": "Limeira do Oeste",
+        "uf": "MG",
+        "dist_km": 198.7
+      },
+      {
+        "cidade": "Mossâmedes",
+        "uf": "GO",
+        "dist_km": 200.2
+      },
+      {
+        "cidade": "Centralina",
+        "uf": "MG",
+        "dist_km": 201.8
+      },
+      {
+        "cidade": "Hidrolândia",
+        "uf": "GO",
+        "dist_km": 202.0
+      },
+      {
+        "cidade": "Ituiutaba",
+        "uf": "MG",
+        "dist_km": 202.3
+      },
+      {
+        "cidade": "Buriti Alegre",
+        "uf": "GO",
+        "dist_km": 202.4
+      },
+      {
+        "cidade": "União de Minas",
+        "uf": "MG",
+        "dist_km": 202.6
+      },
+      {
+        "cidade": "Montes Claros de Goiás",
+        "uf": "GO",
+        "dist_km": 205.1
+      },
+      {
+        "cidade": "Araçu",
+        "uf": "GO",
+        "dist_km": 207.0
+      },
+      {
+        "cidade": "Aparecida de Goiânia",
+        "uf": "GO",
+        "dist_km": 207.9
+      },
+      {
+        "cidade": "Canápolis",
+        "uf": "MG",
+        "dist_km": 208.6
+      },
+      {
+        "cidade": "Piracanjuba",
+        "uf": "GO",
+        "dist_km": 209.0
+      },
+      {
+        "cidade": "Paranaíba",
+        "uf": "MS",
+        "dist_km": 211.2
+      },
+      {
+        "cidade": "Chapadão do Sul",
+        "uf": "MS",
+        "dist_km": 211.5
+      },
+      {
+        "cidade": "Caturaí",
+        "uf": "GO",
+        "dist_km": 213.1
+      },
+      {
+        "cidade": "Carneirinho",
+        "uf": "MG",
+        "dist_km": 213.3
+      },
+      {
+        "cidade": "Jussara",
+        "uf": "GO",
+        "dist_km": 214.3
+      },
+      {
+        "cidade": "Goianira",
+        "uf": "GO",
+        "dist_km": 214.4
+      },
+      {
+        "cidade": "Goiânia",
+        "uf": "GO",
+        "dist_km": 214.6
+      },
+      {
+        "cidade": "Inhumas",
+        "uf": "GO",
+        "dist_km": 219.3
+      },
+      {
+        "cidade": "Bom Jardim de Goiás",
+        "uf": "GO",
+        "dist_km": 221.1
+      },
+      {
+        "cidade": "Itapirapuã",
+        "uf": "GO",
+        "dist_km": 221.8
+      },
+      {
+        "cidade": "Brazabrantes",
+        "uf": "GO",
+        "dist_km": 222.7
+      },
+      {
+        "cidade": "Goiás",
+        "uf": "GO",
+        "dist_km": 222.8
+      },
+      {
+        "cidade": "Santo Antônio de Goiás",
+        "uf": "GO",
+        "dist_km": 224.8
+      },
+      {
+        "cidade": "Itauçu",
+        "uf": "GO",
+        "dist_km": 225.0
+      },
+      {
+        "cidade": "Santa Fé de Goiás",
+        "uf": "GO",
+        "dist_km": 226.2
+      },
+      {
+        "cidade": "Rio Quente",
+        "uf": "GO",
+        "dist_km": 227.3
+      },
+      {
+        "cidade": "Bela Vista de Goiás",
+        "uf": "GO",
+        "dist_km": 228.1
+      },
+      {
+        "cidade": "Iturama",
+        "uf": "MG",
+        "dist_km": 228.2
+      },
+      {
+        "cidade": "Senador Canedo",
+        "uf": "GO",
+        "dist_km": 228.5
+      },
+      {
+        "cidade": "Itaberaí",
+        "uf": "GO",
+        "dist_km": 229.9
+      },
+      {
+        "cidade": "Água Limpa",
+        "uf": "GO",
+        "dist_km": 230.6
+      },
+      {
+        "cidade": "Nova Veneza",
+        "uf": "GO",
+        "dist_km": 232.5
+      },
+      {
+        "cidade": "Ponte Branca",
+        "uf": "MT",
+        "dist_km": 233.8
+      },
+      {
+        "cidade": "Caldazinha",
+        "uf": "GO",
+        "dist_km": 236.5
+      },
+      {
+        "cidade": "Nerópolis",
+        "uf": "GO",
+        "dist_km": 237.4
+      },
+      {
+        "cidade": "Ribeirãozinho",
+        "uf": "MT",
+        "dist_km": 237.9
+      },
+      {
+        "cidade": "Damolândia",
+        "uf": "GO",
+        "dist_km": 238.0
+      },
+      {
+        "cidade": "Taquaral de Goiás",
+        "uf": "GO",
+        "dist_km": 238.9
+      },
+      {
+        "cidade": "Inocência",
+        "uf": "MS",
+        "dist_km": 239.9
+      },
+      {
+        "cidade": "Marzagão",
+        "uf": "GO",
+        "dist_km": 242.0
+      },
+      {
+        "cidade": "Populina",
+        "uf": "SP",
+        "dist_km": 242.7
+      },
+      {
+        "cidade": "Santa Rosa de Goiás",
+        "uf": "GO",
+        "dist_km": 243.0
+      },
+      {
+        "cidade": "Caldas Novas",
+        "uf": "GO",
+        "dist_km": 243.1
+      },
+      {
+        "cidade": "Mesópolis",
+        "uf": "SP",
+        "dist_km": 243.8
+      },
+      {
+        "cidade": "Cristianópolis",
+        "uf": "GO",
+        "dist_km": 244.1
+      },
+      {
+        "cidade": "Bonfinópolis",
+        "uf": "GO",
+        "dist_km": 245.6
+      },
+      {
+        "cidade": "Campina Verde",
+        "uf": "MG",
+        "dist_km": 245.9
+      },
+      {
+        "cidade": "Monte Alegre de Minas",
+        "uf": "MG",
+        "dist_km": 246.2
+      },
+      {
+        "cidade": "Goianápolis",
+        "uf": "GO",
+        "dist_km": 246.9
+      },
+      {
+        "cidade": "Araguainha",
+        "uf": "MT",
+        "dist_km": 247.2
+      },
+      {
+        "cidade": "Baliza",
+        "uf": "GO",
+        "dist_km": 247.3
+      },
+      {
+        "cidade": "Santa Rita do Araguaia",
+        "uf": "GO",
+        "dist_km": 247.4
+      },
+      {
+        "cidade": "Costa Rica",
+        "uf": "MS",
+        "dist_km": 247.9
+      },
+      {
+        "cidade": "Torixoréu",
+        "uf": "MT",
+        "dist_km": 248.3
+      },
+      {
+        "cidade": "Araguaiana",
+        "uf": "MT",
+        "dist_km": 249.3
+      },
+      {
+        "cidade": "Alto Araguaia",
+        "uf": "MT",
+        "dist_km": 249.4
+      },
+      {
+        "cidade": "Santa Albertina",
+        "uf": "SP",
+        "dist_km": 249.7
+      },
+      {
+        "cidade": "Terezópolis de Goiás",
+        "uf": "GO",
+        "dist_km": 249.8
+      },
+      {
+        "cidade": "Alto Taquari",
+        "uf": "MT",
+        "dist_km": 249.8
+      }
+    ],
+    "total_cidades": 151
+  },
+  {
+    "codigo": "CHP",
+    "nome": "Chapadão",
+    "uf": "GO",
+    "responsavel": "a definir",
+    "cidades": [
+      {
+        "cidade": "Chapadão do Céu",
+        "uf": "GO",
+        "dist_km": 12.5
+      },
+      {
+        "cidade": "Chapadão do Sul",
+        "uf": "MS",
+        "dist_km": 44.1
+      },
+      {
+        "cidade": "Costa Rica",
+        "uf": "MS",
+        "dist_km": 51.5
+      },
+      {
+        "cidade": "Serranópolis",
+        "uf": "GO",
+        "dist_km": 75.3
+      },
+      {
+        "cidade": "Paraíso das Águas",
+        "uf": "MS",
+        "dist_km": 78.8
+      },
+      {
+        "cidade": "Alto Taquari",
+        "uf": "MT",
+        "dist_km": 90.5
+      },
+      {
+        "cidade": "Mineiros",
+        "uf": "GO",
+        "dist_km": 92.8
+      },
+      {
+        "cidade": "Aporé",
+        "uf": "GO",
+        "dist_km": 100.6
+      },
+      {
+        "cidade": "Figueirão",
+        "uf": "MS",
+        "dist_km": 107.2
+      },
+      {
+        "cidade": "Alcinópolis",
+        "uf": "MS",
+        "dist_km": 109.8
+      },
+      {
+        "cidade": "Jataí",
+        "uf": "GO",
+        "dist_km": 115.2
+      },
+      {
+        "cidade": "Portelândia",
+        "uf": "GO",
+        "dist_km": 115.4
+      },
+      {
+        "cidade": "Perolândia",
+        "uf": "GO",
+        "dist_km": 115.5
+      },
+      {
+        "cidade": "Cassilândia",
+        "uf": "MS",
+        "dist_km": 127.2
+      },
+      {
+        "cidade": "Santa Rita do Araguaia",
+        "uf": "GO",
+        "dist_km": 131.4
+      },
+      {
+        "cidade": "Alto Araguaia",
+        "uf": "MT",
+        "dist_km": 133.3
+      },
+      {
+        "cidade": "Itajá",
+        "uf": "GO",
+        "dist_km": 139.5
+      },
+      {
+        "cidade": "Itarumã",
+        "uf": "GO",
+        "dist_km": 144.9
+      },
+      {
+        "cidade": "Lagoa Santa",
+        "uf": "GO",
+        "dist_km": 159.7
+      },
+      {
+        "cidade": "Aparecida do Rio Doce",
+        "uf": "GO",
+        "dist_km": 160.3
+      },
+      {
+        "cidade": "Caçu",
+        "uf": "GO",
+        "dist_km": 162.8
+      },
+      {
+        "cidade": "Inocência",
+        "uf": "MS",
+        "dist_km": 167.5
+      },
+      {
+        "cidade": "Araguainha",
+        "uf": "MT",
+        "dist_km": 175.1
+      },
+      {
+        "cidade": "Ponte Branca",
+        "uf": "MT",
+        "dist_km": 182.7
+      },
+      {
+        "cidade": "Caiapônia",
+        "uf": "GO",
+        "dist_km": 184.0
+      },
+      {
+        "cidade": "Alto Garças",
+        "uf": "MT",
+        "dist_km": 184.9
+      },
+      {
+        "cidade": "Cachoeira Alta",
+        "uf": "GO",
+        "dist_km": 186.2
+      },
+      {
+        "cidade": "Doverlândia",
+        "uf": "GO",
+        "dist_km": 189.8
+      },
+      {
+        "cidade": "Montividiu",
+        "uf": "GO",
+        "dist_km": 190.0
+      },
+      {
+        "cidade": "Camapuã",
+        "uf": "MS",
+        "dist_km": 192.5
+      },
+      {
+        "cidade": "Rio Verde",
+        "uf": "GO",
+        "dist_km": 196.4
+      },
+      {
+        "cidade": "Pedro Gomes",
+        "uf": "MS",
+        "dist_km": 201.6
+      },
+      {
+        "cidade": "Itiquira",
+        "uf": "MT",
+        "dist_km": 203.9
+      },
+      {
+        "cidade": "Paranaíba",
+        "uf": "MS",
+        "dist_km": 210.6
+      },
+      {
+        "cidade": "Ribeirãozinho",
+        "uf": "MT",
+        "dist_km": 212.1
+      },
+      {
+        "cidade": "Palestina de Goiás",
+        "uf": "GO",
+        "dist_km": 219.8
+      },
+      {
+        "cidade": "Paranaiguara",
+        "uf": "GO",
+        "dist_km": 219.8
+      },
+      {
+        "cidade": "Coxim",
+        "uf": "MS",
+        "dist_km": 220.2
+      },
+      {
+        "cidade": "São Gabriel do Oeste",
+        "uf": "MS",
+        "dist_km": 227.1
+      },
+      {
+        "cidade": "Santa Helena de Goiás",
+        "uf": "GO",
+        "dist_km": 228.0
+      },
+      {
+        "cidade": "Água Clara",
+        "uf": "MS",
+        "dist_km": 229.3
+      },
+      {
+        "cidade": "São Simão",
+        "uf": "GO",
+        "dist_km": 233.1
+      },
+      {
+        "cidade": "Quirinópolis",
+        "uf": "GO",
+        "dist_km": 233.4
+      },
+      {
+        "cidade": "Santo Antônio da Barra",
+        "uf": "GO",
+        "dist_km": 234.1
+      },
+      {
+        "cidade": "Piranhas",
+        "uf": "GO",
+        "dist_km": 236.3
+      },
+      {
+        "cidade": "Rio Verde de Mato Grosso",
+        "uf": "MS",
+        "dist_km": 236.8
+      },
+      {
+        "cidade": "Sonora",
+        "uf": "MS",
+        "dist_km": 239.1
+      },
+      {
+        "cidade": "Torixoréu",
+        "uf": "MT",
+        "dist_km": 244.1
+      },
+      {
+        "cidade": "Baliza",
+        "uf": "GO",
+        "dist_km": 244.6
+      },
+      {
+        "cidade": "Bandeirantes",
+        "uf": "MS",
+        "dist_km": 246.4
+      },
+      {
+        "cidade": "Bom Jardim de Goiás",
+        "uf": "GO",
+        "dist_km": 248.7
+      }
+    ],
+    "total_cidades": 51
+  },
+  {
+    "codigo": "CGR",
+    "nome": "Campo Grande",
+    "uf": "MS",
+    "responsavel": "a definir",
+    "cidades": [
+      {
+        "cidade": "Campo Grande",
+        "uf": "MS",
+        "dist_km": 2.0
+      },
+      {
+        "cidade": "Terenos",
+        "uf": "MS",
+        "dist_km": 25.5
+      },
+      {
+        "cidade": "Jaraguari",
+        "uf": "MS",
+        "dist_km": 43.0
+      },
+      {
+        "cidade": "Rochedo",
+        "uf": "MS",
+        "dist_km": 62.8
+      },
+      {
+        "cidade": "Sidrolândia",
+        "uf": "MS",
+        "dist_km": 63.1
+      },
+      {
+        "cidade": "Bandeirantes",
+        "uf": "MS",
+        "dist_km": 65.8
+      },
+      {
+        "cidade": "Dois Irmãos do Buriti",
+        "uf": "MS",
+        "dist_km": 73.9
+      },
+      {
+        "cidade": "Corguinho",
+        "uf": "MS",
+        "dist_km": 74.4
+      },
+      {
+        "cidade": "Ribas do Rio Pardo",
+        "uf": "MS",
+        "dist_km": 89.9
+      },
+      {
+        "cidade": "Nova Alvorada do Sul",
+        "uf": "MS",
+        "dist_km": 114.0
+      },
+      {
+        "cidade": "Rio Negro",
+        "uf": "MS",
+        "dist_km": 119.4
+      },
+      {
+        "cidade": "Camapuã",
+        "uf": "MS",
+        "dist_km": 119.8
+      },
+      {
+        "cidade": "São Gabriel do Oeste",
+        "uf": "MS",
+        "dist_km": 119.9
+      },
+      {
+        "cidade": "Aquidauana",
+        "uf": "MS",
+        "dist_km": 121.4
+      },
+      {
+        "cidade": "Anastácio",
+        "uf": "MS",
+        "dist_km": 123.8
+      },
+      {
+        "cidade": "Maracaju",
+        "uf": "MS",
+        "dist_km": 139.4
+      },
+      {
+        "cidade": "Nioaque",
+        "uf": "MS",
+        "dist_km": 146.4
+      },
+      {
+        "cidade": "Rio Brilhante",
+        "uf": "MS",
+        "dist_km": 149.1
+      },
+      {
+        "cidade": "Rio Verde de Mato Grosso",
+        "uf": "MS",
+        "dist_km": 172.8
+      },
+      {
+        "cidade": "Douradina",
+        "uf": "MS",
+        "dist_km": 175.2
+      },
+      {
+        "cidade": "Itaporã",
+        "uf": "MS",
+        "dist_km": 180.5
+      },
+      {
+        "cidade": "Água Clara",
+        "uf": "MS",
+        "dist_km": 181.6
+      },
+      {
+        "cidade": "Miranda",
+        "uf": "MS",
+        "dist_km": 184.5
+      },
+      {
+        "cidade": "Guia Lopes da Laguna",
+        "uf": "MS",
+        "dist_km": 190.1
+      },
+      {
+        "cidade": "Jardim",
+        "uf": "MS",
+        "dist_km": 194.6
+      },
+      {
+        "cidade": "Dourados",
+        "uf": "MS",
+        "dist_km": 196.5
+      },
+      {
+        "cidade": "Deodápolis",
+        "uf": "MS",
+        "dist_km": 206.8
+      },
+      {
+        "cidade": "Bonito",
+        "uf": "MS",
+        "dist_km": 207.0
+      },
+      {
+        "cidade": "Angélica",
+        "uf": "MS",
+        "dist_km": 207.4
+      },
+      {
+        "cidade": "Santa Rita do Pardo",
+        "uf": "MS",
+        "dist_km": 207.8
+      },
+      {
+        "cidade": "Fátima do Sul",
+        "uf": "MS",
+        "dist_km": 213.1
+      },
+      {
+        "cidade": "Vicentina",
+        "uf": "MS",
+        "dist_km": 217.1
+      },
+      {
+        "cidade": "Bodoquena",
+        "uf": "MS",
+        "dist_km": 217.9
+      },
+      {
+        "cidade": "Coxim",
+        "uf": "MS",
+        "dist_km": 218.8
+      },
+      {
+        "cidade": "Glória de Dourados",
+        "uf": "MS",
+        "dist_km": 220.4
+      },
+      {
+        "cidade": "Ivinhema",
+        "uf": "MS",
+        "dist_km": 220.8
+      },
+      {
+        "cidade": "Figueirão",
+        "uf": "MS",
+        "dist_km": 223.8
+      },
+      {
+        "cidade": "Jateí",
+        "uf": "MS",
+        "dist_km": 226.5
+      },
+      {
+        "cidade": "Paraíso das Águas",
+        "uf": "MS",
+        "dist_km": 232.7
+      },
+      {
+        "cidade": "Antônio João",
+        "uf": "MS",
+        "dist_km": 236.4
+      },
+      {
+        "cidade": "Nova Andradina",
+        "uf": "MS",
+        "dist_km": 237.5
+      },
+      {
+        "cidade": "Laguna Carapã",
+        "uf": "MS",
+        "dist_km": 237.7
+      },
+      {
+        "cidade": "Caarapó",
+        "uf": "MS",
+        "dist_km": 242.4
+      },
+      {
+        "cidade": "Batayporã",
+        "uf": "MS",
+        "dist_km": 246.9
+      }
+    ],
+    "total_cidades": 44
+  },
+  {
+    "codigo": "LDA",
+    "nome": "Londrina",
+    "uf": "PR",
+    "responsavel": "a definir",
+    "cidades": [
+      {
+        "cidade": "Londrina",
+        "uf": "PR",
+        "dist_km": 1.8
+      },
+      {
+        "cidade": "Cambé",
+        "uf": "PR",
+        "dist_km": 12.6
+      },
+      {
+        "cidade": "Ibiporã",
+        "uf": "PR",
+        "dist_km": 13.1
+      },
+      {
+        "cidade": "Rolândia",
+        "uf": "PR",
+        "dist_km": 20.4
+      },
+      {
+        "cidade": "Jataizinho",
+        "uf": "PR",
+        "dist_km": 20.4
+      },
+      {
+        "cidade": "Arapongas",
+        "uf": "PR",
+        "dist_km": 28.6
+      },
+      {
+        "cidade": "Sertanópolis",
+        "uf": "PR",
+        "dist_km": 31.9
+      },
+      {
+        "cidade": "Assaí",
+        "uf": "PR",
+        "dist_km": 33.2
+      },
+      {
+        "cidade": "Bela Vista do Paraíso",
+        "uf": "PR",
+        "dist_km": 36.4
+      },
+      {
+        "cidade": "Rancho Alegre",
+        "uf": "PR",
+        "dist_km": 38.1
+      },
+      {
+        "cidade": "Apucarana",
+        "uf": "PR",
+        "dist_km": 39.7
+      },
+      {
+        "cidade": "Sabáudia",
+        "uf": "PR",
+        "dist_km": 39.7
+      },
+      {
+        "cidade": "Uraí",
+        "uf": "PR",
+        "dist_km": 40.3
+      },
+      {
+        "cidade": "Califórnia",
+        "uf": "PR",
+        "dist_km": 42.2
+      },
+      {
+        "cidade": "Prado Ferreira",
+        "uf": "PR",
+        "dist_km": 42.4
+      },
+      {
+        "cidade": "Pitangueiras",
+        "uf": "PR",
+        "dist_km": 44.2
+      },
+      {
+        "cidade": "Jaguapitã",
+        "uf": "PR",
+        "dist_km": 44.2
+      },
+      {
+        "cidade": "São Sebastião da Amoreira",
+        "uf": "PR",
+        "dist_km": 44.3
+      },
+      {
+        "cidade": "Santa Cecília do Pavão",
+        "uf": "PR",
+        "dist_km": 45.0
+      },
+      {
+        "cidade": "Tamarana",
+        "uf": "PR",
+        "dist_km": 45.1
+      },
+      {
+        "cidade": "Nova América da Colina",
+        "uf": "PR",
+        "dist_km": 45.9
+      },
+      {
+        "cidade": "Sertaneja",
+        "uf": "PR",
+        "dist_km": 46.5
+      },
+      {
+        "cidade": "Marilândia do Sul",
+        "uf": "PR",
+        "dist_km": 49.4
+      },
+      {
+        "cidade": "Leópolis",
+        "uf": "PR",
+        "dist_km": 50.0
+      },
+      {
+        "cidade": "Nova Santa Bárbara",
+        "uf": "PR",
+        "dist_km": 51.0
+      },
+      {
+        "cidade": "Miraselva",
+        "uf": "PR",
+        "dist_km": 51.1
+      },
+      {
+        "cidade": "Cambira",
+        "uf": "PR",
+        "dist_km": 51.7
+      },
+      {
+        "cidade": "Astorga",
+        "uf": "PR",
+        "dist_km": 52.1
+      },
+      {
+        "cidade": "Primeiro de Maio",
+        "uf": "PR",
+        "dist_km": 53.9
+      },
+      {
+        "cidade": "Cornélio Procópio",
+        "uf": "PR",
+        "dist_km": 54.9
+      },
+      {
+        "cidade": "Rio Bom",
+        "uf": "PR",
+        "dist_km": 55.1
+      },
+      {
+        "cidade": "Florestópolis",
+        "uf": "PR",
+        "dist_km": 55.7
+      },
+      {
+        "cidade": "Santo Antônio do Paraíso",
+        "uf": "PR",
+        "dist_km": 56.7
+      },
+      {
+        "cidade": "Mandaguari",
+        "uf": "PR",
+        "dist_km": 57.3
+      },
+      {
+        "cidade": "Jandaia do Sul",
+        "uf": "PR",
+        "dist_km": 58.0
+      },
+      {
+        "cidade": "Alvorada do Sul",
+        "uf": "PR",
+        "dist_km": 60.2
+      },
+      {
+        "cidade": "Novo Itacolomi",
+        "uf": "PR",
+        "dist_km": 60.4
+      },
+      {
+        "cidade": "São Jerônimo da Serra",
+        "uf": "PR",
+        "dist_km": 61.8
+      },
+      {
+        "cidade": "Nova Fátima",
+        "uf": "PR",
+        "dist_km": 62.5
+      },
+      {
+        "cidade": "Guaraci",
+        "uf": "PR",
+        "dist_km": 63.0
+      },
+      {
+        "cidade": "Marumbi",
+        "uf": "PR",
+        "dist_km": 64.7
+      },
+      {
+        "cidade": "Mauá da Serra",
+        "uf": "PR",
+        "dist_km": 64.7
+      },
+      {
+        "cidade": "Munhoz de Melo",
+        "uf": "PR",
+        "dist_km": 64.9
+      },
+      {
+        "cidade": "Marialva",
+        "uf": "PR",
+        "dist_km": 66.5
+      },
+      {
+        "cidade": "Porecatu",
+        "uf": "PR",
+        "dist_km": 66.6
+      },
+      {
+        "cidade": "Congonhinhas",
+        "uf": "PR",
+        "dist_km": 67.2
+      },
+      {
+        "cidade": "Pedrinhas Paulista",
+        "uf": "SP",
+        "dist_km": 67.6
+      },
+      {
+        "cidade": "Iguaraçu",
+        "uf": "PR",
+        "dist_km": 68.8
+      },
+      {
+        "cidade": "Santa Mariana",
+        "uf": "PR",
+        "dist_km": 69.1
+      },
+      {
+        "cidade": "Florínia",
+        "uf": "SP",
+        "dist_km": 70.6
+      },
+      {
+        "cidade": "Centenário do Sul",
+        "uf": "PR",
+        "dist_km": 71.0
+      },
+      {
+        "cidade": "Santa Fé",
+        "uf": "PR",
+        "dist_km": 72.6
+      },
+      {
+        "cidade": "Sarandi",
+        "uf": "PR",
+        "dist_km": 73.8
+      },
+      {
+        "cidade": "Iepê",
+        "uf": "SP",
+        "dist_km": 73.9
+      },
+      {
+        "cidade": "Bom Sucesso",
+        "uf": "PR",
+        "dist_km": 74.8
+      },
+      {
+        "cidade": "Cruzália",
+        "uf": "SP",
+        "dist_km": 75.3
+      },
+      {
+        "cidade": "Kaloré",
+        "uf": "PR",
+        "dist_km": 75.5
+      },
+      {
+        "cidade": "Santa Amélia",
+        "uf": "PR",
+        "dist_km": 75.6
+      },
+      {
+        "cidade": "Ângulo",
+        "uf": "PR",
+        "dist_km": 77.8
+      },
+      {
+        "cidade": "Faxinal",
+        "uf": "PR",
+        "dist_km": 78.1
+      },
+      {
+        "cidade": "Nantes",
+        "uf": "SP",
+        "dist_km": 78.7
+      },
+      {
+        "cidade": "Nossa Senhora das Graças",
+        "uf": "PR",
+        "dist_km": 78.9
+      },
+      {
+        "cidade": "Maringá",
+        "uf": "PR",
+        "dist_km": 79.1
+      },
+      {
+        "cidade": "Lupionópolis",
+        "uf": "PR",
+        "dist_km": 80.6
+      },
+      {
+        "cidade": "Borrazópolis",
+        "uf": "PR",
+        "dist_km": 80.9
+      },
+      {
+        "cidade": "Cafeara",
+        "uf": "PR",
+        "dist_km": 81.4
+      },
+      {
+        "cidade": "Cruzmaltina",
+        "uf": "PR",
+        "dist_km": 82.6
+      },
+      {
+        "cidade": "Ribeirão do Pinhal",
+        "uf": "PR",
+        "dist_km": 82.9
+      },
+      {
+        "cidade": "Itambaracá",
+        "uf": "PR",
+        "dist_km": 84.3
+      },
+      {
+        "cidade": "Bandeirantes",
+        "uf": "PR",
+        "dist_km": 84.7
+      },
+      {
+        "cidade": "Flórida",
+        "uf": "PR",
+        "dist_km": 84.7
+      },
+      {
+        "cidade": "Abatiá",
+        "uf": "PR",
+        "dist_km": 87.1
+      },
+      {
+        "cidade": "Lobato",
+        "uf": "PR",
+        "dist_km": 87.6
+      },
+      {
+        "cidade": "Tarumã",
+        "uf": "SP",
+        "dist_km": 87.9
+      },
+      {
+        "cidade": "Sapopema",
+        "uf": "PR",
+        "dist_km": 88.6
+      },
+      {
+        "cidade": "Paiçandu",
+        "uf": "PR",
+        "dist_km": 91.1
+      },
+      {
+        "cidade": "Itambé",
+        "uf": "PR",
+        "dist_km": 92.3
+      },
+      {
+        "cidade": "Atalaia",
+        "uf": "PR",
+        "dist_km": 92.7
+      },
+      {
+        "cidade": "São Pedro do Ivaí",
+        "uf": "PR",
+        "dist_km": 92.8
+      },
+      {
+        "cidade": "Maracaí",
+        "uf": "SP",
+        "dist_km": 93.3
+      },
+      {
+        "cidade": "Jundiaí do Sul",
+        "uf": "PR",
+        "dist_km": 94.4
+      },
+      {
+        "cidade": "Santo Inácio",
+        "uf": "PR",
+        "dist_km": 94.8
+      },
+      {
+        "cidade": "Mandaguaçu",
+        "uf": "PR",
+        "dist_km": 94.8
+      },
+      {
+        "cidade": "Figueira",
+        "uf": "PR",
+        "dist_km": 97.3
+      },
+      {
+        "cidade": "Grandes Rios",
+        "uf": "PR",
+        "dist_km": 98.4
+      },
+      {
+        "cidade": "Floresta",
+        "uf": "PR",
+        "dist_km": 98.5
+      },
+      {
+        "cidade": "Colorado",
+        "uf": "PR",
+        "dist_km": 98.5
+      },
+      {
+        "cidade": "São João do Ivaí",
+        "uf": "PR",
+        "dist_km": 99.5
+      },
+      {
+        "cidade": "Andirá",
+        "uf": "PR",
+        "dist_km": 100.1
+      },
+      {
+        "cidade": "Lidianópolis",
+        "uf": "PR",
+        "dist_km": 100.8
+      },
+      {
+        "cidade": "Presidente Castelo Branco",
+        "uf": "PR",
+        "dist_km": 100.9
+      },
+      {
+        "cidade": "Ortigueira",
+        "uf": "PR",
+        "dist_km": 101.7
+      },
+      {
+        "cidade": "Cândido Mota",
+        "uf": "SP",
+        "dist_km": 102.0
+      },
+      {
+        "cidade": "Lunardelli",
+        "uf": "PR",
+        "dist_km": 102.8
+      },
+      {
+        "cidade": "Barra do Jacaré",
+        "uf": "PR",
+        "dist_km": 102.9
+      },
+      {
+        "cidade": "Taciba",
+        "uf": "SP",
+        "dist_km": 104.5
+      },
+      {
+        "cidade": "Uniflor",
+        "uf": "PR",
+        "dist_km": 104.5
+      },
+      {
+        "cidade": "Ourizona",
+        "uf": "PR",
+        "dist_km": 105.6
+      },
+      {
+        "cidade": "Estrela do Norte",
+        "uf": "SP",
+        "dist_km": 105.8
+      },
+      {
+        "cidade": "Rosário do Ivaí",
+        "uf": "PR",
+        "dist_km": 106.0
+      },
+      {
+        "cidade": "Fênix",
+        "uf": "PR",
+        "dist_km": 106.0
+      },
+      {
+        "cidade": "Assis",
+        "uf": "SP",
+        "dist_km": 106.0
+      },
+      {
+        "cidade": "Santa Inês",
+        "uf": "PR",
+        "dist_km": 106.9
+      },
+      {
+        "cidade": "Conselheiro Mairinck",
+        "uf": "PR",
+        "dist_km": 107.0
+      },
+      {
+        "cidade": "Nova Esperança",
+        "uf": "PR",
+        "dist_km": 107.0
+      },
+      {
+        "cidade": "Curiúva",
+        "uf": "PR",
+        "dist_km": 107.5
+      },
+      {
+        "cidade": "Narandiba",
+        "uf": "SP",
+        "dist_km": 108.2
+      },
+      {
+        "cidade": "Cruzeiro do Sul",
+        "uf": "PR",
+        "dist_km": 109.3
+      },
+      {
+        "cidade": "Jardim Alegre",
+        "uf": "PR",
+        "dist_km": 109.6
+      },
+      {
+        "cidade": "Paranacity",
+        "uf": "PR",
+        "dist_km": 110.0
+      },
+      {
+        "cidade": "Doutor Camargo",
+        "uf": "PR",
+        "dist_km": 110.5
+      },
+      {
+        "cidade": "Santo Antônio da Platina",
+        "uf": "PR",
+        "dist_km": 110.8
+      },
+      {
+        "cidade": "Ivatuba",
+        "uf": "PR",
+        "dist_km": 112.5
+      },
+      {
+        "cidade": "Rio Branco do Ivaí",
+        "uf": "PR",
+        "dist_km": 112.8
+      },
+      {
+        "cidade": "Itaguajé",
+        "uf": "PR",
+        "dist_km": 113.2
+      },
+      {
+        "cidade": "Palmital",
+        "uf": "SP",
+        "dist_km": 113.7
+      },
+      {
+        "cidade": "Sandovalina",
+        "uf": "SP",
+        "dist_km": 114.0
+      },
+      {
+        "cidade": "Quinta do Sol",
+        "uf": "PR",
+        "dist_km": 114.8
+      },
+      {
+        "cidade": "Ibaiti",
+        "uf": "PR",
+        "dist_km": 115.2
+      },
+      {
+        "cidade": "Ivaiporã",
+        "uf": "PR",
+        "dist_km": 115.5
+      },
+      {
+        "cidade": "São Jorge do Ivaí",
+        "uf": "PR",
+        "dist_km": 115.7
+      },
+      {
+        "cidade": "Cambará",
+        "uf": "PR",
+        "dist_km": 115.7
+      },
+      {
+        "cidade": "Floraí",
+        "uf": "PR",
+        "dist_km": 116.1
+      },
+      {
+        "cidade": "Anhumas",
+        "uf": "SP",
+        "dist_km": 116.4
+      },
+      {
+        "cidade": "Barbosa Ferraz",
+        "uf": "PR",
+        "dist_km": 116.5
+      },
+      {
+        "cidade": "Guapirama",
+        "uf": "PR",
+        "dist_km": 117.0
+      },
+      {
+        "cidade": "Paraguaçu Paulista",
+        "uf": "SP",
+        "dist_km": 117.9
+      },
+      {
+        "cidade": "Japira",
+        "uf": "PR",
+        "dist_km": 118.0
+      },
+      {
+        "cidade": "Alto Paraná",
+        "uf": "PR",
+        "dist_km": 119.6
+      },
+      {
+        "cidade": "Tarabai",
+        "uf": "SP",
+        "dist_km": 120.3
+      },
+      {
+        "cidade": "Jaboti",
+        "uf": "PR",
+        "dist_km": 121.0
+      },
+      {
+        "cidade": "Paranapoema",
+        "uf": "PR",
+        "dist_km": 121.0
+      },
+      {
+        "cidade": "Pirapozinho",
+        "uf": "SP",
+        "dist_km": 121.5
+      },
+      {
+        "cidade": "Godoy Moreira",
+        "uf": "PR",
+        "dist_km": 122.3
+      },
+      {
+        "cidade": "Jacarezinho",
+        "uf": "PR",
+        "dist_km": 123.1
+      },
+      {
+        "cidade": "Inajá",
+        "uf": "PR",
+        "dist_km": 123.2
+      },
+      {
+        "cidade": "Regente Feijó",
+        "uf": "SP",
+        "dist_km": 123.3
+      },
+      {
+        "cidade": "Platina",
+        "uf": "SP",
+        "dist_km": 123.8
+      },
+      {
+        "cidade": "Engenheiro Beltrão",
+        "uf": "PR",
+        "dist_km": 124.0
+      },
+      {
+        "cidade": "Jardim Olinda",
+        "uf": "PR",
+        "dist_km": 124.4
+      },
+      {
+        "cidade": "Rancharia",
+        "uf": "SP",
+        "dist_km": 124.7
+      },
+      {
+        "cidade": "Ibirarema",
+        "uf": "SP",
+        "dist_km": 124.9
+      },
+      {
+        "cidade": "Telêmaco Borba",
+        "uf": "PR",
+        "dist_km": 124.9
+      },
+      {
+        "cidade": "Pinhalão",
+        "uf": "PR",
+        "dist_km": 125.3
+      },
+      {
+        "cidade": "Ariranha do Ivaí",
+        "uf": "PR",
+        "dist_km": 125.9
+      },
+      {
+        "cidade": "João Ramalho",
+        "uf": "SP",
+        "dist_km": 126.0
+      },
+      {
+        "cidade": "Arapuã",
+        "uf": "PR",
+        "dist_km": 127.2
+      },
+      {
+        "cidade": "Indiana",
+        "uf": "SP",
+        "dist_km": 127.8
+      },
+      {
+        "cidade": "Quatá",
+        "uf": "SP",
+        "dist_km": 128.8
+      },
+      {
+        "cidade": "Joaquim Távora",
+        "uf": "PR",
+        "dist_km": 129.8
+      },
+      {
+        "cidade": "Corumbataí do Sul",
+        "uf": "PR",
+        "dist_km": 130.1
+      },
+      {
+        "cidade": "Salto Grande",
+        "uf": "SP",
+        "dist_km": 130.1
+      },
+      {
+        "cidade": "Quatiguá",
+        "uf": "PR",
+        "dist_km": 130.5
+      },
+      {
+        "cidade": "Martinópolis",
+        "uf": "SP",
+        "dist_km": 130.5
+      },
+      {
+        "cidade": "São João do Caiuá",
+        "uf": "PR",
+        "dist_km": 130.9
+      },
+      {
+        "cidade": "Imbaú",
+        "uf": "PR",
+        "dist_km": 132.3
+      },
+      {
+        "cidade": "Borá",
+        "uf": "SP",
+        "dist_km": 133.2
+      },
+      {
+        "cidade": "São Carlos do Ivaí",
+        "uf": "PR",
+        "dist_km": 133.8
+      },
+      {
+        "cidade": "Tomazina",
+        "uf": "PR",
+        "dist_km": 134.1
+      },
+      {
+        "cidade": "Tamboara",
+        "uf": "PR",
+        "dist_km": 134.3
+      },
+      {
+        "cidade": "Lutécia",
+        "uf": "SP",
+        "dist_km": 134.8
+      },
+      {
+        "cidade": "Paranavaí",
+        "uf": "PR",
+        "dist_km": 135.0
+      },
+      {
+        "cidade": "Teodoro Sampaio",
+        "uf": "SP",
+        "dist_km": 135.1
+      },
+      {
+        "cidade": "Presidente Prudente",
+        "uf": "SP",
+        "dist_km": 135.3
+      },
+      {
+        "cidade": "Peabiru",
+        "uf": "PR",
+        "dist_km": 136.9
+      },
+      {
+        "cidade": "Santo Antônio do Caiuá",
+        "uf": "PR",
+        "dist_km": 136.9
+      },
+      {
+        "cidade": "Jussara",
+        "uf": "PR",
+        "dist_km": 137.1
+      },
+      {
+        "cidade": "Mirante do Paranapanema",
+        "uf": "SP",
+        "dist_km": 137.4
+      },
+      {
+        "cidade": "Ourinhos",
+        "uf": "SP",
+        "dist_km": 137.8
+      },
+      {
+        "cidade": "Ribeirão do Sul",
+        "uf": "SP",
+        "dist_km": 139.3
+      },
+      {
+        "cidade": "Echaporã",
+        "uf": "SP",
+        "dist_km": 139.5
+      },
+      {
+        "cidade": "Cândido de Abreu",
+        "uf": "PR",
+        "dist_km": 139.5
+      },
+      {
+        "cidade": "Ventania",
+        "uf": "PR",
+        "dist_km": 139.8
+      },
+      {
+        "cidade": "Terra Boa",
+        "uf": "PR",
+        "dist_km": 139.8
+      },
+      {
+        "cidade": "Álvares Machado",
+        "uf": "SP",
+        "dist_km": 141.8
+      },
+      {
+        "cidade": "Manoel Ribas",
+        "uf": "PR",
+        "dist_km": 142.2
+      },
+      {
+        "cidade": "Siqueira Campos",
+        "uf": "PR",
+        "dist_km": 142.2
+      },
+      {
+        "cidade": "Japurá",
+        "uf": "PR",
+        "dist_km": 142.8
+      },
+      {
+        "cidade": "Campos Novos Paulista",
+        "uf": "SP",
+        "dist_km": 143.7
+      },
+      {
+        "cidade": "Oscar Bressane",
+        "uf": "SP",
+        "dist_km": 143.9
+      },
+      {
+        "cidade": "Ribeirão Claro",
+        "uf": "PR",
+        "dist_km": 144.4
+      },
+      {
+        "cidade": "Caiabu",
+        "uf": "SP",
+        "dist_km": 145.5
+      },
+      {
+        "cidade": "Canitar",
+        "uf": "SP",
+        "dist_km": 145.6
+      },
+      {
+        "cidade": "Paraíso do Norte",
+        "uf": "PR",
+        "dist_km": 147.0
+      },
+      {
+        "cidade": "São Tomé",
+        "uf": "PR",
+        "dist_km": 147.2
+      },
+      {
+        "cidade": "Nova Tebas",
+        "uf": "PR",
+        "dist_km": 147.4
+      },
+      {
+        "cidade": "Campo Mourão",
+        "uf": "PR",
+        "dist_km": 147.5
+      },
+      {
+        "cidade": "Nova Aliança do Ivaí",
+        "uf": "PR",
+        "dist_km": 147.7
+      },
+      {
+        "cidade": "Carlópolis",
+        "uf": "PR",
+        "dist_km": 147.7
+      },
+      {
+        "cidade": "São Manoel do Paraná",
+        "uf": "PR",
+        "dist_km": 151.2
+      },
+      {
+        "cidade": "Presidente Bernardes",
+        "uf": "SP",
+        "dist_km": 151.2
+      },
+      {
+        "cidade": "Reserva",
+        "uf": "PR",
+        "dist_km": 151.4
+      },
+      {
+        "cidade": "Cianorte",
+        "uf": "PR",
+        "dist_km": 151.6
+      },
+      {
+        "cidade": "Wenceslau Braz",
+        "uf": "PR",
+        "dist_km": 152.0
+      },
+      {
+        "cidade": "Araruna",
+        "uf": "PR",
+        "dist_km": 152.1
+      },
+      {
+        "cidade": "Chavantes",
+        "uf": "SP",
+        "dist_km": 152.2
+      },
+      {
+        "cidade": "Tibagi",
+        "uf": "PR",
+        "dist_km": 153.2
+      },
+      {
+        "cidade": "Alfredo Marcondes",
+        "uf": "SP",
+        "dist_km": 154.1
+      },
+      {
+        "cidade": "Luiziana",
+        "uf": "PR",
+        "dist_km": 155.3
+      },
+      {
+        "cidade": "Iretama",
+        "uf": "PR",
+        "dist_km": 155.4
+      },
+      {
+        "cidade": "Indianópolis",
+        "uf": "PR",
+        "dist_km": 157.4
+      },
+      {
+        "cidade": "Marabá Paulista",
+        "uf": "SP",
+        "dist_km": 157.6
+      },
+      {
+        "cidade": "Santo Anastácio",
+        "uf": "SP",
+        "dist_km": 157.7
+      },
+      {
+        "cidade": "São Pedro do Turvo",
+        "uf": "SP",
+        "dist_km": 159.0
+      },
+      {
+        "cidade": "Salto do Itararé",
+        "uf": "PR",
+        "dist_km": 159.4
+      },
+      {
+        "cidade": "Timburi",
+        "uf": "SP",
+        "dist_km": 159.5
+      },
+      {
+        "cidade": "Ipaussu",
+        "uf": "SP",
+        "dist_km": 159.9
+      },
+      {
+        "cidade": "Ocauçu",
+        "uf": "SP",
+        "dist_km": 160.8
+      },
+      {
+        "cidade": "Sagres",
+        "uf": "SP",
+        "dist_km": 161.2
+      },
+      {
+        "cidade": "Bastos",
+        "uf": "SP",
+        "dist_km": 161.7
+      },
+      {
+        "cidade": "Guairaçá",
+        "uf": "PR",
+        "dist_km": 161.7
+      },
+      {
+        "cidade": "Terra Rica",
+        "uf": "PR",
+        "dist_km": 163.3
+      },
+      {
+        "cidade": "Santa Cruz do Rio Pardo",
+        "uf": "SP",
+        "dist_km": 163.4
+      },
+      {
+        "cidade": "Rondon",
+        "uf": "PR",
+        "dist_km": 163.6
+      },
+      {
+        "cidade": "Pracinha",
+        "uf": "SP",
+        "dist_km": 163.7
+      },
+      {
+        "cidade": "Santana do Itararé",
+        "uf": "PR",
+        "dist_km": 164.1
+      },
+      {
+        "cidade": "Mirador",
+        "uf": "PR",
+        "dist_km": 164.6
+      },
+      {
+        "cidade": "Quintana",
+        "uf": "SP",
+        "dist_km": 164.6
+      },
+      {
+        "cidade": "Guaporema",
+        "uf": "PR",
+        "dist_km": 164.6
+      },
+      {
+        "cidade": "Arapoti",
+        "uf": "PR",
+        "dist_km": 164.8
+      },
+      {
+        "cidade": "Santo Expedito",
+        "uf": "SP",
+        "dist_km": 165.4
+      },
+      {
+        "cidade": "Herculândia",
+        "uf": "SP",
+        "dist_km": 166.6
+      },
+      {
+        "cidade": "Barão de Antonina",
+        "uf": "SP",
+        "dist_km": 167.0
+      },
+      {
+        "cidade": "São José da Boa Vista",
+        "uf": "PR",
+        "dist_km": 167.2
+      },
+      {
+        "cidade": "Amaporã",
+        "uf": "PR",
+        "dist_km": 167.5
+      },
+      {
+        "cidade": "Tupã",
+        "uf": "SP",
+        "dist_km": 167.8
+      },
+      {
+        "cidade": "Emilianópolis",
+        "uf": "SP",
+        "dist_km": 168.7
+      },
+      {
+        "cidade": "Pompéia",
+        "uf": "SP",
+        "dist_km": 168.8
+      },
+      {
+        "cidade": "Fartura",
+        "uf": "SP",
+        "dist_km": 169.0
+      },
+      {
+        "cidade": "Euclides da Cunha Paulista",
+        "uf": "SP",
+        "dist_km": 169.1
+      },
+      {
+        "cidade": "Mariápolis",
+        "uf": "SP",
+        "dist_km": 169.5
+      },
+      {
+        "cidade": "Oriente",
+        "uf": "SP",
+        "dist_km": 169.7
+      },
+      {
+        "cidade": "Iacri",
+        "uf": "SP",
+        "dist_km": 169.7
+      },
+      {
+        "cidade": "Piquerobi",
+        "uf": "SP",
+        "dist_km": 170.7
+      },
+      {
+        "cidade": "Lupércio",
+        "uf": "SP",
+        "dist_km": 170.9
+      },
+      {
+        "cidade": "Ribeirão dos Índios",
+        "uf": "SP",
+        "dist_km": 170.9
+      },
+      {
+        "cidade": "Pitanga",
+        "uf": "PR",
+        "dist_km": 171.0
+      },
+      {
+        "cidade": "Farol",
+        "uf": "PR",
+        "dist_km": 171.5
+      },
+      {
+        "cidade": "Osvaldo Cruz",
+        "uf": "SP",
+        "dist_km": 171.9
+      },
+      {
+        "cidade": "Sarutaiá",
+        "uf": "SP",
+        "dist_km": 172.7
+      },
+      {
+        "cidade": "Inúbia Paulista",
+        "uf": "SP",
+        "dist_km": 173.6
+      },
+      {
+        "cidade": "Alvinlândia",
+        "uf": "SP",
+        "dist_km": 173.7
+      },
+      {
+        "cidade": "Marília",
+        "uf": "SP",
+        "dist_km": 174.9
+      },
+      {
+        "cidade": "Presidente Venceslau",
+        "uf": "SP",
+        "dist_km": 175.3
+      },
+      {
+        "cidade": "Parapuã",
+        "uf": "SP",
+        "dist_km": 175.5
+      },
+      {
+        "cidade": "Bernardino de Campos",
+        "uf": "SP",
+        "dist_km": 176.9
+      },
+      {
+        "cidade": "Itaporanga",
+        "uf": "SP",
+        "dist_km": 177.0
+      },
+      {
+        "cidade": "Mamborê",
+        "uf": "PR",
+        "dist_km": 177.4
+      },
+      {
+        "cidade": "Ubirajara",
+        "uf": "SP",
+        "dist_km": 177.5
+      },
+      {
+        "cidade": "Boa Ventura de São Roque",
+        "uf": "PR",
+        "dist_km": 178.5
+      },
+      {
+        "cidade": "Lucélia",
+        "uf": "SP",
+        "dist_km": 178.7
+      },
+      {
+        "cidade": "Tapejara",
+        "uf": "PR",
+        "dist_km": 180.0
+      },
+      {
+        "cidade": "Taguaí",
+        "uf": "SP",
+        "dist_km": 180.6
+      },
+      {
+        "cidade": "Jaguariaíva",
+        "uf": "PR",
+        "dist_km": 180.6
+      },
+      {
+        "cidade": "Roncador",
+        "uf": "PR",
+        "dist_km": 181.0
+      },
+      {
+        "cidade": "Cidade Gaúcha",
+        "uf": "PR",
+        "dist_km": 181.6
+      },
+      {
+        "cidade": "Planaltina do Paraná",
+        "uf": "PR",
+        "dist_km": 182.2
+      },
+      {
+        "cidade": "Adamantina",
+        "uf": "SP",
+        "dist_km": 182.4
+      },
+      {
+        "cidade": "Rinópolis",
+        "uf": "SP",
+        "dist_km": 182.7
+      },
+      {
+        "cidade": "Mato Rico",
+        "uf": "PR",
+        "dist_km": 182.8
+      },
+      {
+        "cidade": "Piraju",
+        "uf": "SP",
+        "dist_km": 182.9
+      },
+      {
+        "cidade": "Tejupá",
+        "uf": "SP",
+        "dist_km": 183.2
+      },
+      {
+        "cidade": "Piraí do Sul",
+        "uf": "PR",
+        "dist_km": 183.2
+      },
+      {
+        "cidade": "Vera Cruz",
+        "uf": "SP",
+        "dist_km": 184.5
+      },
+      {
+        "cidade": "Flora Rica",
+        "uf": "SP",
+        "dist_km": 184.5
+      },
+      {
+        "cidade": "Tuneiras do Oeste",
+        "uf": "PR",
+        "dist_km": 184.6
+      },
+      {
+        "cidade": "Riversul",
+        "uf": "SP",
+        "dist_km": 185.9
+      },
+      {
+        "cidade": "Caiuá",
+        "uf": "SP",
+        "dist_km": 186.1
+      },
+      {
+        "cidade": "Arco-Íris",
+        "uf": "SP",
+        "dist_km": 186.4
+      },
+      {
+        "cidade": "Janiópolis",
+        "uf": "PR",
+        "dist_km": 187.8
+      },
+      {
+        "cidade": "Itaúna do Sul",
+        "uf": "PR",
+        "dist_km": 188.0
+      },
+      {
+        "cidade": "Diamante do Norte",
+        "uf": "PR",
+        "dist_km": 188.6
+      },
+      {
+        "cidade": "Flórida Paulista",
+        "uf": "SP",
+        "dist_km": 189.8
+      },
+      {
+        "cidade": "Ivaí",
+        "uf": "PR",
+        "dist_km": 190.2
+      },
+      {
+        "cidade": "Espírito Santo do Turvo",
+        "uf": "SP",
+        "dist_km": 190.5
+      },
+      {
+        "cidade": "Salmourão",
+        "uf": "SP",
+        "dist_km": 190.8
+      },
+      {
+        "cidade": "Óleo",
+        "uf": "SP",
+        "dist_km": 191.2
+      },
+      {
+        "cidade": "Manduri",
+        "uf": "SP",
+        "dist_km": 191.9
+      },
+      {
+        "cidade": "Coronel Macedo",
+        "uf": "SP",
+        "dist_km": 192.4
+      },
+      {
+        "cidade": "Santa Maria do Oeste",
+        "uf": "PR",
+        "dist_km": 193.6
+      },
+      {
+        "cidade": "Queiroz",
+        "uf": "SP",
+        "dist_km": 194.1
+      },
+      {
+        "cidade": "Tapira",
+        "uf": "PR",
+        "dist_km": 194.2
+      },
+      {
+        "cidade": "Boa Esperança",
+        "uf": "PR",
+        "dist_km": 194.5
+      },
+      {
+        "cidade": "Sengés",
+        "uf": "PR",
+        "dist_km": 194.7
+      },
+      {
+        "cidade": "Turvo",
+        "uf": "PR",
+        "dist_km": 195.2
+      },
+      {
+        "cidade": "Lucianópolis",
+        "uf": "SP",
+        "dist_km": 195.4
+      },
+      {
+        "cidade": "Irapuru",
+        "uf": "SP",
+        "dist_km": 195.6
+      },
+      {
+        "cidade": "Pacaembu",
+        "uf": "SP",
+        "dist_km": 195.6
+      },
+      {
+        "cidade": "Nova Londrina",
+        "uf": "PR",
+        "dist_km": 196.3
+      },
+      {
+        "cidade": "Nova Olímpia",
+        "uf": "PR",
+        "dist_km": 197.0
+      },
+      {
+        "cidade": "Taquarituba",
+        "uf": "SP",
+        "dist_km": 197.8
+      },
+      {
+        "cidade": "Garça",
+        "uf": "SP",
+        "dist_km": 197.9
+      },
+      {
+        "cidade": "Presidente Epitácio",
+        "uf": "SP",
+        "dist_km": 198.2
+      },
+      {
+        "cidade": "Ipiranga",
+        "uf": "PR",
+        "dist_km": 198.6
+      },
+      {
+        "cidade": "Paulistânia",
+        "uf": "SP",
+        "dist_km": 198.7
+      },
+      {
+        "cidade": "Santópolis do Aguapeí",
+        "uf": "SP",
+        "dist_km": 199.0
+      },
+      {
+        "cidade": "Fernão",
+        "uf": "SP",
+        "dist_km": 199.7
+      },
+      {
+        "cidade": "Santa Mônica",
+        "uf": "PR",
+        "dist_km": 200.1
+      },
+      {
+        "cidade": "Piacatu",
+        "uf": "SP",
+        "dist_km": 200.7
+      },
+      {
+        "cidade": "Castro",
+        "uf": "PR",
+        "dist_km": 201.1
+      },
+      {
+        "cidade": "Gália",
+        "uf": "SP",
+        "dist_km": 201.2
+      },
+      {
+        "cidade": "Cruzeiro do Oeste",
+        "uf": "PR",
+        "dist_km": 201.4
+      },
+      {
+        "cidade": "Luiziânia",
+        "uf": "SP",
+        "dist_km": 202.2
+      },
+      {
+        "cidade": "Álvaro de Carvalho",
+        "uf": "SP",
+        "dist_km": 202.3
+      },
+      {
+        "cidade": "Marilena",
+        "uf": "PR",
+        "dist_km": 202.5
+      },
+      {
+        "cidade": "Águas de Santa Bárbara",
+        "uf": "SP",
+        "dist_km": 202.7
+      },
+      {
+        "cidade": "Júlio Mesquita",
+        "uf": "SP",
+        "dist_km": 202.9
+      },
+      {
+        "cidade": "Junqueirópolis",
+        "uf": "SP",
+        "dist_km": 203.1
+      },
+      {
+        "cidade": "Anaurilândia",
+        "uf": "MS",
+        "dist_km": 203.2
+      },
+      {
+        "cidade": "Palmital",
+        "uf": "PR",
+        "dist_km": 203.4
+      },
+      {
+        "cidade": "Guaimbê",
+        "uf": "SP",
+        "dist_km": 203.8
+      },
+      {
+        "cidade": "Moreira Sales",
+        "uf": "PR",
+        "dist_km": 204.6
+      },
+      {
+        "cidade": "Itararé",
+        "uf": "SP",
+        "dist_km": 206.0
+      },
+      {
+        "cidade": "Loanda",
+        "uf": "PR",
+        "dist_km": 206.2
+      },
+      {
+        "cidade": "Duartina",
+        "uf": "SP",
+        "dist_km": 206.3
+      },
+      {
+        "cidade": "Campina do Simão",
+        "uf": "PR",
+        "dist_km": 206.8
+      },
+      {
+        "cidade": "Cerqueira César",
+        "uf": "SP",
+        "dist_km": 206.9
+      },
+      {
+        "cidade": "Nova Cantu",
+        "uf": "PR",
+        "dist_km": 207.0
+      },
+      {
+        "cidade": "Dracena",
+        "uf": "SP",
+        "dist_km": 207.6
+      },
+      {
+        "cidade": "Carambeí",
+        "uf": "PR",
+        "dist_km": 207.9
+      },
+      {
+        "cidade": "Gabriel Monteiro",
+        "uf": "SP",
+        "dist_km": 208.7
+      },
+      {
+        "cidade": "Clementina",
+        "uf": "SP",
+        "dist_km": 208.9
+      },
+      {
+        "cidade": "Juranda",
+        "uf": "PR",
+        "dist_km": 209.8
+      },
+      {
+        "cidade": "Cabrália Paulista",
+        "uf": "SP",
+        "dist_km": 210.3
+      },
+      {
+        "cidade": "Maria Helena",
+        "uf": "PR",
+        "dist_km": 210.6
+      },
+      {
+        "cidade": "Rosana",
+        "uf": "SP",
+        "dist_km": 210.7
+      },
+      {
+        "cidade": "Santa Isabel do Ivaí",
+        "uf": "PR",
+        "dist_km": 210.8
+      },
+      {
+        "cidade": "Iaras",
+        "uf": "SP",
+        "dist_km": 210.9
+      },
+      {
+        "cidade": "Ouro Verde",
+        "uf": "SP",
+        "dist_km": 211.1
+      },
+      {
+        "cidade": "Prudentópolis",
+        "uf": "PR",
+        "dist_km": 211.2
+      },
+      {
+        "cidade": "Guamiranga",
+        "uf": "PR",
+        "dist_km": 211.3
+      },
+      {
+        "cidade": "Getulina",
+        "uf": "SP",
+        "dist_km": 211.6
+      },
+      {
+        "cidade": "Itaí",
+        "uf": "SP",
+        "dist_km": 212.0
+      },
+      {
+        "cidade": "Goioerê",
+        "uf": "PR",
+        "dist_km": 212.1
+      },
+      {
+        "cidade": "Rancho Alegre D'Oeste",
+        "uf": "PR",
+        "dist_km": 212.5
+      },
+      {
+        "cidade": "Itaberá",
+        "uf": "SP",
+        "dist_km": 215.2
+      },
+      {
+        "cidade": "Mariluz",
+        "uf": "PR",
+        "dist_km": 215.4
+      },
+      {
+        "cidade": "Douradina",
+        "uf": "PR",
+        "dist_km": 217.1
+      },
+      {
+        "cidade": "Arandu",
+        "uf": "SP",
+        "dist_km": 217.3
+      },
+      {
+        "cidade": "São Pedro do Paraná",
+        "uf": "PR",
+        "dist_km": 217.6
+      },
+      {
+        "cidade": "Campina da Lagoa",
+        "uf": "PR",
+        "dist_km": 217.7
+      },
+      {
+        "cidade": "Laranjal",
+        "uf": "PR",
+        "dist_km": 218.7
+      },
+      {
+        "cidade": "Alto Alegre",
+        "uf": "SP",
+        "dist_km": 218.9
+      },
+      {
+        "cidade": "Tupi Paulista",
+        "uf": "SP",
+        "dist_km": 219.5
+      },
+      {
+        "cidade": "Imbituva",
+        "uf": "PR",
+        "dist_km": 219.9
+      },
+      {
+        "cidade": "Bataguassu",
+        "uf": "MS",
+        "dist_km": 220.1
+      },
+      {
+        "cidade": "Braúna",
+        "uf": "SP",
+        "dist_km": 220.5
+      },
+      {
+        "cidade": "Santa Cruz de Monte Castelo",
+        "uf": "PR",
+        "dist_km": 221.3
+      },
+      {
+        "cidade": "Quarto Centenário",
+        "uf": "PR",
+        "dist_km": 221.6
+      },
+      {
+        "cidade": "Ponta Grossa",
+        "uf": "PR",
+        "dist_km": 221.6
+      },
+      {
+        "cidade": "Presidente Alves",
+        "uf": "SP",
+        "dist_km": 223.2
+      },
+      {
+        "cidade": "Porto Rico",
+        "uf": "PR",
+        "dist_km": 223.4
+      },
+      {
+        "cidade": "Goioxim",
+        "uf": "PR",
+        "dist_km": 224.4
+      },
+      {
+        "cidade": "Bilac",
+        "uf": "SP",
+        "dist_km": 224.6
+      },
+      {
+        "cidade": "Ivaté",
+        "uf": "PR",
+        "dist_km": 225.0
+      },
+      {
+        "cidade": "Doutor Ulysses",
+        "uf": "PR",
+        "dist_km": 225.0
+      },
+      {
+        "cidade": "Umuarama",
+        "uf": "PR",
+        "dist_km": 225.1
+      },
+      {
+        "cidade": "Guarantã",
+        "uf": "SP",
+        "dist_km": 226.4
+      },
+      {
+        "cidade": "Nova Guataporanga",
+        "uf": "SP",
+        "dist_km": 226.4
+      },
+      {
+        "cidade": "Santa Mercedes",
+        "uf": "SP",
+        "dist_km": 227.3
+      },
+      {
+        "cidade": "Altamira do Paraná",
+        "uf": "PR",
+        "dist_km": 227.3
+      },
+      {
+        "cidade": "Marquinho",
+        "uf": "PR",
+        "dist_km": 227.6
+      },
+      {
+        "cidade": "Avaí",
+        "uf": "SP",
+        "dist_km": 228.3
+      },
+      {
+        "cidade": "Pirajuí",
+        "uf": "SP",
+        "dist_km": 228.4
+      },
+      {
+        "cidade": "Monte Castelo",
+        "uf": "SP",
+        "dist_km": 228.6
+      },
+      {
+        "cidade": "Rubiácea",
+        "uf": "SP",
+        "dist_km": 229.0
+      },
+      {
+        "cidade": "Ubiratã",
+        "uf": "PR",
+        "dist_km": 229.4
+      },
+      {
+        "cidade": "Panorama",
+        "uf": "SP",
+        "dist_km": 229.8
+      },
+      {
+        "cidade": "Avaré",
+        "uf": "SP",
+        "dist_km": 230.2
+      },
+      {
+        "cidade": "Bento de Abreu",
+        "uf": "SP",
+        "dist_km": 230.9
+      },
+      {
+        "cidade": "Piratininga",
+        "uf": "SP",
+        "dist_km": 231.3
+      },
+      {
+        "cidade": "Guarapuava",
+        "uf": "PR",
+        "dist_km": 232.2
+      },
+      {
+        "cidade": "Cafelândia",
+        "uf": "SP",
+        "dist_km": 232.4
+      },
+      {
+        "cidade": "Paulicéia",
+        "uf": "SP",
+        "dist_km": 233.2
+      },
+      {
+        "cidade": "Bom Sucesso de Itararé",
+        "uf": "SP",
+        "dist_km": 233.5
+      },
+      {
+        "cidade": "Lins",
+        "uf": "SP",
+        "dist_km": 233.8
+      },
+      {
+        "cidade": "São João do Pau d'Alho",
+        "uf": "SP",
+        "dist_km": 234.1
+      },
+      {
+        "cidade": "Valparaíso",
+        "uf": "SP",
+        "dist_km": 235.1
+      },
+      {
+        "cidade": "Guaiçara",
+        "uf": "SP",
+        "dist_km": 235.4
+      },
+      {
+        "cidade": "Guararapes",
+        "uf": "SP",
+        "dist_km": 235.8
+      },
+      {
+        "cidade": "Coroados",
+        "uf": "SP",
+        "dist_km": 236.8
+      },
+      {
+        "cidade": "Glicério",
+        "uf": "SP",
+        "dist_km": 236.8
+      },
+      {
+        "cidade": "Perobal",
+        "uf": "PR",
+        "dist_km": 237.4
+      },
+      {
+        "cidade": "Querência do Norte",
+        "uf": "PR",
+        "dist_km": 238.2
+      },
+      {
+        "cidade": "Teixeira Soares",
+        "uf": "PR",
+        "dist_km": 239.0
+      },
+      {
+        "cidade": "Promissão",
+        "uf": "SP",
+        "dist_km": 239.5
+      },
+      {
+        "cidade": "Penápolis",
+        "uf": "SP",
+        "dist_km": 239.6
+      },
+      {
+        "cidade": "Borebi",
+        "uf": "SP",
+        "dist_km": 239.7
+      },
+      {
+        "cidade": "Lavínia",
+        "uf": "SP",
+        "dist_km": 240.1
+      },
+      {
+        "cidade": "Bauru",
+        "uf": "SP",
+        "dist_km": 240.1
+      },
+      {
+        "cidade": "Fernandes Pinheiro",
+        "uf": "PR",
+        "dist_km": 240.9
+      },
+      {
+        "cidade": "Birigui",
+        "uf": "SP",
+        "dist_km": 240.9
+      },
+      {
+        "cidade": "Xambrê",
+        "uf": "PR",
+        "dist_km": 241.2
+      },
+      {
+        "cidade": "Avanhandava",
+        "uf": "SP",
+        "dist_km": 241.8
+      },
+      {
+        "cidade": "Taquarussu",
+        "uf": "MS",
+        "dist_km": 242.1
+      },
+      {
+        "cidade": "Agudos",
+        "uf": "SP",
+        "dist_km": 242.5
+      },
+      {
+        "cidade": "Mirandópolis",
+        "uf": "SP",
+        "dist_km": 243.4
+      },
+      {
+        "cidade": "Balbinos",
+        "uf": "SP",
+        "dist_km": 243.6
+      },
+      {
+        "cidade": "Formosa do Oeste",
+        "uf": "PR",
+        "dist_km": 243.7
+      },
+      {
+        "cidade": "Batayporã",
+        "uf": "MS",
+        "dist_km": 244.0
+      },
+      {
+        "cidade": "Alto Piquiri",
+        "uf": "PR",
+        "dist_km": 244.4
+      },
+      {
+        "cidade": "Itapeva",
+        "uf": "SP",
+        "dist_km": 244.5
+      },
+      {
+        "cidade": "Diamante do Sul",
+        "uf": "PR",
+        "dist_km": 244.7
+      },
+      {
+        "cidade": "Irati",
+        "uf": "PR",
+        "dist_km": 244.7
+      },
+      {
+        "cidade": "Itapirapuã Paulista",
+        "uf": "SP",
+        "dist_km": 246.4
+      },
+      {
+        "cidade": "Araçatuba",
+        "uf": "SP",
+        "dist_km": 246.5
+      },
+      {
+        "cidade": "Brasilândia",
+        "uf": "MS",
+        "dist_km": 246.5
+      },
+      {
+        "cidade": "Nova Campina",
+        "uf": "SP",
+        "dist_km": 247.1
+      },
+      {
+        "cidade": "Cafezal do Sul",
+        "uf": "PR",
+        "dist_km": 247.6
+      },
+      {
+        "cidade": "Cantagalo",
+        "uf": "PR",
+        "dist_km": 247.9
+      },
+      {
+        "cidade": "Anahy",
+        "uf": "PR",
+        "dist_km": 248.3
+      },
+      {
+        "cidade": "Nova Independência",
+        "uf": "SP",
+        "dist_km": 248.8
+      },
+      {
+        "cidade": "Iguatu",
+        "uf": "PR",
+        "dist_km": 248.9
+      },
+      {
+        "cidade": "Paranapanema",
+        "uf": "SP",
+        "dist_km": 249.7
+      }
+    ],
+    "total_cidades": 414
+  },
+  {
+    "codigo": "CVL",
+    "nome": "Cascavel",
+    "uf": "PR",
+    "responsavel": "Andrei",
+    "cidades": [
+      {
+        "cidade": "Cascavel",
+        "uf": "PR",
+        "dist_km": 2.2
+      },
+      {
+        "cidade": "Santa Tereza do Oeste",
+        "uf": "PR",
+        "dist_km": 18.5
+      },
+      {
+        "cidade": "Corbélia",
+        "uf": "PR",
+        "dist_km": 25.2
+      },
+      {
+        "cidade": "Lindoeste",
+        "uf": "PR",
+        "dist_km": 35.2
+      },
+      {
+        "cidade": "Toledo",
+        "uf": "PR",
+        "dist_km": 36.7
+      },
+      {
+        "cidade": "São Pedro do Iguaçu",
+        "uf": "PR",
+        "dist_km": 37.5
+      },
+      {
+        "cidade": "Braganey",
+        "uf": "PR",
+        "dist_km": 39.2
+      },
+      {
+        "cidade": "Cafelândia",
+        "uf": "PR",
+        "dist_km": 40.6
+      },
+      {
+        "cidade": "Tupãssi",
+        "uf": "PR",
+        "dist_km": 40.8
+      },
+      {
+        "cidade": "Vera Cruz do Oeste",
+        "uf": "PR",
+        "dist_km": 41.6
+      },
+      {
+        "cidade": "Céu Azul",
+        "uf": "PR",
+        "dist_km": 42.3
+      },
+      {
+        "cidade": "Catanduvas",
+        "uf": "PR",
+        "dist_km": 43.0
+      },
+      {
+        "cidade": "Ouro Verde do Oeste",
+        "uf": "PR",
+        "dist_km": 46.4
+      },
+      {
+        "cidade": "Iguatu",
+        "uf": "PR",
+        "dist_km": 48.1
+      },
+      {
+        "cidade": "Anahy",
+        "uf": "PR",
+        "dist_km": 49.1
+      },
+      {
+        "cidade": "Campo Bonito",
+        "uf": "PR",
+        "dist_km": 49.7
+      },
+      {
+        "cidade": "Ibema",
+        "uf": "PR",
+        "dist_km": 51.1
+      },
+      {
+        "cidade": "Santa Lúcia",
+        "uf": "PR",
+        "dist_km": 51.4
+      },
+      {
+        "cidade": "Nova Aurora",
+        "uf": "PR",
+        "dist_km": 52.4
+      },
+      {
+        "cidade": "Boa Vista da Aparecida",
+        "uf": "PR",
+        "dist_km": 53.4
+      },
+      {
+        "cidade": "Ramilândia",
+        "uf": "PR",
+        "dist_km": 57.7
+      },
+      {
+        "cidade": "São José das Palmeiras",
+        "uf": "PR",
+        "dist_km": 59.6
+      },
+      {
+        "cidade": "Três Barras do Paraná",
+        "uf": "PR",
+        "dist_km": 59.7
+      },
+      {
+        "cidade": "Assis Chateaubriand",
+        "uf": "PR",
+        "dist_km": 59.9
+      },
+      {
+        "cidade": "Iracema do Oeste",
+        "uf": "PR",
+        "dist_km": 60.1
+      },
+      {
+        "cidade": "Capitão Leônidas Marques",
+        "uf": "PR",
+        "dist_km": 60.1
+      },
+      {
+        "cidade": "Matelândia",
+        "uf": "PR",
+        "dist_km": 61.2
+      },
+      {
+        "cidade": "Guaraniaçu",
+        "uf": "PR",
+        "dist_km": 63.0
+      },
+      {
+        "cidade": "Diamante D'Oeste",
+        "uf": "PR",
+        "dist_km": 63.0
+      },
+      {
+        "cidade": "Jesuítas",
+        "uf": "PR",
+        "dist_km": 64.1
+      },
+      {
+        "cidade": "Quatro Pontes",
+        "uf": "PR",
+        "dist_km": 65.4
+      },
+      {
+        "cidade": "Ubiratã",
+        "uf": "PR",
+        "dist_km": 67.9
+      },
+      {
+        "cidade": "Maripá",
+        "uf": "PR",
+        "dist_km": 69.0
+      },
+      {
+        "cidade": "Nova Santa Rosa",
+        "uf": "PR",
+        "dist_km": 72.2
+      },
+      {
+        "cidade": "Medianeira",
+        "uf": "PR",
+        "dist_km": 72.7
+      },
+      {
+        "cidade": "Marechal Cândido Rondon",
+        "uf": "PR",
+        "dist_km": 73.1
+      },
+      {
+        "cidade": "Serranópolis do Iguaçu",
+        "uf": "PR",
+        "dist_km": 74.5
+      },
+      {
+        "cidade": "Formosa do Oeste",
+        "uf": "PR",
+        "dist_km": 75.2
+      },
+      {
+        "cidade": "Nova Prata do Iguaçu",
+        "uf": "PR",
+        "dist_km": 76.4
+      },
+      {
+        "cidade": "Missal",
+        "uf": "PR",
+        "dist_km": 78.8
+      },
+      {
+        "cidade": "Altamira do Paraná",
+        "uf": "PR",
+        "dist_km": 79.3
+      },
+      {
+        "cidade": "Quedas do Iguaçu",
+        "uf": "PR",
+        "dist_km": 79.5
+      },
+      {
+        "cidade": "Campina da Lagoa",
+        "uf": "PR",
+        "dist_km": 80.0
+      },
+      {
+        "cidade": "Boa Esperança do Iguaçu",
+        "uf": "PR",
+        "dist_km": 80.1
+      },
+      {
+        "cidade": "Entre Rios do Oeste",
+        "uf": "PR",
+        "dist_km": 81.4
+      },
+      {
+        "cidade": "Diamante do Sul",
+        "uf": "PR",
+        "dist_km": 81.5
+      },
+      {
+        "cidade": "Cruzeiro do Iguaçu",
+        "uf": "PR",
+        "dist_km": 82.0
+      },
+      {
+        "cidade": "Palotina",
+        "uf": "PR",
+        "dist_km": 82.7
+      },
+      {
+        "cidade": "Espigão Alto do Iguaçu",
+        "uf": "PR",
+        "dist_km": 83.2
+      },
+      {
+        "cidade": "Pato Bragado",
+        "uf": "PR",
+        "dist_km": 83.7
+      },
+      {
+        "cidade": "Brasilândia do Sul",
+        "uf": "PR",
+        "dist_km": 84.2
+      },
+      {
+        "cidade": "Itaipulândia",
+        "uf": "PR",
+        "dist_km": 85.0
+      },
+      {
+        "cidade": "Quarto Centenário",
+        "uf": "PR",
+        "dist_km": 85.6
+      },
+      {
+        "cidade": "Capanema",
+        "uf": "PR",
+        "dist_km": 86.0
+      },
+      {
+        "cidade": "Santa Helena",
+        "uf": "PR",
+        "dist_km": 87.0
+      },
+      {
+        "cidade": "Juranda",
+        "uf": "PR",
+        "dist_km": 87.7
+      },
+      {
+        "cidade": "São Miguel do Iguaçu",
+        "uf": "PR",
+        "dist_km": 88.2
+      },
+      {
+        "cidade": "Mercedes",
+        "uf": "PR",
+        "dist_km": 88.5
+      },
+      {
+        "cidade": "Rancho Alegre D'Oeste",
+        "uf": "PR",
+        "dist_km": 89.5
+      },
+      {
+        "cidade": "Planalto",
+        "uf": "PR",
+        "dist_km": 89.9
+      },
+      {
+        "cidade": "Realeza",
+        "uf": "PR",
+        "dist_km": 91.0
+      },
+      {
+        "cidade": "Salto do Lontra",
+        "uf": "PR",
+        "dist_km": 93.5
+      },
+      {
+        "cidade": "Santa Izabel do Oeste",
+        "uf": "PR",
+        "dist_km": 96.5
+      },
+      {
+        "cidade": "Dois Vizinhos",
+        "uf": "PR",
+        "dist_km": 97.3
+      },
+      {
+        "cidade": "Goioerê",
+        "uf": "PR",
+        "dist_km": 97.3
+      },
+      {
+        "cidade": "Nova Cantu",
+        "uf": "PR",
+        "dist_km": 97.4
+      },
+      {
+        "cidade": "Pérola d'Oeste",
+        "uf": "PR",
+        "dist_km": 100.7
+      },
+      {
+        "cidade": "São Jorge d'Oeste",
+        "uf": "PR",
+        "dist_km": 101.0
+      },
+      {
+        "cidade": "Nova Laranjeiras",
+        "uf": "PR",
+        "dist_km": 102.0
+      },
+      {
+        "cidade": "Laranjal",
+        "uf": "PR",
+        "dist_km": 102.2
+      },
+      {
+        "cidade": "Alto Piquiri",
+        "uf": "PR",
+        "dist_km": 103.7
+      },
+      {
+        "cidade": "Bela Vista da Caroba",
+        "uf": "PR",
+        "dist_km": 105.2
+      },
+      {
+        "cidade": "Boa Esperança",
+        "uf": "PR",
+        "dist_km": 105.3
+      },
+      {
+        "cidade": "Francisco Alves",
+        "uf": "PR",
+        "dist_km": 105.4
+      },
+      {
+        "cidade": "Ampére",
+        "uf": "PR",
+        "dist_km": 107.0
+      },
+      {
+        "cidade": "Santa Terezinha de Itaipu",
+        "uf": "PR",
+        "dist_km": 107.3
+      },
+      {
+        "cidade": "Nova Esperança do Sudoeste",
+        "uf": "PR",
+        "dist_km": 107.5
+      },
+      {
+        "cidade": "Iporã",
+        "uf": "PR",
+        "dist_km": 107.6
+      },
+      {
+        "cidade": "Terra Roxa",
+        "uf": "PR",
+        "dist_km": 108.4
+      },
+      {
+        "cidade": "Mariluz",
+        "uf": "PR",
+        "dist_km": 110.5
+      },
+      {
+        "cidade": "Moreira Sales",
+        "uf": "PR",
+        "dist_km": 111.1
+      },
+      {
+        "cidade": "Rio Bonito do Iguaçu",
+        "uf": "PR",
+        "dist_km": 112.6
+      },
+      {
+        "cidade": "Sulina",
+        "uf": "PR",
+        "dist_km": 112.6
+      },
+      {
+        "cidade": "Enéas Marques",
+        "uf": "PR",
+        "dist_km": 114.6
+      },
+      {
+        "cidade": "Janiópolis",
+        "uf": "PR",
+        "dist_km": 115.0
+      },
+      {
+        "cidade": "Cafezal do Sul",
+        "uf": "PR",
+        "dist_km": 117.2
+      },
+      {
+        "cidade": "Verê",
+        "uf": "PR",
+        "dist_km": 117.8
+      },
+      {
+        "cidade": "Perobal",
+        "uf": "PR",
+        "dist_km": 118.0
+      },
+      {
+        "cidade": "Laranjeiras do Sul",
+        "uf": "PR",
+        "dist_km": 118.8
+      },
+      {
+        "cidade": "Saudade do Iguaçu",
+        "uf": "PR",
+        "dist_km": 119.3
+      },
+      {
+        "cidade": "Mamborê",
+        "uf": "PR",
+        "dist_km": 119.6
+      },
+      {
+        "cidade": "Pinhal de São Bento",
+        "uf": "PR",
+        "dist_km": 119.9
+      },
+      {
+        "cidade": "Pranchita",
+        "uf": "PR",
+        "dist_km": 121.4
+      },
+      {
+        "cidade": "São João",
+        "uf": "PR",
+        "dist_km": 122.7
+      },
+      {
+        "cidade": "Guaíra",
+        "uf": "PR",
+        "dist_km": 124.6
+      },
+      {
+        "cidade": "Marquinho",
+        "uf": "PR",
+        "dist_km": 125.2
+      },
+      {
+        "cidade": "Porto Barreiro",
+        "uf": "PR",
+        "dist_km": 126.5
+      },
+      {
+        "cidade": "Santo Antônio do Sudoeste",
+        "uf": "PR",
+        "dist_km": 126.9
+      },
+      {
+        "cidade": "Altônia",
+        "uf": "PR",
+        "dist_km": 127.1
+      },
+      {
+        "cidade": "Roncador",
+        "uf": "PR",
+        "dist_km": 128.4
+      },
+      {
+        "cidade": "Foz do Iguaçu",
+        "uf": "PR",
+        "dist_km": 128.7
+      },
+      {
+        "cidade": "Palmital",
+        "uf": "PR",
+        "dist_km": 129.0
+      },
+      {
+        "cidade": "Farol",
+        "uf": "PR",
+        "dist_km": 129.0
+      },
+      {
+        "cidade": "Pérola",
+        "uf": "PR",
+        "dist_km": 129.5
+      },
+      {
+        "cidade": "Itapejara d'Oeste",
+        "uf": "PR",
+        "dist_km": 130.4
+      },
+      {
+        "cidade": "Francisco Beltrão",
+        "uf": "PR",
+        "dist_km": 132.5
+      },
+      {
+        "cidade": "Umuarama",
+        "uf": "PR",
+        "dist_km": 133.2
+      },
+      {
+        "cidade": "Manfrinópolis",
+        "uf": "PR",
+        "dist_km": 133.4
+      },
+      {
+        "cidade": "Xambrê",
+        "uf": "PR",
+        "dist_km": 135.4
+      },
+      {
+        "cidade": "Tuneiras do Oeste",
+        "uf": "PR",
+        "dist_km": 135.7
+      },
+      {
+        "cidade": "Salgado Filho",
+        "uf": "PR",
+        "dist_km": 136.6
+      },
+      {
+        "cidade": "Cruzeiro do Oeste",
+        "uf": "PR",
+        "dist_km": 136.8
+      },
+      {
+        "cidade": "Virmond",
+        "uf": "PR",
+        "dist_km": 137.5
+      },
+      {
+        "cidade": "Mato Rico",
+        "uf": "PR",
+        "dist_km": 137.7
+      },
+      {
+        "cidade": "São Jorge do Patrocínio",
+        "uf": "PR",
+        "dist_km": 138.4
+      },
+      {
+        "cidade": "Bom Jesus do Sul",
+        "uf": "PR",
+        "dist_km": 138.5
+      },
+      {
+        "cidade": "Chopinzinho",
+        "uf": "PR",
+        "dist_km": 139.0
+      },
+      {
+        "cidade": "Mundo Novo",
+        "uf": "MS",
+        "dist_km": 139.3
+      },
+      {
+        "cidade": "Marmeleiro",
+        "uf": "PR",
+        "dist_km": 140.2
+      },
+      {
+        "cidade": "Bom Sucesso do Sul",
+        "uf": "PR",
+        "dist_km": 140.2
+      },
+      {
+        "cidade": "Cerro Azul",
+        "uf": "PR",
+        "dist_km": 140.3
+      },
+      {
+        "cidade": "Esperança Nova",
+        "uf": "PR",
+        "dist_km": 140.9
+      },
+      {
+        "cidade": "Luiziana",
+        "uf": "PR",
+        "dist_km": 143.3
+      },
+      {
+        "cidade": "Renascença",
+        "uf": "PR",
+        "dist_km": 143.4
+      },
+      {
+        "cidade": "Cantagalo",
+        "uf": "PR",
+        "dist_km": 144.6
+      },
+      {
+        "cidade": "Barracão",
+        "uf": "PR",
+        "dist_km": 144.9
+      },
+      {
+        "cidade": "Flor da Serra do Sul",
+        "uf": "PR",
+        "dist_km": 145.4
+      },
+      {
+        "cidade": "Coronel Vivida",
+        "uf": "PR",
+        "dist_km": 146.2
+      },
+      {
+        "cidade": "Dionísio Cerqueira",
+        "uf": "SC",
+        "dist_km": 146.6
+      },
+      {
+        "cidade": "Alto Paraíso",
+        "uf": "PR",
+        "dist_km": 148.5
+      },
+      {
+        "cidade": "Tapejara",
+        "uf": "PR",
+        "dist_km": 149.2
+      },
+      {
+        "cidade": "Campo Mourão",
+        "uf": "PR",
+        "dist_km": 150.4
+      },
+      {
+        "cidade": "Araruna",
+        "uf": "PR",
+        "dist_km": 150.8
+      },
+      {
+        "cidade": "Japorã",
+        "uf": "MS",
+        "dist_km": 150.9
+      },
+      {
+        "cidade": "Iretama",
+        "uf": "PR",
+        "dist_km": 151.2
+      },
+      {
+        "cidade": "Maria Helena",
+        "uf": "PR",
+        "dist_km": 151.4
+      },
+      {
+        "cidade": "Goioxim",
+        "uf": "PR",
+        "dist_km": 152.3
+      },
+      {
+        "cidade": "Eldorado",
+        "uf": "MS",
+        "dist_km": 153.2
+      },
+      {
+        "cidade": "Palma Sola",
+        "uf": "SC",
+        "dist_km": 156.2
+      },
+      {
+        "cidade": "Guarujá do Sul",
+        "uf": "SC",
+        "dist_km": 159.3
+      },
+      {
+        "cidade": "Candói",
+        "uf": "PR",
+        "dist_km": 160.4
+      },
+      {
+        "cidade": "Vitorino",
+        "uf": "PR",
+        "dist_km": 161.9
+      },
+      {
+        "cidade": "Foz do Jordão",
+        "uf": "PR",
+        "dist_km": 162.2
+      },
+      {
+        "cidade": "Santa Maria do Oeste",
+        "uf": "PR",
+        "dist_km": 162.4
+      },
+      {
+        "cidade": "Peabiru",
+        "uf": "PR",
+        "dist_km": 163.2
+      },
+      {
+        "cidade": "Pato Branco",
+        "uf": "PR",
+        "dist_km": 163.4
+      },
+      {
+        "cidade": "Campo Erê",
+        "uf": "SC",
+        "dist_km": 164.8
+      },
+      {
+        "cidade": "Nova Tebas",
+        "uf": "PR",
+        "dist_km": 165.3
+      },
+      {
+        "cidade": "Princesa",
+        "uf": "SC",
+        "dist_km": 166.1
+      },
+      {
+        "cidade": "São José do Cedro",
+        "uf": "SC",
+        "dist_km": 167.0
+      },
+      {
+        "cidade": "Corumbataí do Sul",
+        "uf": "PR",
+        "dist_km": 167.3
+      },
+      {
+        "cidade": "Campina do Simão",
+        "uf": "PR",
+        "dist_km": 167.5
+      },
+      {
+        "cidade": "São Lourenço do Oeste",
+        "uf": "SC",
+        "dist_km": 168.2
+      },
+      {
+        "cidade": "Terra Boa",
+        "uf": "PR",
+        "dist_km": 168.3
+      },
+      {
+        "cidade": "Cianorte",
+        "uf": "PR",
+        "dist_km": 169.0
+      },
+      {
+        "cidade": "Nova Olímpia",
+        "uf": "PR",
+        "dist_km": 169.7
+      },
+      {
+        "cidade": "Mangueirinha",
+        "uf": "PR",
+        "dist_km": 171.1
+      },
+      {
+        "cidade": "Honório Serpa",
+        "uf": "PR",
+        "dist_km": 171.6
+      },
+      {
+        "cidade": "Ivaté",
+        "uf": "PR",
+        "dist_km": 172.4
+      },
+      {
+        "cidade": "Icaraíma",
+        "uf": "PR",
+        "dist_km": 174.0
+      },
+      {
+        "cidade": "Pitanga",
+        "uf": "PR",
+        "dist_km": 175.0
+      },
+      {
+        "cidade": "Reserva do Iguaçu",
+        "uf": "PR",
+        "dist_km": 175.6
+      },
+      {
+        "cidade": "Douradina",
+        "uf": "PR",
+        "dist_km": 176.0
+      },
+      {
+        "cidade": "São Bernardino",
+        "uf": "SC",
+        "dist_km": 176.6
+      },
+      {
+        "cidade": "Anchieta",
+        "uf": "SC",
+        "dist_km": 176.8
+      },
+      {
+        "cidade": "Jupiá",
+        "uf": "SC",
+        "dist_km": 177.0
+      },
+      {
+        "cidade": "Engenheiro Beltrão",
+        "uf": "PR",
+        "dist_km": 178.0
+      },
+      {
+        "cidade": "Novo Horizonte",
+        "uf": "SC",
+        "dist_km": 178.1
+      },
+      {
+        "cidade": "Itaquiraí",
+        "uf": "MS",
+        "dist_km": 179.1
+      },
+      {
+        "cidade": "Godoy Moreira",
+        "uf": "PR",
+        "dist_km": 179.7
+      },
+      {
+        "cidade": "Iguatemi",
+        "uf": "MS",
+        "dist_km": 179.8
+      },
+      {
+        "cidade": "Jussara",
+        "uf": "PR",
+        "dist_km": 180.1
+      },
+      {
+        "cidade": "Barbosa Ferraz",
+        "uf": "PR",
+        "dist_km": 181.1
+      },
+      {
+        "cidade": "Mariópolis",
+        "uf": "PR",
+        "dist_km": 181.4
+      },
+      {
+        "cidade": "São Tomé",
+        "uf": "PR",
+        "dist_km": 181.8
+      },
+      {
+        "cidade": "Indianópolis",
+        "uf": "PR",
+        "dist_km": 182.4
+      },
+      {
+        "cidade": "Quinta do Sol",
+        "uf": "PR",
+        "dist_km": 183.4
+      },
+      {
+        "cidade": "Guaraciaba",
+        "uf": "SC",
+        "dist_km": 183.5
+      },
+      {
+        "cidade": "Cidade Gaúcha",
+        "uf": "PR",
+        "dist_km": 183.6
+      },
+      {
+        "cidade": "Galvão",
+        "uf": "SC",
+        "dist_km": 184.8
+      },
+      {
+        "cidade": "Arapuã",
+        "uf": "PR",
+        "dist_km": 185.5
+      },
+      {
+        "cidade": "Rondon",
+        "uf": "PR",
+        "dist_km": 186.2
+      },
+      {
+        "cidade": "Paraíso",
+        "uf": "SC",
+        "dist_km": 186.2
+      },
+      {
+        "cidade": "Tapira",
+        "uf": "PR",
+        "dist_km": 186.5
+      },
+      {
+        "cidade": "Boa Ventura de São Roque",
+        "uf": "PR",
+        "dist_km": 187.1
+      },
+      {
+        "cidade": "Santa Terezinha do Progresso",
+        "uf": "SC",
+        "dist_km": 187.8
+      },
+      {
+        "cidade": "Saltinho",
+        "uf": "SC",
+        "dist_km": 188.4
+      },
+      {
+        "cidade": "Barra Bonita",
+        "uf": "SC",
+        "dist_km": 189.1
+      },
+      {
+        "cidade": "Manoel Ribas",
+        "uf": "PR",
+        "dist_km": 189.7
+      },
+      {
+        "cidade": "Japurá",
+        "uf": "PR",
+        "dist_km": 189.9
+      },
+      {
+        "cidade": "Fênix",
+        "uf": "PR",
+        "dist_km": 190.9
+      },
+      {
+        "cidade": "Coronel Martins",
+        "uf": "SC",
+        "dist_km": 191.2
+      },
+      {
+        "cidade": "Sete Quedas",
+        "uf": "MS",
+        "dist_km": 192.0
+      },
+      {
+        "cidade": "Romelândia",
+        "uf": "SC",
+        "dist_km": 192.7
+      },
+      {
+        "cidade": "São Manoel do Paraná",
+        "uf": "PR",
+        "dist_km": 193.0
+      },
+      {
+        "cidade": "Guaporema",
+        "uf": "PR",
+        "dist_km": 193.1
+      },
+      {
+        "cidade": "São Miguel da Boa Vista",
+        "uf": "SC",
+        "dist_km": 194.0
+      },
+      {
+        "cidade": "Tigrinhos",
+        "uf": "SC",
+        "dist_km": 195.5
+      },
+      {
+        "cidade": "Ivatuba",
+        "uf": "PR",
+        "dist_km": 195.8
+      },
+      {
+        "cidade": "São Miguel do Oeste",
+        "uf": "SC",
+        "dist_km": 196.9
+      },
+      {
+        "cidade": "Turvo",
+        "uf": "PR",
+        "dist_km": 197.0
+      },
+      {
+        "cidade": "Clevelândia",
+        "uf": "PR",
+        "dist_km": 197.0
+      },
+      {
+        "cidade": "Bom Jesus do Oeste",
+        "uf": "SC",
+        "dist_km": 197.1
+      },
+      {
+        "cidade": "Irati",
+        "uf": "SC",
+        "dist_km": 197.9
+      },
+      {
+        "cidade": "Ivaiporã",
+        "uf": "PR",
+        "dist_km": 198.6
+      },
+      {
+        "cidade": "São João do Ivaí",
+        "uf": "PR",
+        "dist_km": 199.6
+      },
+      {
+        "cidade": "Formosa do Sul",
+        "uf": "SC",
+        "dist_km": 200.2
+      },
+      {
+        "cidade": "Jardim Alegre",
+        "uf": "PR",
+        "dist_km": 200.4
+      },
+      {
+        "cidade": "Doutor Camargo",
+        "uf": "PR",
+        "dist_km": 201.2
+      },
+      {
+        "cidade": "Pinhão",
+        "uf": "PR",
+        "dist_km": 201.2
+      },
+      {
+        "cidade": "Lunardelli",
+        "uf": "PR",
+        "dist_km": 201.3
+      },
+      {
+        "cidade": "Serra Alta",
+        "uf": "SC",
+        "dist_km": 201.5
+      },
+      {
+        "cidade": "São Domingos",
+        "uf": "SC",
+        "dist_km": 201.8
+      },
+      {
+        "cidade": "Ariranha do Ivaí",
+        "uf": "PR",
+        "dist_km": 201.8
+      },
+      {
+        "cidade": "Mirador",
+        "uf": "PR",
+        "dist_km": 202.0
+      },
+      {
+        "cidade": "Coronel Domingos Soares",
+        "uf": "PR",
+        "dist_km": 202.6
+      },
+      {
+        "cidade": "Bandeirante",
+        "uf": "SC",
+        "dist_km": 202.6
+      },
+      {
+        "cidade": "Flor do Sertão",
+        "uf": "SC",
+        "dist_km": 203.6
+      },
+      {
+        "cidade": "Santiago do Sul",
+        "uf": "SC",
+        "dist_km": 203.7
+      },
+      {
+        "cidade": "Maravilha",
+        "uf": "SC",
+        "dist_km": 203.8
+      },
+      {
+        "cidade": "São Pedro do Ivaí",
+        "uf": "PR",
+        "dist_km": 204.3
+      },
+      {
+        "cidade": "Sul Brasil",
+        "uf": "SC",
+        "dist_km": 204.7
+      },
+      {
+        "cidade": "Jardinópolis",
+        "uf": "SC",
+        "dist_km": 205.8
+      },
+      {
+        "cidade": "Paraíso do Norte",
+        "uf": "PR",
+        "dist_km": 206.0
+      },
+      {
+        "cidade": "Floresta",
+        "uf": "PR",
+        "dist_km": 206.6
+      },
+      {
+        "cidade": "Modelo",
+        "uf": "SC",
+        "dist_km": 207.0
+      },
+      {
+        "cidade": "Lidianópolis",
+        "uf": "PR",
+        "dist_km": 207.5
+      },
+      {
+        "cidade": "São Jorge do Ivaí",
+        "uf": "PR",
+        "dist_km": 207.6
+      },
+      {
+        "cidade": "Querência do Norte",
+        "uf": "PR",
+        "dist_km": 208.0
+      },
+      {
+        "cidade": "Descanso",
+        "uf": "SC",
+        "dist_km": 208.3
+      },
+      {
+        "cidade": "Itambé",
+        "uf": "PR",
+        "dist_km": 208.5
+      },
+      {
+        "cidade": "Iraceminha",
+        "uf": "SC",
+        "dist_km": 208.6
+      },
+      {
+        "cidade": "Santa Mônica",
+        "uf": "PR",
+        "dist_km": 208.7
+      },
+      {
+        "cidade": "São Carlos do Ivaí",
+        "uf": "PR",
+        "dist_km": 208.7
+      },
+      {
+        "cidade": "Guarapuava",
+        "uf": "PR",
+        "dist_km": 208.8
+      },
+      {
+        "cidade": "Belmonte",
+        "uf": "SC",
+        "dist_km": 210.2
+      },
+      {
+        "cidade": "União do Oeste",
+        "uf": "SC",
+        "dist_km": 210.6
+      },
+      {
+        "cidade": "Quilombo",
+        "uf": "SC",
+        "dist_km": 211.1
+      },
+      {
+        "cidade": "Ipuaçu",
+        "uf": "SC",
+        "dist_km": 213.2
+      },
+      {
+        "cidade": "Tacuru",
+        "uf": "MS",
+        "dist_km": 213.6
+      },
+      {
+        "cidade": "Abelardo Luz",
+        "uf": "SC",
+        "dist_km": 214.0
+      },
+      {
+        "cidade": "Ourizona",
+        "uf": "PR",
+        "dist_km": 215.9
+      },
+      {
+        "cidade": "Pinhalzinho",
+        "uf": "SC",
+        "dist_km": 216.4
+      },
+      {
+        "cidade": "Nova Aliança do Ivaí",
+        "uf": "PR",
+        "dist_km": 216.8
+      },
+      {
+        "cidade": "Entre Rios",
+        "uf": "SC",
+        "dist_km": 217.2
+      },
+      {
+        "cidade": "Floraí",
+        "uf": "PR",
+        "dist_km": 217.7
+      },
+      {
+        "cidade": "Cunha Porã",
+        "uf": "SC",
+        "dist_km": 218.1
+      },
+      {
+        "cidade": "Amaporã",
+        "uf": "PR",
+        "dist_km": 218.5
+      },
+      {
+        "cidade": "Grandes Rios",
+        "uf": "PR",
+        "dist_km": 218.6
+      },
+      {
+        "cidade": "Santa Isabel do Ivaí",
+        "uf": "PR",
+        "dist_km": 218.9
+      },
+      {
+        "cidade": "Tamboara",
+        "uf": "PR",
+        "dist_km": 219.8
+      },
+      {
+        "cidade": "Cândido de Abreu",
+        "uf": "PR",
+        "dist_km": 220.7
+      },
+      {
+        "cidade": "Santa Helena",
+        "uf": "SC",
+        "dist_km": 220.9
+      },
+      {
+        "cidade": "Paiçandu",
+        "uf": "PR",
+        "dist_km": 221.2
+      },
+      {
+        "cidade": "Bom Sucesso",
+        "uf": "PR",
+        "dist_km": 222.2
+      },
+      {
+        "cidade": "Borrazópolis",
+        "uf": "PR",
+        "dist_km": 222.5
+      },
+      {
+        "cidade": "Marema",
+        "uf": "SC",
+        "dist_km": 222.6
+      },
+      {
+        "cidade": "Kaloré",
+        "uf": "PR",
+        "dist_km": 222.7
+      },
+      {
+        "cidade": "Santa Cruz de Monte Castelo",
+        "uf": "PR",
+        "dist_km": 222.7
+      },
+      {
+        "cidade": "Naviraí",
+        "uf": "MS",
+        "dist_km": 222.7
+      },
+      {
+        "cidade": "Águas Frias",
+        "uf": "SC",
+        "dist_km": 223.0
+      },
+      {
+        "cidade": "Planaltina do Paraná",
+        "uf": "PR",
+        "dist_km": 223.6
+      },
+      {
+        "cidade": "Nova Erechim",
+        "uf": "SC",
+        "dist_km": 223.7
+      },
+      {
+        "cidade": "Tunápolis",
+        "uf": "SC",
+        "dist_km": 224.5
+      },
+      {
+        "cidade": "Saudades",
+        "uf": "SC",
+        "dist_km": 225.0
+      },
+      {
+        "cidade": "Bom Jesus",
+        "uf": "SC",
+        "dist_km": 225.8
+      },
+      {
+        "cidade": "Ouro Verde",
+        "uf": "SC",
+        "dist_km": 225.9
+      },
+      {
+        "cidade": "Iporã do Oeste",
+        "uf": "SC",
+        "dist_km": 225.9
+      },
+      {
+        "cidade": "Palmas",
+        "uf": "PR",
+        "dist_km": 226.4
+      },
+      {
+        "cidade": "Mandaguaçu",
+        "uf": "PR",
+        "dist_km": 227.5
+      },
+      {
+        "cidade": "Cunhataí",
+        "uf": "SC",
+        "dist_km": 227.6
+      },
+      {
+        "cidade": "Loanda",
+        "uf": "PR",
+        "dist_km": 228.5
+      },
+      {
+        "cidade": "Rio Branco do Ivaí",
+        "uf": "PR",
+        "dist_km": 229.4
+      },
+      {
+        "cidade": "Presidente Castelo Branco",
+        "uf": "PR",
+        "dist_km": 229.9
+      },
+      {
+        "cidade": "Cruzmaltina",
+        "uf": "PR",
+        "dist_km": 230.0
+      },
+      {
+        "cidade": "Paranhos",
+        "uf": "MS",
+        "dist_km": 230.0
+      },
+      {
+        "cidade": "Coronel Freitas",
+        "uf": "SC",
+        "dist_km": 230.6
+      },
+      {
+        "cidade": "Lajeado Grande",
+        "uf": "SC",
+        "dist_km": 230.6
+      },
+      {
+        "cidade": "Nova Itaberaba",
+        "uf": "SC",
+        "dist_km": 230.9
+      },
+      {
+        "cidade": "Maringá",
+        "uf": "PR",
+        "dist_km": 231.7
+      },
+      {
+        "cidade": "Marumbi",
+        "uf": "PR",
+        "dist_km": 232.4
+      },
+      {
+        "cidade": "Paranavaí",
+        "uf": "PR",
+        "dist_km": 232.5
+      },
+      {
+        "cidade": "Sarandi",
+        "uf": "PR",
+        "dist_km": 233.8
+      },
+      {
+        "cidade": "Alto Paraná",
+        "uf": "PR",
+        "dist_km": 234.5
+      },
+      {
+        "cidade": "Riqueza",
+        "uf": "SC",
+        "dist_km": 235.3
+      },
+      {
+        "cidade": "Bituruna",
+        "uf": "PR",
+        "dist_km": 235.4
+      },
+      {
+        "cidade": "Nova Esperança",
+        "uf": "PR",
+        "dist_km": 235.9
+      },
+      {
+        "cidade": "Rosário do Ivaí",
+        "uf": "PR",
+        "dist_km": 235.9
+      },
+      {
+        "cidade": "Marialva",
+        "uf": "PR",
+        "dist_km": 236.6
+      },
+      {
+        "cidade": "Caibi",
+        "uf": "SC",
+        "dist_km": 236.9
+      },
+      {
+        "cidade": "Palmitos",
+        "uf": "SC",
+        "dist_km": 237.5
+      },
+      {
+        "cidade": "São Pedro do Paraná",
+        "uf": "PR",
+        "dist_km": 238.3
+      },
+      {
+        "cidade": "São João do Oeste",
+        "uf": "SC",
+        "dist_km": 238.7
+      },
+      {
+        "cidade": "Guairaçá",
+        "uf": "PR",
+        "dist_km": 238.7
+      },
+      {
+        "cidade": "Mondaí",
+        "uf": "SC",
+        "dist_km": 238.8
+      },
+      {
+        "cidade": "Xanxerê",
+        "uf": "SC",
+        "dist_km": 239.2
+      },
+      {
+        "cidade": "Jandaia do Sul",
+        "uf": "PR",
+        "dist_km": 239.3
+      },
+      {
+        "cidade": "Novo Itacolomi",
+        "uf": "PR",
+        "dist_km": 239.7
+      },
+      {
+        "cidade": "Águas de Chapecó",
+        "uf": "SC",
+        "dist_km": 241.1
+      },
+      {
+        "cidade": "São Carlos",
+        "uf": "SC",
+        "dist_km": 241.1
+      },
+      {
+        "cidade": "Mandaguari",
+        "uf": "PR",
+        "dist_km": 241.3
+      },
+      {
+        "cidade": "Cordilheira Alta",
+        "uf": "SC",
+        "dist_km": 242.1
+      },
+      {
+        "cidade": "Xaxim",
+        "uf": "SC",
+        "dist_km": 242.1
+      },
+      {
+        "cidade": "Faxinal",
+        "uf": "PR",
+        "dist_km": 242.4
+      },
+      {
+        "cidade": "Faxinal dos Guedes",
+        "uf": "SC",
+        "dist_km": 243.1
+      },
+      {
+        "cidade": "Planalto Alegre",
+        "uf": "SC",
+        "dist_km": 243.2
+      },
+      {
+        "cidade": "Porto Rico",
+        "uf": "PR",
+        "dist_km": 243.3
+      },
+      {
+        "cidade": "Cruz Machado",
+        "uf": "PR",
+        "dist_km": 244.9
+      },
+      {
+        "cidade": "Cambira",
+        "uf": "PR",
+        "dist_km": 245.3
+      },
+      {
+        "cidade": "Vicente Dutra",
+        "uf": "RS",
+        "dist_km": 245.5
+      },
+      {
+        "cidade": "Itapiranga",
+        "uf": "SC",
+        "dist_km": 247.1
+      },
+      {
+        "cidade": "Atalaia",
+        "uf": "PR",
+        "dist_km": 247.2
+      },
+      {
+        "cidade": "Uniflor",
+        "uf": "PR",
+        "dist_km": 247.3
+      },
+      {
+        "cidade": "Rio Bom",
+        "uf": "PR",
+        "dist_km": 248.0
+      },
+      {
+        "cidade": "Passos Maia",
+        "uf": "SC",
+        "dist_km": 248.3
+      },
+      {
+        "cidade": "Nova Londrina",
+        "uf": "PR",
+        "dist_km": 248.7
+      },
+      {
+        "cidade": "Barra do Guarita",
+        "uf": "RS",
+        "dist_km": 250.0
+      }
+    ],
+    "total_cidades": 317
+  }
+]

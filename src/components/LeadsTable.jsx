@@ -3,13 +3,14 @@ import {
   Search, Download, Flame, Sparkles, Snowflake,
   Phone, Mail, ExternalLink, ArrowUpDown, MapPin,
   Filter, SlidersHorizontal, ChevronDown, ChevronUp, X,
-  Building2, Sprout, Users, ShieldCheck, Clock
+  Building2, Sprout, Users, ShieldCheck, Clock, Compass
 } from 'lucide-react';
 import {
   getTipoEmpresa, getClassificacao, norm, formatCulturaLabel,
   matchTipoEmpresa, matchCultura, matchProdutores, matchEquipe, matchMomento
 } from '../services/nocodb';
 import { normalizeState } from '../utils/normalizeState';
+import { getLeadPraca } from '../services/pracasService';
 import MultiSelectDropdown from './MultiSelectDropdown';
 
 const TIPO_OPTIONS = [
@@ -75,7 +76,9 @@ export default function LeadsTable({
   onUpdateStatus,
   onOpenLeadDetail,
   selectedStateFilter,   // UF code string ('MT') ou null
-  selectedClassFilter    // 'ALL' | 'Quente' | 'Morno' | 'Frio / Fora'
+  selectedClassFilter,   // 'ALL' | 'Quente' | 'Morno' | 'Frio / Fora'
+  pracas = [],
+  cityIndex = {}
 }) {
   const [searchTerm, setSearchTerm]         = useState('');
   const [selectedClasses, setSelectedClasses] = useState(new Set());
@@ -86,10 +89,39 @@ export default function LeadsTable({
   const [selectedProdutores, setSelectedProdutores] = useState(new Set());
   const [selectedEquipes, setSelectedEquipes] = useState(new Set());
   const [selectedMomentos, setSelectedMomentos] = useState(new Set());
+  const [selectedPracas, setSelectedPracas]   = useState(new Set());
+  const [selectedRCs, setSelectedRCs]         = useState(new Set());
 
   const [showAdvanced, setShowAdvanced]     = useState(false);
   const [sortBy, setSortBy]                 = useState('Pontuacao');
   const [sortOrder, setSortOrder]           = useState('desc');
+
+  // Opções dinâmicas de Praças a partir das praças ativas
+  const pracaOptions = useMemo(() => {
+    const opts = (pracas || []).map(p => ({
+      id: p.codigo,
+      label: `📍 ${p.codigo} - ${p.nome} (${p.responsavel || 'RC a definir'})`
+    }));
+    opts.push({ id: 'FORA', label: '⚡ Fora de Raio (250km)' });
+    return opts;
+  }, [pracas]);
+
+  // Opções dinâmicas de RCs a partir das praças ativas
+  const rcOptions = useMemo(() => {
+    const rcs = new Set();
+    (pracas || []).forEach(p => {
+      if (p.responsavel && p.responsavel !== 'a definir') {
+        rcs.add(p.responsavel);
+      }
+    });
+    const opts = Array.from(rcs).map(r => ({
+      id: r,
+      label: `👤 RC ${r}`
+    }));
+    opts.push({ id: 'a definir', label: '⏳ RC a definir' });
+    opts.push({ id: 'SEM_RC', label: '❌ Sem RC (Fora de Raio)' });
+    return opts;
+  }, [pracas]);
 
   // Sincroniza filtro de classificação vindo de props (MetricCards)
   React.useEffect(() => {
@@ -109,8 +141,16 @@ export default function LeadsTable({
     }
   }, [selectedStateFilter]);
 
+  // Anexa Praça a cada lead para buscas e ordenações
+  const leadsWithPraca = useMemo(() => {
+    return leads.map(lead => ({
+      ...lead,
+      _praca: getLeadPraca(lead, cityIndex)
+    }));
+  }, [leads, cityIndex]);
+
   const filteredLeads = useMemo(() => {
-    return leads.filter(lead => {
+    return leadsWithPraca.filter(lead => {
       // Busca textual
       const s = searchTerm.toLowerCase();
       const matchSearch = !s ||
@@ -118,7 +158,12 @@ export default function LeadsTable({
         (lead['Nome da Empresa'] && lead['Nome da Empresa'].toLowerCase().includes(s)) ||
         (lead.Cidade && lead.Cidade.toLowerCase().includes(s)) ||
         (lead.Email && lead.Email.toLowerCase().includes(s)) ||
-        (lead.WhatsApp && lead.WhatsApp.includes(s));
+        (lead.WhatsApp && lead.WhatsApp.includes(s)) ||
+        (lead._praca && (
+          lead._praca.nome.toLowerCase().includes(s) ||
+          lead._praca.codigo.toLowerCase().includes(s) ||
+          lead._praca.responsavel.toLowerCase().includes(s)
+        ));
 
       // Filtro de classificação multi-select
       let matchClass = true;
@@ -144,6 +189,27 @@ export default function LeadsTable({
         matchStatus = selectedStatuses.has(lead.Status_Lead);
       }
 
+      // Filtro de Praça Comercial
+      let matchPraca = true;
+      if (selectedPracas.size > 0 && selectedPracas.size < pracaOptions.length) {
+        if (!lead._praca) {
+          matchPraca = selectedPracas.has('FORA');
+        } else {
+          matchPraca = selectedPracas.has(lead._praca.codigo);
+        }
+      }
+
+      // Filtro de RC Responsável
+      let matchRC = true;
+      if (selectedRCs.size > 0 && selectedRCs.size < rcOptions.length) {
+        if (!lead._praca) {
+          matchRC = selectedRCs.has('SEM_RC');
+        } else {
+          const resp = lead._praca.responsavel || 'a definir';
+          matchRC = selectedRCs.has(resp);
+        }
+      }
+
       // Novos Filtros Multi-select
       const mTipo       = matchTipoEmpresa(lead, selectedTipos);
       const mCultura    = matchCultura(lead, selectedCulturas);
@@ -151,7 +217,7 @@ export default function LeadsTable({
       const mEquipe     = matchEquipe(lead, selectedEquipes);
       const mMomento    = matchMomento(lead, selectedMomentos);
 
-      return matchSearch && matchClass && matchState && matchStatus && mTipo && mCultura && mProdutores && mEquipe && mMomento;
+      return matchSearch && matchClass && matchState && matchStatus && matchPraca && matchRC && mTipo && mCultura && mProdutores && mEquipe && mMomento;
     }).sort((a, b) => {
       let valA = a[sortBy], valB = b[sortBy];
       if (sortBy === 'Pontuacao' || sortBy === 'Id') {
@@ -165,7 +231,8 @@ export default function LeadsTable({
       return 0;
     });
   }, [
-    leads, searchTerm, selectedClasses, selectedStates, selectedStatuses,
+    leadsWithPraca, searchTerm, selectedClasses, selectedStates, selectedStatuses,
+    selectedPracas, selectedRCs, pracaOptions.length, rcOptions.length,
     selectedTipos, selectedCulturas, selectedProdutores, selectedEquipes, selectedMomentos,
     sortBy, sortOrder
   ]);
@@ -176,10 +243,19 @@ export default function LeadsTable({
   };
 
   const handleExportCSV = () => {
-    const headers = ['ID','Nome','Empresa','Tipo Empresa','Cidade','Estado','Cultura','Produtores','Equipe','Momento','Pontuacao','Classificacao','Status','WhatsApp','Email'];
+    const headers = [
+      'ID','Nome','Empresa','Tipo Empresa','Cidade','Estado',
+      'Praça Polo','Código Praça','RC Responsável','Distância Polo (km)',
+      'Cultura','Produtores','Equipe','Momento','Pontuacao','Classificacao','Status','WhatsApp','Email'
+    ];
     const rows = filteredLeads.map(l => [
       l.Id, `"${l.Nome||''}"`, `"${l['Nome da Empresa']||''}"`, `"${getTipoEmpresa(l)}"`,
-      `"${l.Cidade||''}"`, `"${l.Estado||''}"`, `"${l.Cultura||''}"`,
+      `"${l.Cidade||''}"`, `"${l.Estado||''}"`,
+      `"${l._praca ? l._praca.nome : 'Fora de Raio'}"`,
+      `"${l._praca ? l._praca.codigo : '—'}"`,
+      `"${l._praca ? l._praca.responsavel : '—'}"`,
+      l._praca ? l._praca.dist_km : '',
+      `"${l.Cultura||''}"`,
       `"${l.qtd_produtores||''}"`, `"${l.equipe||''}"`, `"${l.momento_empresa||''}"`,
       l.Pontuacao||0, `"${getClassificacao(l)}"`, `"${l.Status_Lead||''}"`,
       `"${l.WhatsApp||''}"`, `"${l.Email||''}"`
@@ -219,6 +295,7 @@ export default function LeadsTable({
 
   // Contagem de filtros avançados ativos
   const advancedActiveCount = (selectedStatuses.size > 0 && selectedStatuses.size < STATUS_OPTIONS.length ? 1 : 0) +
+    (selectedRCs.size > 0 && selectedRCs.size < rcOptions.length ? 1 : 0) +
     (selectedCulturas.size > 0 && selectedCulturas.size < CULTURA_OPTIONS.length ? 1 : 0) +
     (selectedProdutores.size > 0 && selectedProdutores.size < PRODUTORES_OPTIONS.length ? 1 : 0) +
     (selectedEquipes.size > 0 && selectedEquipes.size < EQUIPE_OPTIONS.length ? 1 : 0) +
@@ -226,12 +303,16 @@ export default function LeadsTable({
 
   const hasActiveFilters = (selectedClasses.size > 0 && selectedClasses.size < CLASS_OPTIONS.length) ||
     (selectedStates.size > 0 && selectedStates.size < STATE_OPTIONS.length) ||
+    (selectedPracas.size > 0 && selectedPracas.size < pracaOptions.length) ||
     (selectedTipos.size > 0 && selectedTipos.size < TIPO_OPTIONS.length) ||
+    (selectedRCs.size > 0 && selectedRCs.size < rcOptions.length) ||
     searchTerm || advancedActiveCount > 0;
 
   const clearFilters = () => {
     setSelectedClasses(new Set());
     setSelectedStates(new Set());
+    setSelectedPracas(new Set());
+    setSelectedRCs(new Set());
     setSelectedStatuses(new Set());
     setSelectedTipos(new Set());
     setSelectedCulturas(new Set());
@@ -275,6 +356,17 @@ export default function LeadsTable({
             }}
           />
         </div>
+
+        {/* Multi-Select Praça / Polo Comercial */}
+        <MultiSelectDropdown
+          label="Praça / Polo (RC)"
+          options={pracaOptions}
+          selectedValues={selectedPracas}
+          onChange={setSelectedPracas}
+          placeholder="Todas as Praças"
+          color="#22C87A"
+          icon={Compass}
+        />
 
         {/* Multi-Select Tipo de Lead */}
         <MultiSelectDropdown
@@ -383,6 +475,20 @@ export default function LeadsTable({
               onChange={setSelectedStatuses}
               placeholder="Todos os Status"
               color="#22C87A"
+            />
+          </div>
+
+          {/* RC Responsável */}
+          <div>
+            <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '4px', fontWeight: '600', textTransform: 'uppercase' }}>Representante Comercial (RC)</label>
+            <MultiSelectDropdown
+              label="RC Responsável"
+              options={rcOptions}
+              selectedValues={selectedRCs}
+              onChange={setSelectedRCs}
+              placeholder="Todos os RCs"
+              color="#8B7CF8"
+              icon={Users}
             />
           </div>
 
@@ -608,12 +714,32 @@ export default function LeadsTable({
                       <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{lead.Nome}</div>
                     </td>
 
-                    {/* Localização */}
+                    {/* Localização & Praça */}
                     <td style={{ padding: '13px 16px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--text-secondary)', fontSize: '0.82rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--text-secondary)', fontSize: '0.82rem', marginBottom: '4px' }}>
                         <MapPin size={12} color="#4F8EF7" />
-                        {lead.Cidade} — {lead.Estado}
+                        <span>{lead.Cidade} — {lead.Estado}</span>
                       </div>
+                      {lead._praca ? (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.72rem', flexWrap: 'wrap' }}>
+                          <span style={{
+                            background: 'rgba(34, 200, 122, 0.12)',
+                            color: '#22C87A',
+                            padding: '1px 6px',
+                            borderRadius: '4px',
+                            fontWeight: 700
+                          }}>
+                            📍 {lead._praca.codigo} · {lead._praca.dist_km === 0 ? 'Polo' : `${lead._praca.dist_km}km`}
+                          </span>
+                          <span style={{ color: 'var(--text-muted)' }}>
+                            RC: <strong style={{ color: lead._praca.responsavel !== 'a definir' ? 'var(--text-primary)' : 'var(--text-muted)' }}>{lead._praca.responsavel}</strong>
+                          </span>
+                        </div>
+                      ) : (
+                        <span style={{ fontSize: '0.69rem', color: 'var(--text-muted)', opacity: 0.65 }}>
+                          ⚡ Fora de raio (250km)
+                        </span>
+                      )}
                     </td>
 
                     {/* Canal & Cultura */}

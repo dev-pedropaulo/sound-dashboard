@@ -5,6 +5,7 @@ import {
   Table2,
   Plus,
   RefreshCw,
+  MapPin,
 } from 'lucide-react';
 
 const TABS = [
@@ -40,7 +41,9 @@ export default function Header({
   onRefresh,
   loading,
   onOpenNewModal,
-  totalLeads
+  totalLeads,
+  onOpenPracasModal,
+  pracasCount = 12
 }) {
   return (
     <header style={{
@@ -114,7 +117,30 @@ export default function Header({
       </nav>
 
       {/* Actions */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        {/* Gestão de Praças & RCs */}
+        {onOpenPracasModal && (
+          <button
+            onClick={onOpenPracasModal}
+            className="btn btn-secondary"
+            title="Gerenciar Praças e RCs (Polos comerciais)"
+            style={{ padding: '8px 14px', fontSize: '0.82rem', gap: '7px' }}
+          >
+            <MapPin size={15} color="#22C87A" />
+            <span>Praças & RCs</span>
+            <span style={{
+              background: 'rgba(34, 200, 122, 0.15)',
+              color: '#22C87A',
+              padding: '1px 6px',
+              borderRadius: '10px',
+              fontSize: '0.72rem',
+              fontWeight: 700
+            }}>
+              {pracasCount}
+            </span>
+          </button>
+        )}
+
         {/* Refresh */}
         <button
           onClick={onRefresh}
@@ -139,3 +165,4 @@ export default function Header({
     </header>
   );
 }
+
