@@ -2,7 +2,8 @@ import React, { useState, useMemo, useRef } from 'react';
 import {
   X, MapPin, Upload, Download, RefreshCw, Plus, Edit2, Check,
   Search, AlertCircle, CheckCircle2, ChevronDown, ChevronUp,
-  FileSpreadsheet, Users, Trash2, ArrowRight, ShieldCheck, Sparkles
+  FileSpreadsheet, Users, Trash2, ArrowRight, ShieldCheck, Sparkles,
+  BookOpen, Info, HelpCircle, Layers
 } from 'lucide-react';
 import {
   parsePracasExcel, exportPracasExcel, saveStoredPracas,
@@ -26,6 +27,7 @@ export default function PracasModal({
   const [importLoading, setImportLoading] = useState(false);
   const [importError, setImportError] = useState(null);
   const [importMode, setImportMode] = useState('replace'); // 'replace' | 'merge'
+  const [showGuide, setShowGuide] = useState(false);
   const fileInputRef = useRef(null);
 
   // Estados para nova praça manual
@@ -633,6 +635,195 @@ export default function PracasModal({
                   <Download size={14} />
                   Baixar Template
                 </button>
+              </div>
+
+              {/* Seção Explicativa: Como Utilizar e Preencher a Planilha */}
+              <div style={{
+                background: 'rgba(255, 255, 255, 0.02)',
+                border: '1px solid var(--border-subtle)',
+                borderRadius: 'var(--radius-lg)',
+                padding: '16px 20px',
+                marginBottom: '20px'
+              }}>
+                <div
+                  onClick={() => setShowGuide(!showGuide)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    cursor: 'pointer',
+                    userSelect: 'none'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div style={{
+                      background: 'rgba(56, 97, 251, 0.15)',
+                      color: '#3861FB',
+                      padding: '7px',
+                      borderRadius: '8px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}>
+                      <BookOpen size={17} />
+                    </div>
+                    <div>
+                      <h4 style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '2px' }}>
+                        Guia Explicativo: Como preencher e importar a planilha
+                      </h4>
+                      <p style={{ fontSize: '0.73rem', color: 'var(--text-muted)' }}>
+                        Entenda as colunas necessárias, formatos aceitos e como o cálculo de 250 km funciona.
+                      </p>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    style={{
+                      background: 'rgba(255,255,255,0.05)',
+                      border: '1px solid var(--border-subtle)',
+                      borderRadius: '6px',
+                      padding: '5px 10px',
+                      color: 'var(--text-secondary)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '5px',
+                      cursor: 'pointer',
+                      fontSize: '0.73rem',
+                      fontWeight: 600
+                    }}
+                  >
+                    <span>{showGuide ? 'Ocultar guia' : 'Ver instruções'}</span>
+                    {showGuide ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+                  </button>
+                </div>
+
+                {/* Conteúdo Expandido do Guia */}
+                {showGuide && (
+                  <div style={{
+                    marginTop: '16px',
+                    borderTop: '1px solid var(--border-subtle)',
+                    paddingTop: '16px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '16px',
+                    animation: 'fadeIn 0.2s ease'
+                  }}>
+                    {/* Passo a Passo Rápido */}
+                    <div style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(auto-fit, minmax(135px, 1fr))',
+                      gap: '10px'
+                    }}>
+                      {[
+                        { step: '1', title: 'Baixar Modelo', desc: 'Clique em "Baixar Template" acima para ter a planilha base.' },
+                        { step: '2', title: 'Preencher Dados', desc: 'Insira os polos, RCs, cidades e distâncias até 250 km.' },
+                        { step: '3', title: 'Enviar Planilha', desc: 'Arraste o arquivo .xlsx para a caixa de upload abaixo.' },
+                        { step: '4', title: 'Roteamento', desc: 'O sistema cruza as cidades e direciona os leads aos RCs.' },
+                      ].map((item, i) => (
+                        <div key={i} style={{
+                          background: 'rgba(0,0,0,0.25)',
+                          border: '1px solid var(--border-subtle)',
+                          borderRadius: 'var(--radius-md)',
+                          padding: '10px 12px'
+                        }}>
+                          <div style={{
+                            width: '20px', height: '20px', borderRadius: '50%',
+                            background: '#3861FB', color: '#fff', fontSize: '0.7rem',
+                            fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            marginBottom: '6px'
+                          }}>
+                            {item.step}
+                          </div>
+                          <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '2px' }}>
+                            {item.title}
+                          </div>
+                          <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', lineHeight: '1.3' }}>
+                            {item.desc}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Dicionário de Colunas */}
+                    <div style={{
+                      background: 'rgba(0,0,0,0.2)',
+                      border: '1px solid var(--border-subtle)',
+                      borderRadius: 'var(--radius-md)',
+                      overflow: 'hidden'
+                    }}>
+                      <div style={{ padding: '8px 12px', background: 'rgba(255,255,255,0.03)', borderBottom: '1px solid var(--border-subtle)', fontSize: '0.73rem', fontWeight: 700, color: 'var(--text-secondary)' }}>
+                        Dicionário das Colunas da Planilha
+                      </div>
+                      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.73rem' }}>
+                        <tbody>
+                          {[
+                            { col: 'Praça', req: 'Sim', desc: 'Nome da cidade polo onde o RC fica sediado (ex: Sorriso, Londrina, Cascavel).' },
+                            { col: 'UF', req: 'Sim', desc: 'Sigla de 2 letras do Estado federativo (ex: MT, GO, MS, PR).' },
+                            { col: 'Código', req: 'Sim', desc: 'Sigla única de 3 ou 4 letras maiúsculas para identificar a praça (ex: SOR, LRV, CVL).' },
+                            { col: 'Responsável', req: 'Opcional', desc: 'Nome do Representante Comercial (RC). Se ainda não tiver contratado, preencha com "a definir".' },
+                            { col: 'Cidade', req: 'Sim', desc: 'Município pertencente ao raio de atendimento daquela praça.' },
+                            { col: 'dist_km', req: 'Sim', desc: 'Distância rodoviária em km até o polo. A própria cidade polo deve ter dist_km = 0.' },
+                          ].map((c, idx) => (
+                            <tr key={idx} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                              <td style={{ padding: '7px 12px', fontFamily: 'var(--font-mono)', fontWeight: 700, color: '#3861FB', width: '110px' }}>
+                                {c.col}
+                              </td>
+                              <td style={{ padding: '7px 8px', color: c.req === 'Sim' ? '#22C87A' : 'var(--text-muted)', width: '70px', fontWeight: 600 }}>
+                                {c.req}
+                              </td>
+                              <td style={{ padding: '7px 12px', color: 'var(--text-secondary)' }}>
+                                {c.desc}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Dois Formatos Suportados */}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '10px' }}>
+                      <div style={{ background: 'rgba(0,0,0,0.2)', padding: '12px 14px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#22C87A', fontSize: '0.78rem', fontWeight: 700, marginBottom: '6px' }}>
+                          <Layers size={14} />
+                          Formato 1: Múltiplas Abas (Oficial)
+                        </div>
+                        <p style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', lineHeight: '1.4', margin: 0 }}>
+                          1ª aba chamada <strong>Resumo</strong> com os polos e seus RCs. Em seguida, uma aba para cada praça (ex: <code>SOR - Sorriso</code>) listando as cidades e <code>dist_km</code>.
+                        </p>
+                      </div>
+
+                      <div style={{ background: 'rgba(0,0,0,0.2)', padding: '12px 14px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#4F8EF7', fontSize: '0.78rem', fontWeight: 700, marginBottom: '6px' }}>
+                          <FileSpreadsheet size={14} />
+                          Formato 2: Tabela Única (Plano)
+                        </div>
+                        <p style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', lineHeight: '1.4', margin: 0 }}>
+                          Uma única planilha plana contendo todas as colunas juntas: <code>Código</code>, <code>Praça</code>, <code>UF</code>, <code>Responsável</code>, <code>Cidade</code> e <code>dist_km</code>.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Dica de Funcionamento */}
+                    <div style={{
+                      background: 'rgba(56, 97, 251, 0.08)',
+                      border: '1px solid rgba(56, 97, 251, 0.25)',
+                      borderRadius: 'var(--radius-md)',
+                      padding: '10px 14px',
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      gap: '9px',
+                      fontSize: '0.73rem',
+                      color: 'var(--text-secondary)',
+                      lineHeight: '1.4'
+                    }}>
+                      <Info size={15} color="#3861FB" style={{ flexShrink: 0, marginTop: '2px' }} />
+                      <div>
+                        <strong style={{ color: 'var(--text-primary)' }}>Como o sistema usa esses dados:</strong> Quando um produtor ou canal preenche o formulário de captação, o sistema compara automaticamente o município informado com o mapa de 250 km. Se a cidade estiver na área de cobertura, o lead é vinculado instantaneamente à Praça e ao RC responsável.
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div style={{
