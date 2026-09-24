@@ -6,6 +6,7 @@ import {
   Plus,
   RefreshCw,
   MapPin,
+  LogOut,
 } from 'lucide-react';
 
 const TABS = [
@@ -43,7 +44,9 @@ export default function Header({
   onOpenNewModal,
   totalLeads,
   onOpenPracasModal,
-  pracasCount = 12
+  pracasCount = 12,
+  onLogout,
+  user
 }) {
   return (
     <header style={{
@@ -161,6 +164,28 @@ export default function Header({
           <Plus size={15} />
           Novo Lead
         </button>
+
+        {/* Botão Sair / Logout */}
+        {onLogout && (
+          <button
+            onClick={onLogout}
+            className="btn btn-secondary"
+            title={`Conectado como ${user?.username || 'admin'}. Clique para sair.`}
+            style={{
+              padding: '8px 12px',
+              fontSize: '0.78rem',
+              color: 'var(--text-muted)',
+              borderColor: 'var(--border-subtle)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              marginLeft: '4px'
+            }}
+          >
+            <LogOut size={14} />
+            <span>Sair</span>
+          </button>
+        )}
       </div>
     </header>
   );

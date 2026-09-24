@@ -8,13 +8,19 @@ import LeadsTable from './components/LeadsTable';
 import LeadDetailModal from './components/LeadDetailModal';
 import NewLeadModal from './components/NewLeadModal';
 import PracasModal from './components/PracasModal';
+import LoginScreen from './components/LoginScreen';
 import { fetchLeads, updateLead, createLead } from './services/nocodb';
 import { getStoredPracas, buildCityIndex, getLeadPraca } from './services/pracasService';
+import { checkAuth, logout, getCurrentUser } from './services/authService';
 import { AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
 
 export default function App() {
+  // Autenticação de Usuário Único
+  const [isAuthenticated, setIsAuthenticated] = useState(() => checkAuth());
+  const [currentUser, setCurrentUser] = useState(() => getCurrentUser());
+
   const [leads, setLeads] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [currentTab, setCurrentTab] = useState('dashboard'); // dashboard, map, kanban, table
   const [selectedState, setSelectedState] = useState(null);
@@ -36,7 +42,7 @@ export default function App() {
     setTimeout(() => setToastMessage(null), 4000);
   };
 
-  // Carregar dados iniciais do NocoDB
+  // Carregar dados iniciais do NocoDB (apenas se autenticado)
   const loadData = async () => {
     try {
       setLoading(true);
@@ -52,8 +58,10 @@ export default function App() {
   };
 
   useEffect(() => {
-    loadData();
-  }, []);
+    if (isAuthenticated) {
+      loadData();
+    }
+  }, [isAuthenticated]);
 
   // Atualizar status do lead
   const handleUpdateStatus = async (leadId, newStatus) => {
@@ -91,6 +99,18 @@ export default function App() {
       // Mantém no dashboard mas destaca
     }
   };
+
+  // Se não estiver autenticado, exibe a tela de login
+  if (!isAuthenticated) {
+    return (
+      <LoginScreen
+        onLoginSuccess={(user) => {
+          setIsAuthenticated(true);
+          setCurrentUser(user);
+        }}
+      />
+    );
+  }
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -133,6 +153,12 @@ export default function App() {
         totalLeads={leads.length}
         onOpenPracasModal={() => setIsPracasModalOpen(true)}
         pracasCount={pracas.length}
+        onLogout={() => {
+          logout();
+          setIsAuthenticated(false);
+          setCurrentUser(null);
+        }}
+        user={currentUser}
       />
 
       {/* Alerta de Erro de Conexão */}
