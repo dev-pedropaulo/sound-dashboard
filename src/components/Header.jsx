@@ -7,7 +7,10 @@ import {
   RefreshCw,
   MapPin,
   LogOut,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
+import { usePrivacy } from '../context/PrivacyContext';
 
 const TABS = [
   { id: 'dashboard', label: 'Visão Geral',    icon: LayoutDashboard, color: '#4F8EF7' },
@@ -48,6 +51,8 @@ export default function Header({
   onLogout,
   user
 }) {
+  const { isPrivacyMode, togglePrivacyMode } = usePrivacy();
+
   return (
     <header style={{
       margin: '20px 20px 0 20px',
@@ -121,6 +126,35 @@ export default function Header({
 
       {/* Actions */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        {/* Botão de Modo Privacidade */}
+        <button
+          onClick={togglePrivacyMode}
+          className={`btn-privacy ${isPrivacyMode ? 'active' : ''}`}
+          title={isPrivacyMode ? 'Modo Privacidade ATIVADO: clique para exibir dados sensíveis' : 'Modo Privacidade DESATIVADO: clique para ocultar dados sensíveis'}
+        >
+          {isPrivacyMode ? (
+            <>
+              <EyeOff size={15} color="#BDB0FF" />
+              <span>Privacidade</span>
+              <span style={{
+                background: 'rgba(139, 124, 248, 0.25)',
+                color: '#D8CEFF',
+                padding: '1px 6px',
+                borderRadius: '10px',
+                fontSize: '0.68rem',
+                fontWeight: 700
+              }}>
+                ON
+              </span>
+            </>
+          ) : (
+            <>
+              <Eye size={15} />
+              <span>Privacidade</span>
+            </>
+          )}
+        </button>
+
         {/* Gestão de Praças & RCs */}
         {onOpenPracasModal && (
           <button

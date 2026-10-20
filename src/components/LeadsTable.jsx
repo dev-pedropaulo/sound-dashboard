@@ -12,6 +12,7 @@ import {
 import { normalizeState } from '../utils/normalizeState';
 import { getLeadPraca } from '../services/pracasService';
 import MultiSelectDropdown from './MultiSelectDropdown';
+import { usePrivacy, SensitiveText } from '../context/PrivacyContext';
 
 const TIPO_OPTIONS = [
   { id: 'distribuidor', label: '🏢 Distribuidor' },
@@ -80,6 +81,8 @@ export default function LeadsTable({
   pracas = [],
   cityIndex = {}
 }) {
+  const { isPrivacyMode, maskText, maskPhone, maskEmail } = usePrivacy();
+
   const [searchTerm, setSearchTerm]         = useState('');
   const [selectedClasses, setSelectedClasses] = useState(new Set());
   const [selectedStates, setSelectedStates]   = useState(new Set());
@@ -249,7 +252,10 @@ export default function LeadsTable({
       'Cultura','Produtores','Equipe','Momento','Pontuacao','Classificacao','Status','WhatsApp','Email'
     ];
     const rows = filteredLeads.map(l => [
-      l.Id, `"${l.Nome||''}"`, `"${l['Nome da Empresa']||''}"`, `"${getTipoEmpresa(l)}"`,
+      l.Id,
+      `"${isPrivacyMode ? maskText(l.Nome, 'Confidencial') : (l.Nome||'')}"`,
+      `"${isPrivacyMode ? maskText(l['Nome da Empresa'], 'Empresa Confidencial') : (l['Nome da Empresa']||'')}"`,
+      `"${getTipoEmpresa(l)}"`,
       `"${l.Cidade||''}"`, `"${l.Estado||''}"`,
       `"${l._praca ? l._praca.nome : 'Fora de Raio'}"`,
       `"${l._praca ? l._praca.codigo : '—'}"`,
@@ -258,7 +264,8 @@ export default function LeadsTable({
       `"${l.Cultura||''}"`,
       `"${l.qtd_produtores||''}"`, `"${l.equipe||''}"`, `"${l.momento_empresa||''}"`,
       l.Pontuacao||0, `"${getClassificacao(l)}"`, `"${l.Status_Lead||''}"`,
-      `"${l.WhatsApp||''}"`, `"${l.Email||''}"`
+      `"${isPrivacyMode ? maskPhone(l.WhatsApp) : (l.WhatsApp||'')}"`,
+      `"${isPrivacyMode ? maskEmail(l.Email) : (l.Email||'')}"`
     ]);
     const csv = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
     const link = document.createElement('a');
@@ -709,9 +716,15 @@ export default function LeadsTable({
                         onClick={() => onOpenLeadDetail(lead)}
                         style={{ fontWeight: '700', color: 'var(--text-primary)', cursor: 'pointer', fontSize: '0.88rem', marginBottom: '2px' }}
                       >
-                        {lead['Nome da Empresa'] || '—'}
+                        <SensitiveText placeholder="••••••••••••••">
+                          {lead['Nome da Empresa'] || '—'}
+                        </SensitiveText>
                       </div>
-                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{lead.Nome}</div>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                        <SensitiveText placeholder="••••••••">
+                          {lead.Nome}
+                        </SensitiveText>
+                      </div>
                     </td>
 
                     {/* Localização & Praça */}
@@ -785,10 +798,13 @@ export default function LeadsTable({
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '6px' }}>
                         {cleanPhone && (
                           <a
-                            href={`https://wa.me/${cleanPhone}?text=Olá%20${encodeURIComponent(lead.Nome||'')}%2C%20aqui%20é%20da%20Sound%20Agriculture.`}
-                            target="_blank" rel="noopener noreferrer"
-                            className="btn btn-whatsapp"
+                            href={isPrivacyMode ? undefined : `https://wa.me/${cleanPhone}?text=Olá%20${encodeURIComponent(lead.Nome||'')}%2C%20aqui%20é%20da%20Sound%20Agriculture.`}
+                            target={isPrivacyMode ? undefined : "_blank"}
+                            rel={isPrivacyMode ? undefined : "noopener noreferrer"}
+                            className={`btn btn-whatsapp ${isPrivacyMode ? 'privacy-protected-action' : ''}`}
                             style={{ padding: '6px 10px' }}
+                            title={isPrivacyMode ? 'WhatsApp desativado no Modo de Privacidade' : 'Conversar no WhatsApp'}
+                            onClick={isPrivacyMode ? (e) => e.preventDefault() : undefined}
                           >
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
                               <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.73-1.464L0 24zm6.59-4.846c1.6.95 3.197 1.451 4.787 1.451 5.512 0 9.997-4.493 10-10.013.002-2.673-1.03-5.184-2.907-7.067C16.592 1.639 14.09 1.587 12 1.587c-5.514 0-10.002 4.492-10.006 10.012-.003 1.83.477 3.627 1.391 5.197L2.4 21.6l4.247-1.446zm12.518-8.313c-.154-.077-.911-.449-1.052-.5-.141-.051-.244-.077-.346.077-.102.154-.397.5-.487.603-.09.103-.18.115-.334.038-.154-.077-.65-.239-1.238-.764-.457-.408-.766-.912-.856-1.066-.09-.154-.01-.238.067-.315.069-.069.154-.18.231-.269.077-.09.103-.154.154-.256.051-.103.026-.192-.013-.269-.039-.077-.346-.834-.475-1.144-.125-.302-.25-.262-.346-.267-.09-.004-.192-.005-.294-.005-.102 0-.27.039-.41.192-.141.154-.539.526-.539 1.283 0 .756.551 1.487.628 1.59.077.103 1.085 1.657 2.628 2.324.367.159.654.254.877.325.369.117.705.101.97.062.296-.044.911-.372 1.039-.73.129-.359.129-.667.09-.73-.039-.064-.141-.103-.295-.18z"/>
@@ -797,9 +813,11 @@ export default function LeadsTable({
                         )}
                         {lead.Email && (
                           <a
-                            href={`mailto:${lead.Email}?subject=Sound%20Agriculture%20-%20Parceria`}
-                            className="btn btn-secondary"
+                            href={isPrivacyMode ? undefined : `mailto:${lead.Email}?subject=Sound%20Agriculture%20-%20Parceria`}
+                            className={`btn btn-secondary ${isPrivacyMode ? 'privacy-protected-action' : ''}`}
                             style={{ padding: '6px 10px' }}
+                            title={isPrivacyMode ? 'E-mail desativado no Modo de Privacidade' : 'Enviar E-mail'}
+                            onClick={isPrivacyMode ? (e) => e.preventDefault() : undefined}
                           >
                             <Mail size={15} />
                           </a>

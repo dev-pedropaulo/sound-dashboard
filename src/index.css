@@ -284,3 +284,56 @@ select option:checked {
   stroke: #4F8EF7 !important;
   stroke-width: 2px !important;
 }
+
+/* ===================== MODO DE PRIVACIDADE ===================== */
+.privacy-blur {
+  filter: blur(5.5px) !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  pointer-events: none !important;
+  transition: filter 0.25s ease-in-out, opacity 0.25s ease-in-out;
+  display: inline-block;
+  opacity: 0.85;
+}
+
+.btn-privacy {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 13px;
+  border-radius: var(--radius-md);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border-subtle);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+}
+
+.btn-privacy:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  border-color: var(--border-medium);
+}
+
+.btn-privacy.active {
+  background: rgba(139, 124, 248, 0.14) !important;
+  border-color: rgba(139, 124, 248, 0.45) !important;
+  color: #BDB0FF !important;
+  box-shadow: 0 0 14px rgba(139, 124, 248, 0.2);
+}
+
+.btn-privacy.active:hover {
+  background: rgba(139, 124, 248, 0.22) !important;
+  border-color: rgba(139, 124, 248, 0.6) !important;
+}
+
+/* Quando modo privacidade está ativo, links de ação direta ficam visualmente protegidos */
+body.privacy-mode-active .privacy-protected-action {
+  opacity: 0.45;
+  filter: grayscale(0.8);
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
+

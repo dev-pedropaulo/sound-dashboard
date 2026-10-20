@@ -5,9 +5,12 @@ import {
   Briefcase, Clock, UserCheck, ListChecks, Compass, Navigation
 } from 'lucide-react';
 import { getClassificacao, getTipoEmpresa, formatCulturaLabel } from '../services/nocodb';
+import { usePrivacy, SensitiveText } from '../context/PrivacyContext';
 
 export default function LeadDetailModal({ lead, onClose, onUpdateStatus, leadPraca }) {
   if (!lead) return null;
+
+  const { isPrivacyMode, maskPhone, maskEmail } = usePrivacy();
 
   const cleanPhone = (lead.WhatsApp || '').replace(/\D/g, '');
   const cls = getClassificacao(lead);
@@ -82,10 +85,16 @@ export default function LeadDetailModal({ lead, onClose, onUpdateStatus, leadPra
             </div>
 
             <h2 style={{ fontSize: '1.35rem', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '3px' }}>
-              {lead['Nome da Empresa'] || 'Empresa'}
+              <SensitiveText placeholder="••••••••••••••">
+                {lead['Nome da Empresa'] || 'Empresa'}
+              </SensitiveText>
             </h2>
             <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-              Contato: <strong style={{ color: 'var(--text-secondary)' }}>{lead.Nome}</strong>
+              Contato: <strong style={{ color: 'var(--text-secondary)' }}>
+                <SensitiveText placeholder="••••••••">
+                  {lead.Nome}
+                </SensitiveText>
+              </strong>
             </div>
           </div>
 
@@ -133,19 +142,24 @@ export default function LeadDetailModal({ lead, onClose, onUpdateStatus, leadPra
             <div style={{ display: 'flex', gap: '6px' }}>
               {cleanPhone && (
                 <a
-                  href={`https://wa.me/${cleanPhone}?text=Olá%20${encodeURIComponent(lead.Nome||'')}%2C%20aqui%20é%20da%20Sound%20Agriculture.`}
-                  target="_blank" rel="noopener noreferrer"
-                  className="btn btn-whatsapp"
+                  href={isPrivacyMode ? undefined : `https://wa.me/${cleanPhone}?text=Olá%20${encodeURIComponent(lead.Nome||'')}%2C%20aqui%20é%20da%20Sound%20Agriculture.`}
+                  target={isPrivacyMode ? undefined : "_blank"}
+                  rel={isPrivacyMode ? undefined : "noopener noreferrer"}
+                  className={`btn btn-whatsapp ${isPrivacyMode ? 'privacy-protected-action' : ''}`}
                   style={{ fontSize: '0.8rem' }}
+                  title={isPrivacyMode ? 'WhatsApp desativado no Modo de Privacidade' : 'Conversar no WhatsApp'}
+                  onClick={isPrivacyMode ? (e) => e.preventDefault() : undefined}
                 >
-                  <Phone size={14} /> {lead.WhatsApp}
+                  <Phone size={14} /> <SensitiveText placeholder="(••) •••••-••••">{lead.WhatsApp}</SensitiveText>
                 </a>
               )}
               {lead.Email && (
                 <a
-                  href={`mailto:${lead.Email}?subject=Sound%20Agriculture%20-%20Parceria`}
-                  className="btn btn-secondary"
+                  href={isPrivacyMode ? undefined : `mailto:${lead.Email}?subject=Sound%20Agriculture%20-%20Parceria`}
+                  className={`btn btn-secondary ${isPrivacyMode ? 'privacy-protected-action' : ''}`}
                   style={{ fontSize: '0.8rem' }}
+                  title={isPrivacyMode ? 'E-mail desativado no Modo de Privacidade' : 'Enviar E-mail'}
+                  onClick={isPrivacyMode ? (e) => e.preventDefault() : undefined}
                 >
                   <Mail size={14} /> E-mail
                 </a>

@@ -12,7 +12,8 @@ import LoginScreen from './components/LoginScreen';
 import { fetchLeads, updateLead, createLead } from './services/nocodb';
 import { getStoredPracas, buildCityIndex, getLeadPraca } from './services/pracasService';
 import { checkAuth, logout, getCurrentUser } from './services/authService';
-import { AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
+import { PrivacyProvider } from './context/PrivacyContext';
+import { AlertCircle, CheckCircle2, Loader2, ShieldCheck, Eye, EyeOff } from 'lucide-react';
 
 export default function App() {
   // Autenticação de Usuário Único
@@ -113,9 +114,19 @@ export default function App() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      {/* Toast Notification */}
-      {toastMessage && (
+    <PrivacyProvider
+      onToggleNotice={(active) => {
+        showToast(
+          active
+            ? 'Modo de Privacidade ATIVADO — Dados de contato e empresas ocultados'
+            : 'Modo de Privacidade DESATIVADO — Dados visíveis',
+          'success'
+        );
+      }}
+    >
+      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        {/* Toast Notification */}
+        {toastMessage && (
         <div style={{
           position: 'fixed',
           bottom: '20px',
@@ -302,5 +313,6 @@ export default function App() {
         <span>Tecnologia TRIGGER™</span>
       </footer>
     </div>
+  </PrivacyProvider>
   );
 }
