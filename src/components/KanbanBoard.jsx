@@ -3,51 +3,54 @@ import {
   Flame, Sparkles, Snowflake, Mail,
   ExternalLink, MapPin, CheckCircle2, XCircle, Clock, Send,
   Search, ChevronDown, ChevronUp, Filter, Check, X, PlusCircle,
-  Building2, Sprout, Compass
+  Building2, Sprout, Compass, MessageSquare, ArrowUpDown, Calendar,
+  Handshake
 } from 'lucide-react';
 import { getClassificacao, getTipoEmpresa, norm, formatCulturaLabel, matchTipoEmpresa, matchCultura } from '../services/nocodb';
 import { normalizeState } from '../utils/normalizeState';
 import { getLeadPraca } from '../services/pracasService';
+import { getLeadTimestamp, formatLeadDate } from '../utils/dateUtils';
 import MultiSelectDropdown from './MultiSelectDropdown';
 import { usePrivacy, SensitiveText } from '../context/PrivacyContext';
 
 const COLUMNS = [
-  { id: 'Novo',           label: 'Novos Inscritos',          color: '#4F8EF7', icon: Clock },
-  { id: 'Em Contato',     label: 'Em Contato',               color: '#F5B731', icon: Send },
-  { id: 'Qualificado',    label: 'Qualificados',             color: '#22C87A', icon: CheckCircle2 },
-  { id: 'Convertido',     label: 'Parceiros Contratados',    color: '#8B7CF8', icon: CheckCircle2 },
-  { id: 'Desqualificado', label: 'Desqualificados',          color: '#5A6478', icon: XCircle },
+  { id: 'Novo', label: 'Novos Inscritos', color: '#4F8EF7', icon: Clock },
+  { id: 'Em Contato', label: 'Em Contato', color: '#F5B731', icon: Send },
+  { id: 'Handoff Comercial', label: 'Handoff Comercial', color: '#FF7D00', icon: Handshake },
+  { id: 'Qualificado', label: 'Qualificados', color: '#22C87A', icon: CheckCircle2 },
+  { id: 'Convertido', label: 'Parceiros Contratados', color: '#8B7CF8', icon: CheckCircle2 },
+  { id: 'Desqualificado', label: 'Desqualificados', color: '#5A6478', icon: XCircle },
 ];
 
 const TIPO_OPTIONS = [
   { id: 'distribuidor', label: '🏢 Distribuidor' },
-  { id: 'revenda',      label: '🏪 Revenda Agrícola' },
-  { id: 'cooperativa',  label: '🤝 Cooperativa' },
-  { id: 'rtv',          label: '💼 Representante (RTV)' },
-  { id: 'outro',        label: '📦 Outro Perfil' },
+  { id: 'revenda', label: '🏪 Revenda Agrícola' },
+  { id: 'cooperativa', label: '🤝 Cooperativa' },
+  { id: 'rtv', label: '💼 Representante (RTV)' },
+  { id: 'outro', label: '📦 Outro Perfil' },
 ];
 
 const TEMP_OPTIONS = [
-  { id: 'Quente',      label: '🔥 Quentes (≥16 pts)' },
-  { id: 'Morno',       label: '⚡ Mornos (11-15 pts)' },
+  { id: 'Quente', label: '🔥 Quentes (≥16 pts)' },
+  { id: 'Morno', label: '⚡ Mornos (11-15 pts)' },
   { id: 'Frio / Fora', label: '❄️ Frios / Fora (≤10 pts)' },
 ];
 
 const STATE_OPTIONS = [
-  { id: 'MT',    label: 'Mato Grosso' },
-  { id: 'GO',    label: 'Goiás' },
-  { id: 'MS',    label: 'Mato Grosso do Sul' },
-  { id: 'PR',    label: 'Paraná' },
+  { id: 'MT', label: 'Mato Grosso' },
+  { id: 'GO', label: 'Goiás' },
+  { id: 'MS', label: 'Mato Grosso do Sul' },
+  { id: 'PR', label: 'Paraná' },
   { id: 'OUTRO', label: 'Outros Estados' },
 ];
 
 const CULTURA_OPTIONS = [
-  { id: 'soja',   label: '🌱 Soja' },
-  { id: 'milho',  label: '🌽 Milho' },
-  { id: 'algod',  label: '☁️ Algodão' },
-  { id: 'cafe',   label: '☕ Café' },
-  { id: 'trigo',  label: '🌾 Trigo' },
-  { id: 'cana',   label: '🎋 Cana' },
+  { id: 'soja', label: '🌱 Soja' },
+  { id: 'milho', label: '🌽 Milho' },
+  { id: 'algod', label: '☁️ Algodão' },
+  { id: 'cafe', label: '☕ Café' },
+  { id: 'trigo', label: '🌾 Trigo' },
+  { id: 'cana', label: '🎋 Cana' },
   { id: 'outras', label: '🌾 Outras' },
 ];
 
@@ -69,11 +72,15 @@ export default function KanbanBoard({
   // Paginação progressiva por coluna (15 por lote)
   const [visibleCounts, setVisibleCounts] = useState({});
 
+  // Ordenação dos cards no Kanban
+  const [kanbanSortBy, setKanbanSortBy] = useState('CreatedAt');
+  const [kanbanSortOrder, setKanbanSortOrder] = useState('desc');
+
   // Filtros locais
-  const [searchTerm, setSearchTerm]         = useState('');
-  const [selectedTemps, setSelectedTemps]   = useState(new Set());
-  const [selectedTipos, setSelectedTipos]     = useState(new Set());
-  const [selectedStates, setSelectedStates]   = useState(new Set());
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedTemps, setSelectedTemps] = useState(new Set());
+  const [selectedTipos, setSelectedTipos] = useState(new Set());
+  const [selectedStates, setSelectedStates] = useState(new Set());
   const [selectedCulturas, setSelectedCulturas] = useState(new Set());
 
   const handleStatusChange = async (leadId, newStatus) => {
@@ -149,9 +156,9 @@ export default function KanbanBoard({
 
   const ClassBadge = ({ lead }) => {
     const cls = getClassificacao(lead);
-    if (cls === 'Quente') return <span className="badge badge-quente" style={{ padding: '2px 6px', fontSize: '0.65rem' }}><Flame size={9}/> {lead.Pontuacao||0}</span>;
-    if (cls === 'Morno')  return <span className="badge badge-morno"  style={{ padding: '2px 6px', fontSize: '0.65rem' }}><Sparkles size={9}/> {lead.Pontuacao||0}</span>;
-    return <span className="badge badge-frio" style={{ padding: '2px 6px', fontSize: '0.65rem' }}><Snowflake size={9}/> {lead.Pontuacao||0}</span>;
+    if (cls === 'Quente') return <span className="badge badge-quente" style={{ padding: '2px 6px', fontSize: '0.65rem' }}><Flame size={9} /> {lead.Pontuacao || 0}</span>;
+    if (cls === 'Morno') return <span className="badge badge-morno" style={{ padding: '2px 6px', fontSize: '0.65rem' }}><Sparkles size={9} /> {lead.Pontuacao || 0}</span>;
+    return <span className="badge badge-frio" style={{ padding: '2px 6px', fontSize: '0.65rem' }}><Snowflake size={9} /> {lead.Pontuacao || 0}</span>;
   };
 
   const hasActiveFilters = searchTerm ||
@@ -254,6 +261,49 @@ export default function KanbanBoard({
           icon={Flame}
         />
 
+        {/* Seletor de Ordenação Rápida dos Cards */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px',
+          background: 'rgba(255,255,255,0.03)',
+          border: '1px solid var(--border-subtle)',
+          borderRadius: 'var(--radius-md)',
+          padding: '2px 8px'
+        }}>
+          <ArrowUpDown size={13} style={{ color: 'var(--text-muted)' }} />
+          <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>Ordenar cards:</span>
+          <select
+            value={`${kanbanSortBy}_${kanbanSortOrder}`}
+            onChange={e => {
+              const [f, o] = e.target.value.split('_');
+              setKanbanSortBy(f);
+              setKanbanSortOrder(o);
+            }}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              color: 'var(--text-primary)',
+              fontSize: '0.78rem',
+              fontWeight: '600',
+              cursor: 'pointer',
+              outline: 'none',
+              padding: '5px 2px',
+            }}
+            title="Ordenar cards em cada coluna"
+          >
+            <option value="CreatedAt_desc">📅 Mais Recentes Primeiro</option>
+            <option value="CreatedAt_asc">📅 Mais Antigos Primeiro</option>
+            <option value="Estado_asc">📍 Estado / Região (A-Z)</option>
+            <option value="Estado_desc">📍 Estado / Região (Z-A)</option>
+            <option value="Cidade_asc">🏙️ Cidade (A-Z)</option>
+            <option value="Praca_asc">🧭 Praça Comercial (A-Z)</option>
+            <option value="Pontuacao_desc">🔥 Maior Pontuação</option>
+            <option value="Pontuacao_asc">❄️ Menor Pontuação</option>
+            <option value="Nome da Empresa_asc">🏢 Empresa (A-Z)</option>
+          </select>
+        </div>
+
         {/* Limpar Filtros do Kanban */}
         {hasActiveFilters && (
           <button
@@ -279,7 +329,38 @@ export default function KanbanBoard({
         alignItems: 'start',
       }}>
         {COLUMNS.map(column => {
-          const columnLeads = filteredLeads.filter(l => (l.Status_Lead || 'Novo') === column.id);
+          const columnLeads = filteredLeads
+            .filter(l => (l.Status_Lead || 'Novo') === column.id)
+            .sort((a, b) => {
+              let comparison = 0;
+              if (kanbanSortBy === 'CreatedAt' || kanbanSortBy === 'Data') {
+                const timeA = getLeadTimestamp(a);
+                const timeB = getLeadTimestamp(b);
+                comparison = timeA < timeB ? -1 : timeA > timeB ? 1 : 0;
+              } else if (kanbanSortBy === 'Estado' || kanbanSortBy === 'Regiao') {
+                const ufA = normalizeState(a.Estado);
+                const ufB = normalizeState(b.Estado);
+                comparison = ufA.localeCompare(ufB, 'pt-BR');
+                if (comparison === 0) {
+                  comparison = (a.Cidade || '').localeCompare(b.Cidade || '', 'pt-BR');
+                }
+              } else if (kanbanSortBy === 'Cidade') {
+                comparison = (a.Cidade || '').localeCompare(b.Cidade || '', 'pt-BR');
+              } else if (kanbanSortBy === 'Praca') {
+                const pracaA = a._praca ? a._praca.nome : 'ZZZ';
+                const pracaB = b._praca ? b._praca.nome : 'ZZZ';
+                comparison = pracaA.localeCompare(pracaB, 'pt-BR');
+              } else if (kanbanSortBy === 'Pontuacao' || kanbanSortBy === 'Id') {
+                const valA = Number(a[kanbanSortBy]) || 0;
+                const valB = Number(b[kanbanSortBy]) || 0;
+                comparison = valA < valB ? -1 : valA > valB ? 1 : 0;
+              } else {
+                const valA = (a[kanbanSortBy] || '').toString().toLowerCase();
+                const valB = (b[kanbanSortBy] || '').toString().toLowerCase();
+                comparison = valA.localeCompare(valB, 'pt-BR');
+              }
+              return kanbanSortOrder === 'asc' ? comparison : -comparison;
+            });
           const totalInCol = columnLeads.length;
           const visibleLimit = visibleCounts[column.id] || PAGE_SIZE;
           const displayedLeads = columnLeads.slice(0, visibleLimit);
@@ -432,11 +513,19 @@ export default function KanbanBoard({
                                   {lead['Nome da Empresa'] || 'Empresa'}
                                 </SensitiveText>
                               </h4>
-                              <span style={{ fontSize: '0.73rem', color: 'var(--text-muted)' }}>
-                                <SensitiveText placeholder="••••••••">
-                                  {lead.Nome}
-                                </SensitiveText>
-                              </span>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                                <span style={{ fontSize: '0.73rem', color: 'var(--text-muted)' }}>
+                                  <SensitiveText placeholder="••••••••">
+                                    {lead.Nome}
+                                  </SensitiveText>
+                                </span>
+                                {(lead.CreatedAt || lead.created_at) && (
+                                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', fontSize: '0.67rem', color: 'var(--text-muted)' }}>
+                                    <Calendar size={10} style={{ color: '#4F8EF7' }} />
+                                    {formatLeadDate(lead.CreatedAt || lead.created_at)}
+                                  </span>
+                                )}
+                              </div>
                             </div>
                             <ClassBadge lead={lead} />
                           </div>
@@ -560,7 +649,7 @@ export default function KanbanBoard({
                             <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                               {cleanPhone && (
                                 <a
-                                  href={isPrivacyMode ? undefined : `https://wa.me/${cleanPhone}?text=Olá%20${encodeURIComponent(lead.Nome||'')}%2C%20aqui%20é%20da%20Sound%20Agriculture.`}
+                                  href={isPrivacyMode ? undefined : `https://wa.me/${cleanPhone}?text=Olá%20${encodeURIComponent(lead.Nome || '')}%2C%20aqui%20é%20da%20Sound%20Agriculture.`}
                                   target={isPrivacyMode ? undefined : "_blank"}
                                   rel={isPrivacyMode ? undefined : "noopener noreferrer"}
                                   className={`btn btn-whatsapp ${isPrivacyMode ? 'privacy-protected-action' : ''}`}
@@ -569,7 +658,7 @@ export default function KanbanBoard({
                                   onClick={isPrivacyMode ? (e) => e.preventDefault() : undefined}
                                 >
                                   <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.73-1.464L0 24zm6.59-4.846c1.6.95 3.197 1.451 4.787 1.451 5.512 0 9.997-4.493 10-10.013.002-2.673-1.03-5.184-2.907-7.067C16.592 1.639 14.09 1.587 12 1.587c-5.514 0-10.002 4.492-10.006 10.012-.003 1.83.477 3.627 1.391 5.197L2.4 21.6l4.247-1.446zm12.518-8.313c-.154-.077-.911-.449-1.052-.5-.141-.051-.244-.077-.346.077-.102.154-.397.5-.487.603-.09.103-.18.115-.334.038-.154-.077-.65-.239-1.238-.764-.457-.408-.766-.912-.856-1.066-.09-.154-.01-.238.067-.315.069-.069.154-.18.231-.269.077-.09.103-.154.154-.256.051-.103.026-.192-.013-.269-.039-.077-.346-.834-.475-1.144-.125-.302-.25-.262-.346-.267-.09-.004-.192-.005-.294-.005-.102 0-.27.039-.41.192-.141.154-.539.526-.539 1.283 0 .756.551 1.487.628 1.59.077.103 1.085 1.657 2.628 2.324.367.159.654.254.877.325.369.117.705.101.97.062.296-.044.911-.372 1.039-.73.129-.359.129-.667.09-.73-.039-.064-.141-.103-.295-.18z"/>
+                                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.73-1.464L0 24zm6.59-4.846c1.6.95 3.197 1.451 4.787 1.451 5.512 0 9.997-4.493 10-10.013.002-2.673-1.03-5.184-2.907-7.067C16.592 1.639 14.09 1.587 12 1.587c-5.514 0-10.002 4.492-10.006 10.012-.003 1.83.477 3.627 1.391 5.197L2.4 21.6l4.247-1.446zm12.518-8.313c-.154-.077-.911-.449-1.052-.5-.141-.051-.244-.077-.346.077-.102.154-.397.5-.487.603-.09.103-.18.115-.334.038-.154-.077-.65-.239-1.238-.764-.457-.408-.766-.912-.856-1.066-.09-.154-.01-.238.067-.315.069-.069.154-.18.231-.269.077-.09.103-.154.154-.256.051-.103.026-.192-.013-.269-.039-.077-.346-.834-.475-1.144-.125-.302-.25-.262-.346-.267-.09-.004-.192-.005-.294-.005-.102 0-.27.039-.41.192-.141.154-.539.526-.539 1.283 0 .756.551 1.487.628 1.59.077.103 1.085 1.657 2.628 2.324.367.159.654.254.877.325.369.117.705.101.97.062.296-.044.911-.372 1.039-.73.129-.359.129-.667.09-.73-.039-.064-.141-.103-.295-.18z" />
                                   </svg>
                                 </a>
                               )}
@@ -596,7 +685,15 @@ export default function KanbanBoard({
                                 {isExpanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
                               </button>
                               <button
-                                onClick={() => onOpenLeadDetail(lead)}
+                                onClick={() => onOpenLeadDetail(lead, 'chat')}
+                                className="btn btn-secondary"
+                                style={{ padding: '5px 8px', fontSize: '0.7rem', color: '#22C87A' }}
+                                title="Ver histórico de atendimento no WhatsApp"
+                              >
+                                <MessageSquare size={13} />
+                              </button>
+                              <button
+                                onClick={() => onOpenLeadDetail(lead, 'details')}
                                 className="btn btn-secondary"
                                 style={{ padding: '5px 8px', fontSize: '0.7rem' }}
                                 title="Ver Raio-X completo"

@@ -1,0 +1,444 @@
+{
+  "name": "[INTEGRACAO-FORMMETA]",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sound-form-meta",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -432,
+        -32
+      ],
+      "id": "b728f5d8-7046-4e98-918c-4cf862e09f91",
+      "name": "Webhook",
+      "webhookId": "ad0105fa-849e-4489-9be4-e11efb5083d9"
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/v24.0/{{ $json.body.entry[0].changes[0].value.leadgen_id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        0,
+        -80
+      ],
+      "id": "a4cc22e9-349c-4f7d-b603-d7be1a0cb813",
+      "name": "COLETA-INFO-LEAD-META",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "gM1savCiBW7nREDu",
+          "name": "SOUND"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.entry[0].changes[0].value.form_id }}",
+                    "rightValue": "1415337393841585",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "02816a0e-d752-4ec4-bc97-be4f87fdeefc"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -224,
+        -32
+      ],
+      "id": "53857ef0-3b44-4ee0-91b2-e4bad4e7e798",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "jsCode": "const results = [];\n\n// Dicionário de estados para conversão (sigla -> extenso)\nconst mapEstados = {\n  \"ac\": \"Acre\", \"al\": \"Alagoas\", \"ap\": \"Amapá\", \"am\": \"Amazonas\", \"ba\": \"Bahia\",\n  \"ce\": \"Ceará\", \"df\": \"Distrito Federal\", \"es\": \"Espírito Santo\", \"go\": \"Goiás\",\n  \"ma\": \"Maranhão\", \"mt\": \"Mato Grosso\", \"ms\": \"Mato Grosso do Sul\", \"mg\": \"Minas Gerais\",\n  \"pa\": \"Pará\", \"pb\": \"Paraíba\", \"pr\": \"Paraná\", \"pe\": \"Pernambuco\", \"pi\": \"Piauí\",\n  \"rj\": \"Rio de Janeiro\", \"rn\": \"Rio Grande do Norte\", \"rs\": \"Rio Grande do Sul\",\n  \"ro\": \"Rondônia\", \"rr\": \"Roraima\", \"sc\": \"Santa Catarina\", \"sp\": \"São Paulo\",\n  \"se\": \"Sergipe\", \"to\": \"Tocantins\"\n};\n\nfor (const item of $input.all()) {\n  const fieldData = item.json.field_data || [];\n\n  // Função auxiliar para extrair e limpar os campos para lógica\n  const getField = (nameKey) => {\n    const field = fieldData.find(f => f.name.includes(nameKey));\n    if (!field || !field.values || field.values.length === 0) return \"\";\n    return field.values[0].toLowerCase().replace(/○__/g, '').replace(/_/g, ' ').trim();\n  };\n\n  // Função auxiliar para pegar o valor original (útil para nome, empresa, telefone)\n  const getRawField = (nameKey) => {\n    const field = fieldData.find(f => f.name.includes(nameKey));\n    if (!field || !field.values || field.values.length === 0) return \"\";\n    return field.values[0].replace(/○__/g, '').replace(/_/g, ' ').trim();\n  };\n\n  // Função para converter sigla em nome por extenso\n  const getFullStateName = (stateStr) => {\n    if (!stateStr) return \"\";\n    const lowerState = stateStr.toLowerCase();\n    return mapEstados[lowerState] || stateStr; \n  };\n\n  // 1. Extração e Normalização\n  // Mantive as chaves iguais, assumindo que os \"names\" no form builder não mudaram\n  const normalizedData = {\n    email: getRawField(\"email\"),\n    nome_completo: getRawField(\"full_name\"),\n    telefone: getRawField(\"phone_number\"),\n    cidade: getRawField(\"city\"),\n    estado: getFullStateName(getField(\"state\")),\n    empresa: getRawField(\"company_name\"),\n    tipo_empresa: getField(\"sua_empresa_atua_como\"), \n    estado_atuacao: getField(\"em_qual_estado_sua_empresa_atua\"),\n    culturas: getField(\"quais_culturas\"),\n    produtores: getField(\"quantos_produtores\"),\n    equipe_campo: getField(\"equipe_para_atendimento\"),\n    categoria_biologicos: getField(\"comercializa_produtos_de_nutrição\"),\n    momento: getField(\"momento_da_sua_empresa\"),\n    decisor: getField(\"decisão_de_portfólio\")\n  };\n\n  // Formata a primeira letra do estado para maiúscula caso venha do mapa\n  if (mapEstados[getField(\"state\")]) {\n     normalizedData.estado = normalizedData.estado.charAt(0).toUpperCase() + normalizedData.estado.slice(1);\n     if(normalizedData.estado.toLowerCase() === \"mato grosso\") normalizedData.estado = \"Mato Grosso\";\n     if(normalizedData.estado.toLowerCase() === \"mato grosso do sul\") normalizedData.estado = \"Mato Grosso do Sul\";\n     if(normalizedData.estado.toLowerCase() === \"minas gerais\") normalizedData.estado = \"Minas Gerais\";\n     if(normalizedData.estado.toLowerCase() === \"espírito santo\") normalizedData.estado = \"Espírito Santo\";\n     if(normalizedData.estado.toLowerCase() === \"rio de janeiro\") normalizedData.estado = \"Rio de Janeiro\";\n     if(normalizedData.estado.toLowerCase() === \"rio grande do norte\") normalizedData.estado = \"Rio Grande do Norte\";\n     if(normalizedData.estado.toLowerCase() === \"rio grande do sul\") normalizedData.estado = \"Rio Grande do Sul\";\n     if(normalizedData.estado.toLowerCase() === \"santa catarina\") normalizedData.estado = \"Santa Catarina\";\n     if(normalizedData.estado.toLowerCase() === \"são paulo\") normalizedData.estado = \"São Paulo\";\n     if(normalizedData.estado.toLowerCase() === \"distrito federal\") normalizedData.estado = \"Distrito Federal\";\n  }\n\n  // 2. Lógica de Pontuação e Rastreio\n  let score = 0;\n  let desqualificado = false;\n  let detalhes = [];\n\n  // --- NOVA LÓGICA DE QUALIFICAÇÃO Q1 ---\n  if (normalizedData.tipo_empresa.match(/revenda|distribuidora|distribuidor/)) {\n    score += 3; detalhes.push(\"[Q1] +3 pts: Perfil ideal (Revenda/Distribuidora)\");\n  } else if (normalizedData.tipo_empresa.match(/representante|autônomo|autonomo/)) {\n    desqualificado = true; detalhes.push(\"[Q1] DESQUALIFICADO: Representante comercial/autônomo\");\n  } else if (normalizedData.tipo_empresa !== \"\") {\n    // Pega Produtor, Consultor ou qualquer outra coisa que tenha passado\n    desqualificado = true; detalhes.push(\"[Q1] DESQUALIFICADO: Produtor, consultor ou outro perfil\");\n  }\n  // --------------------------------------\n\n  if (normalizedData.estado_atuacao.match(/mato grosso|goiás|paraná|mt|go|ms|pr/)) {\n    score += 2; detalhes.push(\"[Q2] +2 pts: Estado foco de atuação\");\n  } else if (normalizedData.estado_atuacao.includes(\"outro estado\")) {\n    desqualificado = true; detalhes.push(\"[Q2] DESQUALIFICADO: Atua em outro estado\");\n  }\n\n  if (normalizedData.culturas.match(/soja|milho/)) {\n    score += 3; detalhes.push(\"[Q4] +3 pts: Culturas foco (Soja/Milho)\");\n  } else if (normalizedData.culturas.includes(\"algodão\")) {\n    score += 2; detalhes.push(\"[Q4] +2 pts: Cultura secundária (Algodão)\");\n  } else if (normalizedData.culturas !== \"\") {\n    score += 1; detalhes.push(\"[Q4] +1 pt: Outras culturas\");\n  }\n\n  if (normalizedData.produtores.includes(\"acima de 150\")) {\n    score += 3; detalhes.push(\"[Q5] +3 pts: Alto alcance (>150)\");\n  } else if (normalizedData.produtores.includes(\"51 a 150\")) {\n    score += 2; detalhes.push(\"[Q5] +2 pts: Alcance médio (51 a 150)\");\n  } else if (normalizedData.produtores !== \"\") {\n    score += 1; detalhes.push(\"[Q5] +1 pt: Baixo alcance (Até 50)\");\n  }\n\n  if (normalizedData.equipe_campo.includes(\"comercial e técnica\")) {\n    score += 3; detalhes.push(\"[Q6] +3 pts: Equipe completa\");\n  } else if (normalizedData.equipe_campo.includes(\"somente equipe\")) {\n    score += 2; detalhes.push(\"[Q6] +2 pts: Equipe parcial\");\n  } else if (normalizedData.equipe_campo.includes(\"estruturando\")) {\n    score += 1; detalhes.push(\"[Q6] +1 pt: Estruturando equipe\");\n  }\n\n  if (normalizedData.categoria_biologicos.includes(\"já comercializamos\") || normalizedData.categoria_biologicos.includes(\"queremos incluir\")) {\n    score += 3; detalhes.push(\"[Q7] +3 pts: Alta intenção no portfólio\");\n  } else if (normalizedData.categoria_biologicos.includes(\"conhecendo novas\")) {\n    score += 2; detalhes.push(\"[Q7] +2 pts: Conhecendo tecnologias\");\n  } else if (normalizedData.categoria_biologicos.includes(\"não temos interesse\")) {\n    desqualificado = true; detalhes.push(\"[Q7] DESQUALIFICADO: Sem interesse na categoria\");\n  }\n\n  if (normalizedData.momento.includes(\"fechar uma parceria agora\")) {\n    score += 3; detalhes.push(\"[Q8] +3 pts: Quer fechar agora\");\n  } else if (normalizedData.momento.includes(\"avaliando fornecedores\")) {\n    score += 2; detalhes.push(\"[Q8] +2 pts: Avaliando fornecedores\");\n  } else if (normalizedData.momento.includes(\"só conhecendo\")) {\n    score += 1; detalhes.push(\"[Q8] +1 pt: Só conhecendo\");\n  }\n\n  if (normalizedData.decisor.includes(\"sou o responsável\")) {\n    score += 2; detalhes.push(\"[Q9] +2 pts: É o decisor\");\n  } else if (normalizedData.decisor.includes(\"participo da decisão\")) {\n    score += 1; detalhes.push(\"[Q9] +1 pt: Participa da decisão\");\n  } else if (normalizedData.decisor !== \"\") {\n    score += 0; detalhes.push(\"[Q9] 0 pts: Não é o decisor\");\n  }\n\n  // 3. Classificação\n  let classificacao = \"Frio / Fora\";\n  \n  if (desqualificado || score <= 10) {\n    classificacao = \"Frio / Fora\";\n  } else if ((score >= 11 && score <= 15) || normalizedData.momento.includes(\"só conhecendo\")) {\n    classificacao = \"Morno\";\n  } else if (score >= 16) {\n    classificacao = \"Quente\";\n  }\n\n  // 4. Montagem da Mensagem do WhatsApp (Evolution API)\n  let emojiCode = classificacao === \"Quente\" ? \"🔥\" : classificacao === \"Morno\" ? \"🟡\" : \"❄️\";\n  \n  let msgWhatsapp = `🚨 *Novo Lead Processado* 🚨\\n\\n`;\n  msgWhatsapp += `*Empresa:* ${normalizedData.empresa}\\n`;\n  msgWhatsapp += `*Contato:* ${normalizedData.nome_completo}\\n`;\n  msgWhatsapp += `*WhatsApp:* ${normalizedData.telefone}\\n`;\n  msgWhatsapp += `*Local:* ${normalizedData.cidade} - ${normalizedData.estado}\\n\\n`;\n\n  if (desqualificado) {\n    msgWhatsapp += `📊 *Classificação:* ${classificacao} ${emojiCode}\\n`;\n    msgWhatsapp += `*Status:* Desqualificado automaticamente\\n\\n`;\n  } else {\n    msgWhatsapp += `📊 *Classificação:* ${classificacao} ${emojiCode} (*${score} pontos*)\\n\\n`;\n  }\n\n  msgWhatsapp += `*📌 Resumo do Perfil:*\\n`;\n  msgWhatsapp += `- *Atuação:* ${normalizedData.tipo_empresa || \"Não informado\"}\\n`;\n  msgWhatsapp += `- *Culturas:* ${normalizedData.culturas || \"Não informado\"}\\n`;\n  msgWhatsapp += `- *Tamanho:* ${normalizedData.produtores || \"Não informado\"}\\n`;\n  msgWhatsapp += `- *Momento:* ${normalizedData.momento || \"Não informado\"}\\n\\n`;\n\n  msgWhatsapp += `*📋 Detalhes da Pontuação:*\\n`;\n  msgWhatsapp += detalhes.join(\"\\n\");\n\n  // 5. Montagem do Objeto Final\n  results.push({\n    json: {\n      ...normalizedData,\n      pontuacao: score,\n      classificacao: classificacao,\n      motivo_desqualificacao: desqualificado ? \"Sim\" : \"Não\",\n      explicacao_pontuacao: detalhes.join(\" \\n \"),\n      mensagem_whatsapp: msgWhatsapp\n    }\n  });\n}\n\nreturn results;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        -80
+      ],
+      "id": "9b810e0b-9d27-48a8-8934-b42567f66dda",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "authentication": "nocoDbApiToken",
+        "operation": "create",
+        "projectId": "pko8uouws1akhk4",
+        "table": "mtstd30v1hsddr3",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldName": "Nome",
+              "fieldValue": "={{ $json.nome_completo }}"
+            },
+            {
+              "fieldName": "Nome da Empresa",
+              "fieldValue": "={{ $json.empresa }}"
+            },
+            {
+              "fieldName": "Cidade",
+              "fieldValue": "={{ $json.cidade }}"
+            },
+            {
+              "fieldName": "Tipo Empresa",
+              "fieldValue": "={{ $json.tipo_empresa }}"
+            },
+            {
+              "fieldName": "Estado",
+              "fieldValue": "={{ $json.estado }}"
+            },
+            {
+              "fieldName": "Cultura",
+              "fieldValue": "={{ $json.culturas }}"
+            },
+            {
+              "fieldName": "qtd_produtores",
+              "fieldValue": "={{ $json.produtores }}"
+            },
+            {
+              "fieldName": "equipe",
+              "fieldValue": "={{ $json.equipe_campo }}"
+            },
+            {
+              "fieldName": "comercializacao_atual",
+              "fieldValue": "={{ $json.categoria_biologicos }}"
+            },
+            {
+              "fieldName": "momento_empresa",
+              "fieldValue": "={{ $json.momento }}"
+            },
+            {
+              "fieldName": "responsavel_portfolio",
+              "fieldValue": "={{ $json.decisor }}"
+            },
+            {
+              "fieldName": "WhatsApp",
+              "fieldValue": "={{ $json.telefone }}"
+            },
+            {
+              "fieldName": "Email",
+              "fieldValue": "={{ $json.email }}"
+            },
+            {
+              "fieldName": "Pontuacao",
+              "fieldValue": "={{ $json.pontuacao }}"
+            },
+            {
+              "fieldName": "Classificacao",
+              "fieldValue": "={{ $json.classificacao }}"
+            },
+            {
+              "fieldName": "Status_Lead",
+              "fieldValue": "Novo"
+            },
+            {
+              "fieldName": "pontuacao_motivos",
+              "fieldValue": "={{ $json.explicacao_pontuacao }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.nocoDb",
+      "typeVersion": 3,
+      "position": [
+        688,
+        -48
+      ],
+      "id": "1edb59f9-025b-4e63-94e7-e765c39dde07",
+      "name": "Create a row",
+      "credentials": {
+        "nocoDbApiToken": {
+          "id": "tvXnAQ6fV0Cg8Bvw",
+          "name": "NocoDB Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://evolution.agrometadigital.com/message/sendText/AgroTeste",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "429683C4C977415CAAFCCE10F7D57E11"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "=120363430273566482@g.us"
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.mensagem_whatsapp }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "2ead0617-3160-4e3a-abed-6bd3bbd00691",
+      "name": "Enviar WhatsApp1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        688,
+        128
+      ],
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/v24.0/{{ $json.body.entry[0].changes[0].value.leadgen_id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        0,
+        80
+      ],
+      "id": "61992af1-21c4-4731-ae0e-b26fcaabee4b",
+      "name": "COLETA-INFO-LEAD-META1",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "gM1savCiBW7nREDu",
+          "name": "SOUND"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const results = [];\n\n// Dicionário de estados para conversão (sigla -> extenso)\nconst mapEstados = {\n  \"ac\": \"Acre\", \"al\": \"Alagoas\", \"ap\": \"Amapá\", \"am\": \"Amazonas\", \"ba\": \"Bahia\",\n  \"ce\": \"Ceará\", \"df\": \"Distrito Federal\", \"es\": \"Espírito Santo\", \"go\": \"Goiás\",\n  \"ma\": \"Maranhão\", \"mt\": \"Mato Grosso\", \"ms\": \"Mato Grosso do Sul\", \"mg\": \"Minas Gerais\",\n  \"pa\": \"Pará\", \"pb\": \"Paraíba\", \"pr\": \"Paraná\", \"pe\": \"Pernambuco\", \"pi\": \"Piauí\",\n  \"rj\": \"Rio de Janeiro\", \"rn\": \"Rio Grande do Norte\", \"rs\": \"Rio Grande do Sul\",\n  \"ro\": \"Rondônia\", \"rr\": \"Roraima\", \"sc\": \"Santa Catarina\", \"sp\": \"São Paulo\",\n  \"se\": \"Sergipe\", \"to\": \"Tocantins\"\n};\n\nfor (const item of $input.all()) {\n  const fieldData = item.json.field_data || [];\n\n  // Função auxiliar para extrair e limpar os campos para lógica\n  const getField = (nameKey) => {\n    const field = fieldData.find(f => f.name.includes(nameKey));\n    if (!field || !field.values || field.values.length === 0) return \"\";\n    return field.values[0].toLowerCase().replace(/○__/g, '').replace(/_/g, ' ').trim();\n  };\n\n  // Função auxiliar para pegar o valor original\n  const getRawField = (nameKey) => {\n    const field = fieldData.find(f => f.name.includes(nameKey));\n    if (!field || !field.values || field.values.length === 0) return \"\";\n    return field.values[0].replace(/○__/g, '').replace(/_/g, ' ').trim();\n  };\n\n  // 1. Extração e Normalização com Suporte a Variações (Inglês ou Português)\n  let extractedEstado = getField(\"state\") || getField(\"estado\");\n\n  const normalizedData = {\n    email: getRawField(\"email\"),\n    nome_completo: getRawField(\"full_name\") || getRawField(\"nome_completo\"),\n    telefone: getRawField(\"phone_number\") || getRawField(\"telefone\"),\n    cidade: getRawField(\"city\") || getRawField(\"cidade\"),\n    estado: mapEstados[extractedEstado] || extractedEstado, // Converte a sigla se existir\n    empresa: getRawField(\"company_name\") || getRawField(\"nome_da_empresa\"),\n    tipo_empresa: getField(\"sua_empresa_atua_como\"),\n    estado_atuacao: getField(\"em_qual_estado_sua_empresa_atua\"),\n    culturas: getField(\"quais_culturas\"),\n    produtores: getField(\"quantos_produtores\"),\n    equipe_campo: getField(\"equipe_para_atendimento\"),\n    categoria_biologicos: getField(\"comercializa_produtos_de_nutrição\"),\n    momento: getField(\"momento_da_sua_empresa\"),\n    decisor: getField(\"decisão_de_portfólio\")\n  };\n\n  // Formata a primeira letra do estado para maiúscula caso venha do mapa\n  if (mapEstados[extractedEstado]) {\n     normalizedData.estado = normalizedData.estado.charAt(0).toUpperCase() + normalizedData.estado.slice(1);\n     if(normalizedData.estado.toLowerCase() === \"mato grosso\") normalizedData.estado = \"Mato Grosso\";\n     if(normalizedData.estado.toLowerCase() === \"mato grosso do sul\") normalizedData.estado = \"Mato Grosso do Sul\";\n     if(normalizedData.estado.toLowerCase() === \"minas gerais\") normalizedData.estado = \"Minas Gerais\";\n     if(normalizedData.estado.toLowerCase() === \"espírito santo\") normalizedData.estado = \"Espírito Santo\";\n     if(normalizedData.estado.toLowerCase() === \"rio de janeiro\") normalizedData.estado = \"Rio de Janeiro\";\n     if(normalizedData.estado.toLowerCase() === \"rio grande do norte\") normalizedData.estado = \"Rio Grande do Norte\";\n     if(normalizedData.estado.toLowerCase() === \"rio grande do sul\") normalizedData.estado = \"Rio Grande do Sul\";\n     if(normalizedData.estado.toLowerCase() === \"santa catarina\") normalizedData.estado = \"Santa Catarina\";\n     if(normalizedData.estado.toLowerCase() === \"são paulo\") normalizedData.estado = \"São Paulo\";\n     if(normalizedData.estado.toLowerCase() === \"distrito federal\") normalizedData.estado = \"Distrito Federal\";\n  }\n\n  // 2. Lógica de Pontuação e Rastreio\n  let score = 0;\n  let desqualificado = false;\n  let detalhes = [];\n\n  if (normalizedData.tipo_empresa.match(/distribuidor|revenda|cooperativa/)) {\n    score += 3; detalhes.push(\"[Q1] +3 pts: Perfil ideal\");\n  } else if (normalizedData.tipo_empresa.includes(\"representante\")) {\n    score += 1; detalhes.push(\"[Q1] +1 pt: Perfil RTV\");\n  } else if (normalizedData.tipo_empresa.includes(\"outro\")) {\n    desqualificado = true; detalhes.push(\"[Q1] DESQUALIFICADO: Tipo de empresa fora do perfil\");\n  }\n\n  if (normalizedData.estado_atuacao.match(/mato grosso|goiás|paraná|mt|go|ms|pr/)) {\n    score += 2; detalhes.push(\"[Q2] +2 pts: Estado foco de atuação\");\n  } else if (normalizedData.estado_atuacao.includes(\"outro estado\")) {\n    desqualificado = true; detalhes.push(\"[Q2] DESQUALIFICADO: Atua em outro estado\");\n  }\n\n  if (normalizedData.culturas.match(/soja|milho/)) {\n    score += 3; detalhes.push(\"[Q4] +3 pts: Culturas foco (Soja/Milho)\");\n  } else if (normalizedData.culturas.includes(\"algodão\")) {\n    score += 2; detalhes.push(\"[Q4] +2 pts: Cultura secundária (Algodão)\");\n  } else if (normalizedData.culturas !== \"\") {\n    score += 1; detalhes.push(\"[Q4] +1 pt: Outras culturas\");\n  }\n\n  if (normalizedData.produtores.includes(\"acima de 150\")) {\n    score += 3; detalhes.push(\"[Q5] +3 pts: Alto alcance (>150)\");\n  } else if (normalizedData.produtores.includes(\"51 a 150\")) {\n    score += 2; detalhes.push(\"[Q5] +2 pts: Alcance médio (51 a 150)\");\n  } else if (normalizedData.produtores !== \"\") {\n    score += 1; detalhes.push(\"[Q5] +1 pt: Baixo alcance (Até 50)\");\n  }\n\n  if (normalizedData.equipe_campo.includes(\"comercial e técnica\")) {\n    score += 3; detalhes.push(\"[Q6] +3 pts: Equipe completa\");\n  } else if (normalizedData.equipe_campo.includes(\"somente equipe\")) {\n    score += 2; detalhes.push(\"[Q6] +2 pts: Equipe parcial\");\n  } else if (normalizedData.equipe_campo.includes(\"estruturando\")) {\n    score += 1; detalhes.push(\"[Q6] +1 pt: Estruturando equipe\");\n  }\n\n  if (normalizedData.categoria_biologicos.includes(\"já comercializamos\") || normalizedData.categoria_biologicos.includes(\"queremos incluir\")) {\n    score += 3; detalhes.push(\"[Q7] +3 pts: Alta intenção no portfólio\");\n  } else if (normalizedData.categoria_biologicos.includes(\"conhecendo novas\")) {\n    score += 2; detalhes.push(\"[Q7] +2 pts: Conhecendo tecnologias\");\n  } else if (normalizedData.categoria_biologicos.includes(\"não temos interesse\")) {\n    desqualificado = true; detalhes.push(\"[Q7] DESQUALIFICADO: Sem interesse na categoria\");\n  }\n\n  if (normalizedData.momento.includes(\"fechar uma parceria agora\")) {\n    score += 3; detalhes.push(\"[Q8] +3 pts: Quer fechar agora\");\n  } else if (normalizedData.momento.includes(\"avaliando fornecedores\")) {\n    score += 2; detalhes.push(\"[Q8] +2 pts: Avaliando fornecedores\");\n  } else if (normalizedData.momento.includes(\"só conhecendo\")) {\n    score += 1; detalhes.push(\"[Q8] +1 pt: Só conhecendo\");\n  }\n\n  if (normalizedData.decisor.includes(\"sou o responsável\")) {\n    score += 2; detalhes.push(\"[Q9] +2 pts: É o decisor\");\n  } else if (normalizedData.decisor.includes(\"participo da decisão\")) {\n    score += 1; detalhes.push(\"[Q9] +1 pt: Participa da decisão\");\n  } else if (normalizedData.decisor !== \"\") {\n    score += 0; detalhes.push(\"[Q9] 0 pts: Não é o decisor\");\n  }\n\n  // 3. Classificação\n  let classificacao = \"Frio / Fora\";\n  \n  if (desqualificado || score <= 10) {\n    classificacao = \"Frio / Fora\";\n  } else if ((score >= 11 && score <= 15) || normalizedData.momento.includes(\"só conhecendo\")) {\n    classificacao = \"Morno\";\n  } else if (score >= 16) {\n    classificacao = \"Quente\";\n  }\n\n  // 4. Montagem da Mensagem do WhatsApp (Evolution API)\n  let emojiCode = classificacao === \"Quente\" ? \"🔥\" : classificacao === \"Morno\" ? \"🟡\" : \"❄️\";\n  \n  let msgWhatsapp = `🚨 *Novo Lead Processado* 🚨\\n\\n`;\n  msgWhatsapp += `*Empresa:* ${normalizedData.empresa}\\n`;\n  msgWhatsapp += `*Contato:* ${normalizedData.nome_completo}\\n`;\n  msgWhatsapp += `*WhatsApp:* ${normalizedData.telefone}\\n`;\n  msgWhatsapp += `*Local:* ${normalizedData.cidade} - ${normalizedData.estado}\\n\\n`;\n\n  if (desqualificado) {\n    msgWhatsapp += `📊 *Classificação:* ${classificacao} ${emojiCode}\\n`;\n    msgWhatsapp += `*Status:* Desqualificado automaticamente\\n\\n`;\n  } else {\n    msgWhatsapp += `📊 *Classificação:* ${classificacao} ${emojiCode} (*${score} pontos*)\\n\\n`;\n  }\n\n  msgWhatsapp += `*📌 Resumo do Perfil:*\\n`;\n  msgWhatsapp += `- *Atuação:* ${normalizedData.tipo_empresa || \"Não informado\"}\\n`;\n  msgWhatsapp += `- *Culturas:* ${normalizedData.culturas || \"Não informado\"}\\n`;\n  msgWhatsapp += `- *Tamanho:* ${normalizedData.produtores || \"Não informado\"}\\n`;\n  msgWhatsapp += `- *Momento:* ${normalizedData.momento || \"Não informado\"}\\n\\n`;\n\n  msgWhatsapp += `*📋 Detalhes da Pontuação:*\\n`;\n  msgWhatsapp += detalhes.join(\"\\n\");\n\n  // 5. Montagem do Objeto Final\n  results.push({\n    json: {\n      ...normalizedData,\n      pontuacao: score,\n      classificacao: classificacao,\n      motivo_desqualificacao: desqualificado ? \"Sim\" : \"Não\",\n      explicacao_pontuacao: detalhes.join(\" \\n \"),\n      mensagem_whatsapp: msgWhatsapp\n    }\n  });\n}\n\nreturn results;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        80
+      ],
+      "id": "8b6c5b6a-43ca-4f8c-8e5b-fbc844b84817",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        400,
+        0
+      ],
+      "id": "ea160f38-7ad9-47d5-89f6-25845c9ea3e5",
+      "name": "No Operation, do nothing"
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "agentesn8n-n8n.cqc86v.easypanel.host",
+            "user-agent": "Webhooks/1.0 (https://fb.me/webhooks)",
+            "content-length": "304",
+            "accept": "*/*",
+            "content-type": "application/json",
+            "x-forwarded-for": "173.252.127.115",
+            "x-forwarded-host": "agentesn8n-n8n.cqc86v.easypanel.host",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "44f0278f0537",
+            "x-hub-signature": "sha1=9d946aa7045fa68e732a49c8575fd26fcdad3d6f",
+            "x-hub-signature-256": "sha256=89cdb53d2e1129d696eedcc9d4eee30ddb0b881c571df4dcbaa665d9c0d5f3b7",
+            "x-real-ip": "173.252.127.115",
+            "accept-encoding": "gzip"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "entry": [
+              {
+                "id": "911059905433673",
+                "time": 1792496522,
+                "changes": [
+                  {
+                    "value": {
+                      "adgroup_id": "52643824608239",
+                      "ad_id": "52643824608239",
+                      "created_time": 1792496517,
+                      "leadgen_id": "2199244117321236",
+                      "page_id": "911059905433673",
+                      "form_id": "1917421089632735"
+                    },
+                    "field": "leadgen"
+                  }
+                ]
+              }
+            ],
+            "object": "page"
+          },
+          "webhookUrl": "https://agentesn8n-n8n.cqc86v.easypanel.host/webhook/sound-form-meta",
+          "executionMode": "production"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "COLETA-INFO-LEAD-META",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "COLETA-INFO-LEAD-META1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "COLETA-INFO-LEAD-META": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "COLETA-INFO-LEAD-META1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing": {
+      "main": [
+        [
+          {
+            "node": "Create a row",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Enviar WhatsApp1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "13b9bd9b-7999-4f54-a1b3-53bb01c229b4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c7d066142c3a204136686f25d3f060040ba0cd8d0715b784e06a52cadade21d7"
+  },
+  "nodeGroups": [],
+  "id": "2LGiX32TU50hCLLO",
+  "tags": []
+}

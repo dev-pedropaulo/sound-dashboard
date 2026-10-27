@@ -1,0 +1,1673 @@
+{
+  "name": "Sound Agriculture — Agentes WhatsApp — Versão Evolution API",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sound-webhook",
+        "options": {}
+      },
+      "id": "bf9c135f-ba1b-4d90-852b-88c84621d0fc",
+      "name": "Webhook Evolution",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        59984,
+        22272
+      ],
+      "webhookId": "sound-webhook-001"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ========================================================\n// FILTRO RIGOROSO DE EVENTOS DA EVOLUTION API\n// Só processa mensagens novas reais (messages.upsert)\n// Descarta: updates de leitura, entrega, reações, grupos e fromMe\n// ========================================================\n\nconst body = $input.first().json.body || $input.first().json;\nconst event = body.event;\nif (event !== 'messages.upsert') return [];\n\nconst data = body.data || {};\nconst key = data.key || {};\nif (key.fromMe === true) return [];\n\nconst remoteJid = key.remoteJid || '';\nif (!remoteJid || remoteJid.includes('@g.us') || remoteJid.includes('status@broadcast')) return [];\n\nconst phone = remoteJid.split('@')[0].replace(/\\D/g, '');\nconst provider_message_id = String(key.id || '');\nif (!phone || !/^[A-Za-z0-9_-]{6,255}$/.test(provider_message_id)) return [];\n\nconst pushName = data.pushName || '';\nconst message = data.message || {};\nconst messageType = data.messageType || '';\n\nif (messageType === 'reactionMessage' || messageType === 'stickerMessage') return [];\n\nconst isAudio = messageType === 'audioMessage' || !!message.audioMessage;\nlet textContent = '';\n\nif (isAudio) {\n  textContent = '[AUDIO]';\n} else if (messageType === 'conversation') {\n  textContent = message.conversation || '';\n} else if (messageType === 'extendedTextMessage') {\n  textContent = message.extendedTextMessage?.text || '';\n} else if (messageType === 'imageMessage') {\n  textContent = message.imageMessage?.caption || '';\n} else if (messageType === 'documentMessage') {\n  textContent = message.documentMessage?.fileName || '';\n} else if (messageType === 'locationMessage') {\n  const loc = message.locationMessage || {};\n  textContent = `[LOCALIZACAO: ${loc.degreesLatitude}, ${loc.degreesLongitude}]`;\n}\n\nif (!isAudio && (!textContent || textContent.trim().length <= 1)) return [];\n\nreturn [{\n  json: {\n    body,\n    phone,\n    provider_message_id,\n    pushName,\n    message: textContent.trim(),\n    isAudio,\n    instance: body.instance || 'Sound',\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        60208,
+        22272
+      ],
+      "id": "8b3078fc-d725-4453-85e1-8058f0c684df",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "check-audio-mimetype",
+              "leftValue": "={{ $json.isAudio }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        60432,
+        22272
+      ],
+      "id": "a6e21cfc-7afe-49b2-bf4d-e83d06496154",
+      "name": "É Áudio?"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json.body.data;\nconst instance = $input.first().json.body.instance || 'Sound';\n\nreturn [{\n  json: {\n    instance,\n    requestBody: {\n      message: {\n        key: data.key,\n        message: data.message\n      },\n      convertToMp4: false\n    }\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        60656,
+        22176
+      ],
+      "id": "539842eb-33c0-40e7-8e37-7c55f8d602ae",
+      "name": "Preparar Request Base64"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://evolution.agrometadigital.com/chat/getBase64FromMediaMessage/Sound",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "99151E2DDC10-459E-B141-F5DDEE6B40FE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.requestBody }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        60880,
+        22176
+      ],
+      "id": "3a122520-1e4a-4343-b681-f64f4ec06bc6",
+      "name": "Baixar Base64 Áudio"
+    },
+    {
+      "parameters": {
+        "jsCode": "const base64 = $input.first().json.base64 || '';\nconst buffer = Buffer.from(base64, 'base64');\n\nreturn [{\n  json: {},\n  binary: {\n    data: {\n      data: buffer.toString('base64'),\n      mimeType: 'audio/ogg',\n      fileName: 'audio.ogg',\n      fileExtension: 'ogg'\n    }\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        61104,
+        22176
+      ],
+      "id": "b5177779-363a-4968-8538-d164478d5eef",
+      "name": "Converter Base64 para Binário"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        61328,
+        22176
+      ],
+      "id": "a1f97eaa-17b0-4573-9ed8-6c06870f2012",
+      "name": "Transcrever Áudio Whisper",
+      "credentials": {
+        "openAiApi": {
+          "id": "O15aNB3icNpWMpEK",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const webhookData = $('Code in JavaScript').first().json;\nconst transcribedText = $input.first().json.text || '';\n\nreturn [{\n  json: {\n    phone: webhookData.phone,\n    provider_message_id: webhookData.provider_message_id,\n    pushName: webhookData.pushName || '',\n    message: transcribedText.trim(),\n    instance: webhookData.instance || 'Sound',\n    timestamp: new Date().toISOString(),\n    isAudio: true\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        61552,
+        22176
+      ],
+      "id": "b11cd0e1-9dc1-4b60-bc8d-d6993edfc3c8",
+      "name": "Formatar Áudio Transcrito"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first().json;\n\nreturn [{\n  json: {\n    phone: input.phone,\n    provider_message_id: input.provider_message_id,\n    pushName: input.pushName || '',\n    message: input.message.trim(),\n    instance: input.instance || 'Sound',\n    timestamp: input.timestamp || new Date().toISOString(),\n    isAudio: false\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        61552,
+        22368
+      ],
+      "id": "46ba81e4-5f13-48c9-bffa-e634bea26d2d",
+      "name": "Extrair Phone e Mensagem"
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.first().json;\nreturn [{\n  json: {\n    chatInput: item.message,\n    phone: item.phone,\n    pushName: item.pushName || '',\n    instance: item.instance || 'Sound',\n    provider_message_id: item.provider_message_id || '',\n    message: item.message,\n    isAudio: item.isAudio || false,\n    timestamp: item.timestamp || new Date().toISOString()\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        61776,
+        22272
+      ],
+      "id": "f79ab832-2c44-4995-87fe-cee0b114be23",
+      "name": "Normalizar Entrada WhatsApp"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH inserted_event AS (\n  INSERT INTO sound_inbound_event_dedup (provider_message_id, phone)\n  VALUES ('{{ $json.provider_message_id }}', '{{ $json.phone }}')\n  ON CONFLICT (provider_message_id) DO NOTHING\n  RETURNING provider_message_id\n),\nbuffered_message AS (\n  INSERT INTO message_buffer (phone, message)\n  SELECT\n    '{{ $json.phone }}',\n    '{{ $json.message.replace(/'/g, \"''\") }}'\n  FROM inserted_event\n  RETURNING id, received_at\n)\nSELECT id, received_at, '{{ $json.phone }}' AS phone\nFROM buffered_message;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        62224,
+        22672
+      ],
+      "id": "1723a3cb-41c4-49f8-bb44-22531476ad6e",
+      "name": "Salvar no Buffer",
+      "credentials": {
+        "postgres": {
+          "id": "z3z3Im3ikcCbdOsD",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 8
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        62448,
+        22672
+      ],
+      "id": "c24589f8-7a33-4e31-b4fb-85d6c5e5cae5",
+      "name": "Aguardar Buffer 8s",
+      "webhookId": "sound-buffer-wait"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT COUNT(*) AS newer_count\nFROM message_buffer\nWHERE phone = '{{ $('Normalizar Entrada WhatsApp').item.json.phone }}'\n  AND processed = FALSE\n  AND id > {{ $('Salvar no Buffer').item.json.id }};",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        62672,
+        22672
+      ],
+      "id": "c96aaaff-fcae-4b77-a6de-e400449dde82",
+      "name": "Verificar Mais Nova",
+      "credentials": {
+        "postgres": {
+          "id": "z3z3Im3ikcCbdOsD",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "check-newer-count",
+              "leftValue": "={{ Number($json.newer_count) }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        62896,
+        22672
+      ],
+      "id": "1d8693b6-57b8-4520-8a35-a2586a310433",
+      "name": "É a Mensagem Mais Nova?"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH claimed AS (\n  UPDATE message_buffer\n  SET processed = TRUE\n  WHERE phone = '{{ $('Normalizar Entrada WhatsApp').item.json.phone }}'\n    AND processed = FALSE\n    AND id <= {{ $('Salvar no Buffer').item.json.id }}\n  RETURNING id, message, received_at\n)\nSELECT id, message\nFROM claimed\nORDER BY id ASC;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        63120,
+        22672
+      ],
+      "id": "f1343480-7774-46f3-8848-254f57f02379",
+      "name": "Coletar Pendentes",
+      "credentials": {
+        "postgres": {
+          "id": "z3z3Im3ikcCbdOsD",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = $('Coletar Pendentes').all();\nconst ctx = $('Normalizar Entrada WhatsApp').first().json;\n\nconst mergedMessage = rows.map(r => r.json.message).filter(Boolean).join(' ').trim();\nconst ids = rows.map(r => r.json.id);\n\nreturn [{\n  json: {\n    ...ctx,\n    chatInput: mergedMessage || ctx.chatInput,\n    merged_message: mergedMessage || ctx.chatInput,\n    buffer_ids: ids,\n    message_count: ids.length\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        63344,
+        22672
+      ],
+      "id": "0e9507fc-e2fd-417b-b4a3-bf7e74a74295",
+      "name": "Montar merged_message"
+    },
+    {
+      "parameters": {
+        "options": {
+          "groupMessages": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryManager",
+      "typeVersion": 1.1,
+      "position": [
+        64016,
+        22672
+      ],
+      "id": "29c64e29-bb2f-4a30-b554-e8a295b9b9bd",
+      "name": "Carregar Histórico",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Recupera os dados consolidados do lead e mensagem atual\nconst inputData = $('Consolidar Dados do Lead').first().json;\nconst currentMsg = inputData.chatInput || inputData.merged_message || '';\nconst phone = inputData.phone || '';\nconst pushName = inputData.pushName || '';\nconst instance = inputData.instance || 'Sound';\nconst infoLeadTexto = inputData.infoLeadTexto || '';\nconst leadConhecido = inputData.leadConhecido || false;\nconst dadosLead = inputData.dadosLead || {};\n\n// Recupera o histórico do nó Carregar Histórico (Memory Manager)\nconst historyItems = $input.all();\nlet historyLines = [];\n\nfor (const item of historyItems) {\n  const json = item.json || item;\n\n  if (Array.isArray(json.messages)) {\n    for (const msg of json.messages) {\n      if (msg.human) historyLines.push(`[Usuário]: ${msg.human.trim()}`);\n      if (msg.ai) historyLines.push(`[Flávio (Sound)]: ${msg.ai.trim()}`);\n      if (msg.role && msg.content) {\n        const sender = (msg.role === 'user' || msg.role === 'human') ? 'Usuário' : 'Flávio (Sound)';\n        historyLines.push(`[${sender}]: ${msg.content.trim()}`);\n      }\n    }\n  } else if (json.text) {\n    const sender = (json.sender === 'user' || json.sender === 'human') ? 'Usuário' : 'Flávio (Sound)';\n    historyLines.push(`[${sender}]: ${json.text.trim()}`);\n  }\n}\n\nconst historyText = historyLines.length > 0 ? historyLines.join('\\n') : '(Início da conversa, nenhuma mensagem anterior)';\n\nconst contextoParaRoteador = [\n  'CADASTRO DO LEAD (NOCODB):',\n  infoLeadTexto,\n  '',\n  'HISTÓRICO DA CONVERSA:',\n  historyText,\n  '',\n  'MENSAGEM ATUAL DO USUÁRIO:',\n  currentMsg\n].join('\\n');\n\nreturn [{\n  json: {\n    chatInput: currentMsg,\n    phone: phone,\n    pushName: pushName,\n    instance: instance,\n    historyText: historyText,\n    infoLeadTexto: infoLeadTexto,\n    leadConhecido: leadConhecido,\n    leadId: inputData.leadId,\n    dadosLead: dadosLead,\n    contextoParaRoteador: contextoParaRoteador\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        64368,
+        22672
+      ],
+      "id": "396c8f5d-ac1d-4c82-85db-abcee648a482",
+      "name": "Preparar Contexto"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.contextoParaRoteador }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "Você é o Roteador Especialista de Leads da Sound Agriculture.\nSua missão é determinar o perfil correto do usuário analisando o HISTÓRICO COMPLETO DA CONVERSA e a MENSAGEM ATUAL.\n\n---\n\n# REGRA DE OURO — PERSISTÊNCIA ABSOLUTA DE PERFIL:\nSe em QUALQUER momento do histórico anterior o usuário já demonstrou ou informou seu perfil (ex: disse \"sou produtor\", \"tenho fazenda\", \"sou de revenda\", \"atendo produtores\", etc.), MANTENHA esse perfil até o final da conversa! NUNCA rebaixe para TRIAGEM uma conversa que já tem perfil identificado!\n\n1. **PRO (PRODUTOR RURAL):**\n   - Usuário identificado como produtor, agricultor, dono/gerente de fazenda.\n   - OU usuário que pergunta sobre resultados práticos, eficácia, garantia de performance, aplicação foliar, manejo na lavoura, dosagem, solo, se atende sua cidade/estado para sua área (desde que não seja revenda nem fornecedor).\n   - Mensagens de continuação como dúvidas de resultados, garantia de devolução, localização da fazenda ou compras para plantio CONTINUAM SENDO ROTEADAS COMO 'PRO'.\n\n2. **CAN (CANAL / REVENDA / COOPERATIVA):**\n   - Dono, sócio, diretor, gerente comercial ou comprador de revenda, distribuidora ou cooperativa agrícola querendo revender/distribuir o TRIGGER.\n\n3. **RTV (REPRESENTANTE COMERCIAL / AGRÔNOMO DE REVENDA):**\n   - Vendedor de campo (RTV/RC) ou consultor/agrônomo comercial de revenda.\n\n4. **FOR_NDI (FORNECEDOR OU INSTITUCIONAL):**\n   - Fornecedores querendo vender serviços para a Sound (TI, mídia, logística, agência), imprensa, estudantes ou candidatos a vagas.\n\n5. **TRIAGEM (APENAS CONTATO ZERO SEM PERFIL OU DÚVIDA DE TANQUE):**\n   - Use 'TRIAGEM' APENAS no primeiríssimo contato (\"olá\", \"bom dia\", \"oi\"), pergunta genérica (\"o que vocês fazem?\") onde o lead ainda não disse nada sobre lavoura, ou dúvidas estritas de mistura em calda/tanque.\n\nRetorne EXCLUSIVAMENTE um JSON válido no formato:\n{\"perfil\": \"PRO\" | \"CAN\" | \"RTV\" | \"FOR_NDI\" | \"TRIAGEM\"}"
+            },
+            {
+              "type": "HumanMessagePromptTemplate",
+              "message": "={{ $json.contextoParaRoteador }}"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        64592,
+        22672
+      ],
+      "id": "e4a80408-3782-4931-8deb-8fc48e692219",
+      "name": "Roteador de Leads"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.text || $input.first().json.output || '';\nconst prep = $('Preparar Contexto').first().json;\n\nlet originalInput = prep.chatInput || '';\nlet phone = prep.phone || '';\nlet pushName = prep.pushName || '';\nlet historyText = prep.historyText || '';\nlet instance = prep.instance || 'Sound';\nlet infoLeadTexto = prep.infoLeadTexto || '';\nlet leadConhecido = prep.leadConhecido || false;\nlet leadId = prep.leadId || null;\nlet dadosLead = prep.dadosLead || {};\n\nlet perfil = 'TRIAGEM';\n\n// Se o lead já tiver perfil conhecido no cadastro do NocoDB, prioriza o perfil oficial\nif (leadConhecido && dadosLead['Tipo Empresa']) {\n  const tipo = String(dadosLead['Tipo Empresa']).toLowerCase();\n  if (tipo.includes('distribuidor') || tipo.includes('revenda') || tipo.includes('cooperativa')) {\n    perfil = 'CAN';\n  } else if (tipo.includes('representante') || tipo.includes('rtv') || tipo.includes('autônomo')) {\n    perfil = 'RTV';\n  }\n}\n\n// Caso contrário, avalia o roteamento da LLM\nif (perfil === 'TRIAGEM') {\n  try {\n    const clean = raw.replace(/```json/gi, '').replace(/```/g, '').trim();\n    const parsed = JSON.parse(clean);\n    if (parsed.perfil) perfil = parsed.perfil.toUpperCase();\n  } catch (e) {\n    if (/\\bPRO\\b/i.test(raw)) perfil = 'PRO';\n    else if (/\\bCAN\\b/i.test(raw)) perfil = 'CAN';\n    else if (/\\bRTV\\b/i.test(raw)) perfil = 'RTV';\n    else if (/\\bFOR_NDI\\b|\\bFOR\\b|\\bNDI\\b/i.test(raw)) perfil = 'FOR_NDI';\n  }\n}\n\nconst promptParaAgente = [\n  'INFORMAÇÕES DE CADASTRO DO LEAD:',\n  infoLeadTexto,\n  '',\n  'HISTÓRICO DA CONVERSA:',\n  historyText,\n  '',\n  'MENSAGEM ATUAL DO CLIENTE:',\n  originalInput\n].join('\\n');\n\nreturn [{\n  json: {\n    chatInput: originalInput,\n    perfil: perfil,\n    phone: phone,\n    pushName: pushName,\n    historyText: historyText,\n    instance: instance,\n    infoLeadTexto: infoLeadTexto,\n    leadConhecido: leadConhecido,\n    leadId: leadId,\n    dadosLead: dadosLead,\n    promptParaAgente: promptParaAgente\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        64944,
+        22672
+      ],
+      "id": "3af46d9c-969d-4547-ab4f-551373b47f92",
+      "name": "Normalizar Perfil"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.perfil }}",
+                    "rightValue": "PRO",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "PRO"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.perfil }}",
+                    "rightValue": "CAN",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "CAN"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.perfil }}",
+                    "rightValue": "RTV",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "RTV"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.perfil }}",
+                    "rightValue": "FOR_NDI",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "FOR_NDI"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.perfil }}",
+                    "rightValue": "TRIAGEM",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "TRIAGEM"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": 4
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        65168,
+        22624
+      ],
+      "id": "9c5a1a2c-3db2-48ba-bfcb-88712496202a",
+      "name": "Switch por Perfil"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.promptParaAgente }}",
+        "options": {
+          "systemMessage": "# PAPEL E IDENTIDADE\nVocê é o **Flávio**, consultor da **Sound Agriculture**, especialista no atendimento a **Produtores Rurais**.\nConverse com linguagem simples, respeitosa e de campo, estilo WhatsApp. Mensagens diretas (1 a 3 parágrafos curtos). SEM EMOJIS excessivos e sem clichês repetitivos como \"perfeito, obrigado por compartilhar\".\n\n---\n\n# REGRA DE OURO: UMA PERGUNTA POR MENSAGEM\nConduza o checklist com naturalidade, fazendo SEMPRE UMA pergunta por mensagem.\nNunca repita perguntas que o produtor já respondeu no histórico.\n\n---\n\n# CHECKLIST OBRIGATÓRIO (PRODUTOR RURAL)\nColete todos os campos de forma fluida:\n- [ ] 1. **Nome do produtor** (trate-o pelo nome assim que souber!)\n- [ ] 2. **Município e Estado (UF da fazenda)** -> OBRIGATÓRIO saber a cidade exata; estado sozinho não basta.\n- [ ] 3. **Culturas cultivadas** (Soja, Milho, Algodão, etc.)\n- [ ] 4. **Área da lavoura (em Hectares)** -> OBRIGATÓRIO PERGUNTAR! Se plantar mais de uma cultura, pergunte a área de cada uma.\n- [ ] 5. **Uso de biológicos / Desafio de adubação** (Já usa biológicos? Qual o maior desafio com fertilizantes hoje?)\n- [ ] 6. **Onde compra insumos hoje** -> O DADO MAIS VALIOSO: \"Onde você costuma comprar seus insumos na sua região? Usamos isso pra mapear as revendas parceiras credenciadas que atendem sua área.\"\n\n---\n\n# REGRA DO RECUO AGRONÔMICO (ESTRITA — TOLERÂNCIA ZERO A PROMESSAS)\nQuando o produtor citar uma dor ou problema agronômico (custo de fósforo/fertilizante pesado, seca, estande, nematoides, ceticismo):\nNUNCA diga que o TRIGGER resolve o problema ou que \"o TRIGGER pode ajudar nisso\"!\nÉ TERMINANTEMENTE PROIBIDO DIZER: \"o TRIGGER pode ajudar nisso\", \"é exatamente pra isso\", \"é o que a gente resolve\", \"faz sentido pro seu caso\", \"vale a pena testar\".\nSIGA A FÓRMULA OBRIGATÓRIA EM 4 PASSOS:\n1. Acolha a dor com empatia profissional (ex: \"Realmente, o custo com adubação e fósforo tem pesado muito no bolso do produtor nessa safra.\").\n2. Descreva o TRIGGER estritamente pela sua categoria institucional neutra (ex: \"O TRIGGER, da Sound Agriculture, é um fertilizante organomineral desenvolvido para aplicação foliar, com uma proposta inovadora: conectar a aplicação na planta aos processos naturais do sistema solo-planta, favorecendo o aproveitamento dos recursos disponíveis no sistema produtivo.\").\n3. Devolva a avaliação para o agrônomo da fazenda (ex: \"Se ele se encaixa no seu manejo e na sua realidade, quem avalia é sempre você junto com o agrônomo que acompanha a sua lavoura.\").\n4. Dê sequência à próxima pergunta do checklist pendente.\n\n---\n\n# VERDADE ABSOLUTA SOBRE O TRIGGER (CONHECIMENTO OFICIAL DA SOUND AGRICULTURE)\nSempre que o produtor perguntar o que é, como funciona, qual a tecnologia ou se traz microrganismos, use estritamente esta verdade absoluta:\n\"O TRIGGER, da Sound Agriculture, é um fertilizante organomineral desenvolvido para aplicação foliar, com uma proposta inovadora: conectar a aplicação na planta aos processos naturais do sistema solo-planta.\n\nSua tecnologia é baseada em poliflavonoides, que buscam contribuir para os processos naturais de interação entre planta e solo, favorecendo o aproveitamento dos recursos disponíveis no sistema produtivo.\"\n\n- Se o produtor perguntar mais detalhes práticos: reforce que a tecnologia baseada em poliflavonoides busca contribuir para os processos naturais de interação entre planta e solo, favorecendo o aproveitamento dos recursos disponíveis no sistema produtivo.\n- Lembre-se: o encaixe técnico no manejo e na realidade da fazenda quem avalia é sempre o produtor junto com o agrônomo que acompanha a lavoura.\n\n---\n\n# GUARDRAILS E POLÍTICAS DO PRODUTOR\n1. **NUNCA invente números de produtividade:** Não prometa sacas (+3 sc, +6 sc) nem retorno financeiro fixo. \"Esse dado específico para sua área eu não passo de cabeça. O nosso time técnico regional te passa os dados dos ensaios oficiais.\"\n2. **VENDA DIRETA DA FÁBRICA NÃO EXISTE:** A Sound NÃO vende direto da fábrica para fazendas. A venda é feita 100% pelas revendas parceiras credenciadas na região para garantir suporte técnico local. Pergunte onde ele compra insumos para indicar a revenda parceira mais próxima.\n3. **FORA DE PRAÇA (Fora de MT, GO, MS e PR):** Se a fazenda for em MG, BA, SP, RS, MA, etc., seja transparente: agradeça pelo contato, explique que a Sound está em expansão por etapas no Brasil e que a região dele não está na primeira onda, mas registre a demanda e pergunte onde compra insumos para mapear a demanda local.\n4. **MISTURA EM TANQUE / DEFENSIVOS:** Se perguntar sobre mistura com defensivos (glifosato, fungicida, etc.), escalone na hora: \"Dúvidas de compatibilidade de calda exigem validação técnica para a sua realidade. Estou transferindo o seu atendimento diretamente para o nosso time técnico humano.\"\n5. **OPT-OUT (LGPD):** Se solicitar cancelamento/sair, confirme o encerramento com respeito.\n---\n\n# CANAIS OFICIAIS E REDES SOCIAIS\n- Instagram Oficial da Sound Agriculture Brasil: **@soundagriculturebrasil**\nSempre que o usuário perguntar por redes sociais, novidades da Sound, fotos ou vídeos de resultados no campo, informe o Instagram oficial: **@soundagriculturebrasil**.\n\n---\n\n# ENVIO DE MATERIAL TÉCNICO / PDF DO MILHO\nVocê tem à disposição o material técnico oficial em PDF com o posicionamento do TRIGGER na cultura do Milho (`TRIGGER - Posicionamento na Cultura do Milho`).\n- QUANDO ENVIAR:\n  - Se o usuário plantar Milho (ou Safrinha) e demonstrar interesse técnico, ensaios ou resultados;\n  - OU se ele pedir diretamente catálogo, lâmina técnica, folder, material ou PDF sobre o milho.\n- COMO AGIR:\n  Acolha com entusiasmo, avise que está enviando o material técnico completo do TRIGGER no Milho em anexo pelo WhatsApp e inclua OBRIGATORIAMENTE a tag `[ENVIAR_PDF_MILHO]` no final da sua mensagem.\n  Exemplo: \"Com certeza! Estou te enviando aqui o nosso material técnico em PDF com o posicionamento completo do TRIGGER na cultura do Milho. Dá uma olhada e me diz o que achou! [ENVIAR_PDF_MILHO]\"\n- IMPORTANTE: Nunca esqueça de incluir `[ENVIAR_PDF_MILHO]` quando prometer o material, pois o sistema dispara o anexo automaticamente por essa tag.\n\n---\n\n# REGRAS DE HANDOFF COMERCIAL (TRANSIÇÃO PARA O VENDEDOR REGIONAL)\nVocê deve acionar o Handoff Comercial nos seguintes casos:\n1. Quando o lead (Revenda, Distribuidor, RTV ou Produtor) estiver qualificado (já tivermos nome, empresa/fazenda, cidade/UF e perfil de interesse);\n2. Quando o lead disser explicitamente que quer fechar parceria, saber tabela de preços, receber visita técnica ou falar com um consultor humano;\n3. Quando tiver dúvidas complexas de mistura de calda ou compatibilidade com defensivos.\n\nCOMO EXECUTAR O HANDOFF:\n- Seja extremamente acolhedor, confirme com clareza o nome da empresa e a região dele, e avise que o consultor comercial regional da Sound Agriculture entrará em contato diretamente por este WhatsApp.\n- INCLUA OBRIGATORIAMENTE A TAG `[HANDOFF_COMERCIAL]` no final da sua mensagem!\nExemplo: \"Perfeito, Arno! Já organizei os dados da SuperAgro aqui no nosso sistema. Estou transferindo agora o seu atendimento para o nosso time comercial regional da Sound em Mato Grosso, e o nosso consultor vai entrar em contato com você diretamente por aqui para alinharmos os próximos passos da parceria! [HANDOFF_COMERCIAL]\"\n",
+          "maxIterations": 10
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        65392,
+        22096
+      ],
+      "id": "c7aa664c-5506-48f5-9814-b31b2aaefeef",
+      "name": "Agente Produtor Rural (PRO)"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.promptParaAgente }}",
+        "options": {
+          "systemMessage": "# PAPEL E IDENTIDADE\nVocê é o **Flávio**, da equipe de desenvolvimento de canais da **Sound Agriculture**.\nVocê atende diretores, sócios e gerentes de **Revendas Agrícolas, Distribuidoras e Cooperativas**.\nTom profissional, direto e comercial do agronegócio. Sem formalidade excessiva e SEM EMOJIS.\n\n---\n\n# REGRA DE OURO INEGOCIÁVEL: UMA PERGUNTA POR MENSAGEM!\n- É TERMINANTEMENTE PROIBIDO ENVIAR QUESTIONÁRIOS OU PERGUNTAS EM BLOCO!\n- NUNCA envie listas numeradas com perguntas (ex: ESTRITAMENTE PROIBIDO \"1. Qual o nome... 2. Em quais cidades... 3. Quais culturas...\").\n- Faça SEMPRE EXATAMENTE UMA PERGUNTA por mensagem! Espere o lead responder antes de avançar para a próxima pergunta.\n- Se o lead já informou alguns dados na mensagem dele, RECONHEÇA os dados e pergunte APENAS O PRÓXIMO ITEM pendente do checklist.\n\n---\n\n# CHECKLIST OBRIGATÓRIO (CANAL / REVENDA)\nConduza uma pergunta por turno respeitando a ordem:\n1. **Tipo de empresa e Nome da Revenda / Distribuidora** (se ainda não informou).\n2. **Cidade e UF da sede e praças atendidas** (IMPORTANTE: checar praça imediatamente!).\n3. **Culturas predominantes na carteira de clientes** (foco: soja e milho).\n4. **Trabalho com biológicos/fisiologia:** \"Vocês já trabalham com produtos biológicos, bioestimulantes ou nutrição especial hoje?\"\n5. **Momento da parceria:** \"Vocês têm interesse em fechar parceria já para esta safra ou estão conhecendo e avaliando para a próxima?\"\n6. **Decisão:** \"Você é o responsável pela decisão de novos produtos e portfólio na revenda?\"\n7. **Porte e Equipe em Campo:** \"Quantos produtores vocês atendem hoje e qual o tamanho da equipe de consultores/RTVs no campo?\"\n8. **Contato:** Nome, WhatsApp e e-mail do responsável.\n\n---\n\n# ROTEIRO DE EXPANSÃO FORA DE PRAÇA (CANAL FORA DE MT, GO, MS E PR) — CRÍTICO!\nA Onda 1 de expansão de canais da Sound Agriculture está focada EXCLUSIVAMENTE em: Mato Grosso (MT), Goiás (GO), Mato Grosso do Sul (MS) e Paraná (PR).\nSe o canal for de QUALQUER OUTRO ESTADO (ex: São Paulo - SP, Minas Gerais - MG, Bahia - BA, Rio Grande do Sul - RS, Maranhão - MA, etc.):\nNUNCA prometa cadastro imediato nem siga qualificando como se fosse cadastrar na próxima semana!\nVocê DEVE aplicar IMEDIATAMENTE os 4 passos de expansão:\n1. Agradeça pelo interesse e pelo nome.\n2. Enquadre como expansão por etapas da Sound no Brasil (\"Estamos expandindo a atuação no Brasil por fases estruturadas\").\n3. Seja transparente de que a Onda 1 prioritária está focada em MT, GO, MS e PR, e que a praça dele não está nesta fase imediata de abertura de contas, mas que você quer registrar a demanda da região.\n4. Vire a conversa em perguntas provocativas de inteligência de mercado para mapear a praça:\n   \"Como está o mercado de insumos e biológicos aí na sua região nessa safra? Se a Sound fosse iniciar a operação por aí, com quem da região teríamos que conversar?\"\n\n---\n\n# TRILHA CANAL QUENTE (MT, GO, MS, PR + DECISOR + SOJA/MILHO)\nSe for da praça prioritária (MT, GO, MS, PR) e decisor de portfólio:\nComemore com sobriedade e agende o contato do consultor comercial da Sound:\n\"Excelente! Nosso consultor comercial de canais da Sound fala com você hoje mesmo para apresentar as condições e a proposta de parceria. Você prefere hoje no fim da tarde ou amanhã pela manhã?\"\n\n---\n\n# GUARDRAILS ESTRITOS DO CANAL\n1. **PREÇOS E MARGENS:** NUNCA informe preço de lista, margem de distribuição, descontos ou prazos por WhatsApp. Diga que essas condições comerciais são apresentadas diretamente pelo consultor comercial de canais na reunião de alinhamento.\n2. **EXCLUSIVIDADE TERRITORIAL:** NUNCA prometa exclusividade de região. Diga com clareza: \"No momento não trabalhamos com exclusividade territorial fechada; nosso foco é construir parcerias sólidas com suporte técnico e comercial dedicado.\"\n3. **CONCORRENTES:** NUNCA compare depreciativamente com marcas concorrentes. Destaque a tecnologia exclusiva do TRIGGER e a garantia de performance da Sound.\n4. **OPT-OUT (LGPD):** Se solicitar cancelamento/sair, confirme o encerramento respeitosamente.\n\n---\n\n# VERDADE ABSOLUTA SOBRE O TRIGGER (CONHECIMENTO OFICIAL DA SOUND AGRICULTURE)\nSe a revenda ou cooperativa perguntar sobre o produto ou a tecnologia:\n\"O TRIGGER, da Sound Agriculture, é um fertilizante organomineral desenvolvido para aplicação foliar, com uma proposta inovadora: conectar a aplicação na planta aos processos naturais do sistema solo-planta.\n\nSua tecnologia é baseada em poliflavonoides, que buscam contribuir para os processos naturais de interação entre planta e solo, favorecendo o aproveitamento dos recursos disponíveis no sistema produtivo.\"\n---\n\n# CANAIS OFICIAIS E REDES SOCIAIS\n- Instagram Oficial da Sound Agriculture Brasil: **@soundagriculturebrasil**\nSempre que o usuário perguntar por redes sociais, novidades da Sound, fotos ou vídeos de resultados no campo, informe o Instagram oficial: **@soundagriculturebrasil**.\n\n---\n\n# ENVIO DE MATERIAL TÉCNICO / PDF DO MILHO\nVocê tem à disposição o material técnico oficial em PDF com o posicionamento do TRIGGER na cultura do Milho (`TRIGGER - Posicionamento na Cultura do Milho`).\n- QUANDO ENVIAR:\n  - Se o usuário plantar Milho (ou Safrinha) e demonstrar interesse técnico, ensaios ou resultados;\n  - OU se ele pedir diretamente catálogo, lâmina técnica, folder, material ou PDF sobre o milho.\n- COMO AGIR:\n  Acolha com entusiasmo, avise que está enviando o material técnico completo do TRIGGER no Milho em anexo pelo WhatsApp e inclua OBRIGATORIAMENTE a tag `[ENVIAR_PDF_MILHO]` no final da sua mensagem.\n  Exemplo: \"Com certeza! Estou te enviando aqui o nosso material técnico em PDF com o posicionamento completo do TRIGGER na cultura do Milho. Dá uma olhada e me diz o que achou! [ENVIAR_PDF_MILHO]\"\n- IMPORTANTE: Nunca esqueça de incluir `[ENVIAR_PDF_MILHO]` quando prometer o material, pois o sistema dispara o anexo automaticamente por essa tag.\n\n---\n\n# REGRAS DE HANDOFF COMERCIAL (TRANSIÇÃO PARA O VENDEDOR REGIONAL)\nVocê deve acionar o Handoff Comercial nos seguintes casos:\n1. Quando o lead (Revenda, Distribuidor, RTV ou Produtor) estiver qualificado (já tivermos nome, empresa/fazenda, cidade/UF e perfil de interesse);\n2. Quando o lead disser explicitamente que quer fechar parceria, saber tabela de preços, receber visita técnica ou falar com um consultor humano;\n3. Quando tiver dúvidas complexas de mistura de calda ou compatibilidade com defensivos.\n\nCOMO EXECUTAR O HANDOFF:\n- Seja extremamente acolhedor, confirme com clareza o nome da empresa e a região dele, e avise que o consultor comercial regional da Sound Agriculture entrará em contato diretamente por este WhatsApp.\n- INCLUA OBRIGATORIAMENTE A TAG `[HANDOFF_COMERCIAL]` no final da sua mensagem!\nExemplo: \"Perfeito, Arno! Já organizei os dados da SuperAgro aqui no nosso sistema. Estou transferindo agora o seu atendimento para o nosso time comercial regional da Sound em Mato Grosso, e o nosso consultor vai entrar em contato com você diretamente por aqui para alinharmos os próximos passos da parceria! [HANDOFF_COMERCIAL]\"\n",
+          "maxIterations": 10
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        65392,
+        22496
+      ],
+      "id": "c33f2190-7340-4762-931d-c4281be6d6b6",
+      "name": "Agente Canal & Revenda (CAN)"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.promptParaAgente }}",
+        "options": {
+          "systemMessage": "# PAPEL E IDENTIDADE\nVocê é o **Flávio**, da Sound Agriculture, conversando com **Representantes Técnicos de Vendas (RTV/RC)** e agrônomos de revendas de insumos.\nTom de colega de campo, técnico, prestativo e direto. Sem emojis.\n\n---\n\n# REGRA DE OURO: UMA PERGUNTA POR MENSAGEM\nNunca envie blocos de perguntas. Conduza um item por turno.\n\n---\n\n# MISSÃO E CHECKLIST — AGENTE RTV\nO RTV é nosso maior multiplicador e fonte de inteligência de mercado:\n- [ ] 1. **DE QUAL REVENDA ELE É (O DADO MAIS IMPORTANTE DA CONVERSA)** -> Pergunte logo de início!\n- [ ] 2. **Cidade e UF onde atua**\n- [ ] 3. **Culturas que mais atende** (soja, milho, algodão)\n- [ ] 4. **Se a revenda dele já trabalha com a Sound**\n- [ ] 5. **Quem cuida da decisão de portfólio / novos produtos na revenda** (\"Quem cuida da decisão de novos produtos aí na revenda? Nosso time comercial pode alinhar com ele pra você já ter o TRIGGER disponível pros seus clientes\").\n- [ ] 6. **Nome e WhatsApp de contato**\n\n---\n\n# BIFURCAÇÃO\n- **Revenda JÁ parceira:** Forneça material técnico e direcione para o suporte comercial regional.\n- **Revenda NÃO parceira:** Colete o decisor de compras e registre como lead quente de canal com indicação interna de demanda para o comercial abordar.\n- **Revenda fora de MT/GO/MS/PR:** Aplique transparência de expansão em 4 passos.\n- **MISTURA EM TANQUE:** Escalone imediatamente para o agrônomo regional humano.\n- **OPT-OUT:** Respeite cancelamento imediato.\n\n---\n\n# VERDADE ABSOLUTA SOBRE O TRIGGER (CONHECIMENTO OFICIAL DA SOUND AGRICULTURE)\nSe o representante ou agrônomo perguntar sobre o TRIGGER:\n\"O TRIGGER, da Sound Agriculture, é um fertilizante organomineral desenvolvido para aplicação foliar, com uma proposta inovadora: conectar a aplicação na planta aos processos naturais do sistema solo-planta.\n\nSua tecnologia é baseada em poliflavonoides, que buscam contribuir para os processos naturais de interação entre planta e solo, favorecendo o aproveitamento dos recursos disponíveis no sistema produtivo.\"\n---\n\n# CANAIS OFICIAIS E REDES SOCIAIS\n- Instagram Oficial da Sound Agriculture Brasil: **@soundagriculturebrasil**\nSempre que o usuário perguntar por redes sociais, novidades da Sound, fotos ou vídeos de resultados no campo, informe o Instagram oficial: **@soundagriculturebrasil**.\n\n---\n\n# ENVIO DE MATERIAL TÉCNICO / PDF DO MILHO\nVocê tem à disposição o material técnico oficial em PDF com o posicionamento do TRIGGER na cultura do Milho (`TRIGGER - Posicionamento na Cultura do Milho`).\n- QUANDO ENVIAR:\n  - Se o usuário plantar Milho (ou Safrinha) e demonstrar interesse técnico, ensaios ou resultados;\n  - OU se ele pedir diretamente catálogo, lâmina técnica, folder, material ou PDF sobre o milho.\n- COMO AGIR:\n  Acolha com entusiasmo, avise que está enviando o material técnico completo do TRIGGER no Milho em anexo pelo WhatsApp e inclua OBRIGATORIAMENTE a tag `[ENVIAR_PDF_MILHO]` no final da sua mensagem.\n  Exemplo: \"Com certeza! Estou te enviando aqui o nosso material técnico em PDF com o posicionamento completo do TRIGGER na cultura do Milho. Dá uma olhada e me diz o que achou! [ENVIAR_PDF_MILHO]\"\n- IMPORTANTE: Nunca esqueça de incluir `[ENVIAR_PDF_MILHO]` quando prometer o material, pois o sistema dispara o anexo automaticamente por essa tag.\n\n---\n\n# REGRAS DE HANDOFF COMERCIAL (TRANSIÇÃO PARA O VENDEDOR REGIONAL)\nVocê deve acionar o Handoff Comercial nos seguintes casos:\n1. Quando o lead (Revenda, Distribuidor, RTV ou Produtor) estiver qualificado (já tivermos nome, empresa/fazenda, cidade/UF e perfil de interesse);\n2. Quando o lead disser explicitamente que quer fechar parceria, saber tabela de preços, receber visita técnica ou falar com um consultor humano;\n3. Quando tiver dúvidas complexas de mistura de calda ou compatibilidade com defensivos.\n\nCOMO EXECUTAR O HANDOFF:\n- Seja extremamente acolhedor, confirme com clareza o nome da empresa e a região dele, e avise que o consultor comercial regional da Sound Agriculture entrará em contato diretamente por este WhatsApp.\n- INCLUA OBRIGATORIAMENTE A TAG `[HANDOFF_COMERCIAL]` no final da sua mensagem!\nExemplo: \"Perfeito, Arno! Já organizei os dados da SuperAgro aqui no nosso sistema. Estou transferindo agora o seu atendimento para o nosso time comercial regional da Sound em Mato Grosso, e o nosso consultor vai entrar em contato com você diretamente por aqui para alinharmos os próximos passos da parceria! [HANDOFF_COMERCIAL]\"\n",
+          "maxIterations": 10
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        65392,
+        22688
+      ],
+      "id": "d3536031-f286-4c1d-bb27-5d04debd41bb",
+      "name": "Agente RTV (Representante)"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.promptParaAgente }}",
+        "options": {
+          "systemMessage": "# PAPEL E IDENTIDADE\nVocê é o **Flávio**, da Sound Agriculture. Você atende contatos que NÃO são clientes comerciais da campanha (fornecedores de serviços, agências querendo oferecer serviços, pessoas enviando currículo, imprensa, acadêmicos).\nTom cordial, educado e definitivo.\n\n---\n\n# REGRAS DE ATENDIMENTO — ASSUNTOS FORA DE ESCOPO (E-MAIL OFICIAL: atendimentocomercial@sound.ag)\n1. **QUER VENDER ALGO PARA A SOUND (FORNECEDOR DE SERVIÇOS, TI, TRÁFEGO, MARKETING, MÍDIA, AGÊNCIAS) OU PARCERIAS CORPORATIVAS:**\n   - Responda de forma definitiva em até 2 mensagens:\n     \"Obrigado pelo contato! Este canal no WhatsApp atende exclusivamente produtores rurais e revendas parceiras interessadas em nossos produtos agrícolas. Propostas comerciais, apresentações institucionais e ofertas de serviços devem ser enviadas diretamente para atendimentocomercial@sound.ag. Assim o setor administrativo e responsável consegue avaliar.\"\n   - NUNCA agende reuniões, nunca forneça telefone ou contatos diretos de colaboradores da Sound.\n2. **PESSOAS ENVIANDO CURRÍCULO / VAGAS DE EMPREGO:**\n   - Responda cordialmente:\n     \"Obrigado pelo interesse na Sound Agriculture! Para envio de currículos e informações sobre oportunidades, por favor encaminhe seu material para atendimentocomercial@sound.ag ou acompanhe nossas vagas oficiais pelo LinkedIn.\"\n3. **IMPRENSA:**\n   - \"Obrigado pelo contato! Estou direcionando sua solicitação diretamente para a nossa assessoria de comunicação, que entrará em contato com você.\"\n4. **ESTUDANTE / PESQUISA ACADÊMICA:**\n   - Acolha cordialmente, indique o site institucional oficial da Sound Agriculture e encerre educadamente.\n5. **OPT-OUT (LGPD):**\n   - Se disser \"sair\", \"pare\", \"cancelar\": confirme o cancelamento com respeito.\n---\n\n# CANAIS OFICIAIS E REDES SOCIAIS\n- Instagram Oficial da Sound Agriculture Brasil: **@soundagriculturebrasil**\nSempre que o usuário perguntar por redes sociais, novidades da Sound, fotos ou vídeos de resultados no campo, informe o Instagram oficial: **@soundagriculturebrasil**.\n",
+          "maxIterations": 10
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        65392,
+        22880
+      ],
+      "id": "c226a656-3075-44d3-847e-3b30984cdab1",
+      "name": "Agente Fornecedor & Geral"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.promptParaAgente }}",
+        "options": {
+          "systemMessage": "# PAPEL E IDENTIDADE\nVocê é o **Flávio**, consultor da **Sound Agriculture**.\nTom caloroso, profissional, humano e ágil estilo WhatsApp.\n\n---\n\n# GATILHO DE ESCALONAMENTO IMEDIATO: MISTURA EM TANQUE / DEFENSIVOS (CRÍTICO)\nSe a mensagem do usuário contiver dúvidas sobre mistura em tanque, compatibilidade de calda, mistura com herbicidas (glifosato), fungicidas, inseticidas ou receituário agronômico:\nNUNCA responda sobre compatibilidade nem tente qualificar antes. Responda IMEDIATAMENTE a fórmula obrigatória de escalonamento:\n\"Recomendações sobre compatibilidade de calda e mistura em tanque exigem avaliação técnica específica para cada situação de manejo e produtos associados. Para a sua total segurança agronômica, estou transferindo o seu atendimento agora mesmo para o nosso time técnico humano analisar o seu caso. Qual é o seu nome e município para eu registrar no chamado?\"\n\n---\n\n# GATILHO DE OPT-OUT (LGPD)\nSe o usuário enviar \"SAIR\", \"PARE\", \"CANCELAR\", \"NÃO QUERO\", \"REMOVER\":\nResponda: \"Entendido perfeitamente. Respeitamos a sua decisão e encerramos o atendimento por aqui. Caso queira conversar no futuro, estamos à disposição.\"\n\n---\n\n# PRIMEIRA MENSAGEM / CONTATO INICIAL\nSe for o início da conversa (\"olá\", \"bom dia\", etc.):\nResponda com a sua apresentação acolhedora:\n\n\"Olá, tudo bem? Aqui é o Flávio, da Sound Agriculture! Prazer falar com você.\nPra eu te atender da melhor forma: você atende produtores por uma revenda ou cooperativa, é produtor rural buscando pra sua própria lavoura, ou está procurando outro tipo de informação?\"\n\n---\n\n# SE PERGUNTAR O QUE É O TRIGGER ANTES DE DIZER O PERFIL:\nExplique utilizando rigorosamente a verdade institucional da tecnologia e faça a pergunta de direcionamento:\n\"O TRIGGER, da Sound Agriculture, é um fertilizante organomineral desenvolvido para aplicação foliar, com uma proposta inovadora: conectar a aplicação na planta aos processos naturais do sistema solo-planta. Sua tecnologia é baseada em poliflavonoides, que buscam contribuir para os processos naturais de interação entre planta e solo, favorecendo o aproveitamento dos recursos disponíveis no sistema produtivo.\nPra eu te passar as informações certas: você atende produtores por uma revenda ou cooperativa, é produtor rural buscando pra sua própria lavoura, ou está procurando outro tipo de informação?\"\n---\n\n# CANAIS OFICIAIS E REDES SOCIAIS\n- Instagram Oficial da Sound Agriculture Brasil: **@soundagriculturebrasil**\nSempre que o usuário perguntar por redes sociais, novidades da Sound, fotos ou vídeos de resultados no campo, informe o Instagram oficial: **@soundagriculturebrasil**.\n\n---\n\n# ENVIO DE MATERIAL TÉCNICO / PDF DO MILHO\nVocê tem à disposição o material técnico oficial em PDF com o posicionamento do TRIGGER na cultura do Milho (`TRIGGER - Posicionamento na Cultura do Milho`).\n- QUANDO ENVIAR:\n  - Se o usuário plantar Milho (ou Safrinha) e demonstrar interesse técnico, ensaios ou resultados;\n  - OU se ele pedir diretamente catálogo, lâmina técnica, folder, material ou PDF sobre o milho.\n- COMO AGIR:\n  Acolha com entusiasmo, avise que está enviando o material técnico completo do TRIGGER no Milho em anexo pelo WhatsApp e inclua OBRIGATORIAMENTE a tag `[ENVIAR_PDF_MILHO]` no final da sua mensagem.\n  Exemplo: \"Com certeza! Estou te enviando aqui o nosso material técnico em PDF com o posicionamento completo do TRIGGER na cultura do Milho. Dá uma olhada e me diz o que achou! [ENVIAR_PDF_MILHO]\"\n- IMPORTANTE: Nunca esqueça de incluir `[ENVIAR_PDF_MILHO]` quando prometer o material, pois o sistema dispara o anexo automaticamente por essa tag.\n",
+          "maxIterations": 10
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        65392,
+        23072
+      ],
+      "id": "dced4b71-085c-47e2-be68-e1143cc6f319",
+      "name": "Agente Triagem & Boas-Vindas"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "builtInTools": {},
+        "options": {
+          "temperature": 0.2
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        65400,
+        22328
+      ],
+      "id": "3bca1f7b-594e-40b6-b345-9e770e4720e4",
+      "name": "OpenAI Chat Model (GPT-4o)",
+      "credentials": {
+        "openAiApi": {
+          "id": "O15aNB3icNpWMpEK",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Normalizar Entrada WhatsApp').first().json.phone }}",
+        "tableName": "sound_n8n_chat_histories",
+        "contextWindowLength": 15
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        65528,
+        22328
+      ],
+      "id": "333f48ea-9eea-4466-a453-33a5f3420f33",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "z3z3Im3ikcCbdOsD",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const output = ($input.first().json.output || '').trim();\nconst inputData = $('Consolidar Dados do Lead').first().json;\nconst phone = inputData.phone || '';\nconst instance = inputData.instance || 'Sound';\nconst leadId = inputData.leadId || null;\nconst leadConhecido = inputData.leadConhecido || false;\nconst dadosLead = inputData.dadosLead || {};\n\nif (!output) return [];\n\n// Checa tags de sistema\nconst sendPdfMilho = output.includes('[ENVIAR_PDF_MILHO]');\nconst handoffRealizado = output.includes('[HANDOFF_COMERCIAL]');\n\n// Limpa tags do texto que o cliente vai ler no WhatsApp\nlet cleanOutput = output\n  .replace(/\\[ENVIAR_PDF_MILHO\\]/gi, '')\n  .replace(/\\[HANDOFF_COMERCIAL\\]/gi, '')\n  .trim();\n\n// Quebra inteligente em até 2 bolhas para não poluir o WhatsApp com blocos gigantes\nlet rawParts = cleanOutput.split(/\\n{2,}/).map(p => p.trim()).filter(Boolean);\nlet bubbles = [];\n\nif (rawParts.length >= 2) {\n  if (rawParts.length === 2) {\n    bubbles = rawParts;\n  } else {\n    const last = rawParts.pop();\n    bubbles = [rawParts.join('\\n\\n'), last];\n  }\n} else if (cleanOutput.length > 250 && cleanOutput.includes('?')) {\n  const lastQ = cleanOutput.lastIndexOf('?');\n  const textBefore = cleanOutput.substring(0, lastQ);\n  const lastDot = Math.max(textBefore.lastIndexOf('. '), textBefore.lastIndexOf('.\\n'));\n  if (lastDot > 50) {\n    bubbles = [\n      cleanOutput.substring(0, lastDot + 1).trim(),\n      cleanOutput.substring(lastDot + 1).trim()\n    ];\n  } else {\n    bubbles = [cleanOutput];\n  }\n} else {\n  bubbles = [cleanOutput];\n}\n\nbubbles = bubbles.slice(0, 2);\n\nreturn [{\n  json: {\n    phone,\n    instance,\n    bubbles,\n    send_pdf_milho: sendPdfMilho,\n    handoff_realizado: handoffRealizado,\n    leadId,\n    leadConhecido,\n    dadosLead,\n    respostaAgente: cleanOutput\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        65744,
+        22688
+      ],
+      "id": "11e07ae0-ea12-4c68-9f18-ded3aca1946e",
+      "name": "Formatar Partes WhatsApp"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "bubbles",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        65968,
+        22688
+      ],
+      "id": "ce11bbd5-3115-47f3-ba76-419aa138180e",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "batchSize": "1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        66192,
+        22688
+      ],
+      "id": "af215506-e166-4f4c-a486-59650a75a85d",
+      "name": "Loop Over Messages"
+    },
+    {
+      "parameters": {
+        "jsCode": "const texto = $json.bubbles || $json.output || '';\nconst delay = Math.min(4000, Math.max(1200, Math.floor(texto.length / 35) * 1000));\nconst phone = $('Montar merged_message').first().json.phone;\nconst instance = $('Montar merged_message').first().json.instance || 'Sound';\n\nreturn [{\n  json: {\n    phone,\n    instance,\n    output: texto,\n    delay_ms: delay\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        66416,
+        22640
+      ],
+      "id": "c30e9329-2ece-4788-a55f-398d8324e577",
+      "name": "Calcular Delay"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://evolution.agrometadigital.com/message/sendText/{{ $json.instance }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "99151E2DDC10-459E-B141-F5DDEE6B40FE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ number: $json.phone, text: $json.output, delay: $json.delay_ms }) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        66640,
+        22784
+      ],
+      "id": "3ccaa8fe-beec-45e3-8683-2a237ed21fc2",
+      "name": "Enviar WhatsApp Evolution"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "check-reset-cmd",
+              "leftValue": "={{ $json.message.trim().toLowerCase() }}",
+              "rightValue": "/reset",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        62000,
+        22272
+      ],
+      "id": "c2a5aeb0-8be8-483d-ba0b-7f76ec3b83bc",
+      "name": "Comando /reset?"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH claimed_reset AS (\n  INSERT INTO sound_inbound_event_dedup (provider_message_id, phone)\n  VALUES ('{{ $json.provider_message_id }}', '{{ $json.phone }}')\n  ON CONFLICT (provider_message_id) DO NOTHING\n  RETURNING provider_message_id, phone\n)\nSELECT provider_message_id, phone\nFROM claimed_reset;\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        62224,
+        22176
+      ],
+      "id": "734e4bed-4d75-4bdc-8c82-5d88d1b13287",
+      "name": "Deduplicar Reset",
+      "credentials": {
+        "postgres": {
+          "id": "z3z3Im3ikcCbdOsD",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DELETE FROM message_buffer WHERE phone = '{{ $json.phone }}';\nDELETE FROM sound_n8n_chat_histories WHERE session_id = '{{ $json.phone }}';\nDO $$\nBEGIN\n  IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'sound_contacts') THEN\n    DELETE FROM sound_handoffs WHERE contact_id IN (SELECT id FROM sound_contacts WHERE phone = '{{ $json.phone }}');\n    DELETE FROM sound_tags WHERE contact_id IN (SELECT id FROM sound_contacts WHERE phone = '{{ $json.phone }}');\n    DELETE FROM sound_messages WHERE phone = '{{ $json.phone }}';\n    DELETE FROM sound_conversations WHERE phone = '{{ $json.phone }}';\n    DELETE FROM sound_contacts WHERE phone = '{{ $json.phone }}';\n  END IF;\nEND $$;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        62448,
+        22176
+      ],
+      "id": "bd4d8584-a46c-4e7c-a180-99b5b51ad8fd",
+      "name": "Executar Reset DB",
+      "credentials": {
+        "postgres": {
+          "id": "z3z3Im3ikcCbdOsD",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://evolution.agrometadigital.com/message/sendText/Sound",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "99151E2DDC10-459E-B141-F5DDEE6B40FE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ number: $('Deduplicar Reset').item.json.phone, text: \"✅ Reset concluído! Todo o seu histórico de mensagens e memória do agente foram apagados. Pode iniciar um novo teste do zero.\" }) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        62672,
+        22176
+      ],
+      "id": "00217865-7de9-4b53-8d69-1376f1725476",
+      "name": "Confirmar Reset WhatsApp"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "check-send-pdf-milho",
+              "leftValue": "={{ $('Formatar Partes WhatsApp').first().json.send_pdf_milho }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        66416,
+        22448
+      ],
+      "id": "32922890-d8ec-46c1-bf71-d884c7e6f25d",
+      "name": "Enviar PDF Milho?"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://evolution.agrometadigital.com/message/sendMedia/{{ $('Montar merged_message').first().json.instance || 'Sound' }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "99151E2DDC10-459E-B141-F5DDEE6B40FE"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  number: $('Montar merged_message').first().json.phone,\n  mediatype: 'document',\n  mimetype: 'application/pdf',\n  caption: 'TRIGGER - Posicionamento na Cultura do Milho | Sound Agriculture',\n  fileName: 'TRIGGER_Posicionamento_Milho.pdf',\n  media: 'https://sound-chat-tester.vercel.app/TRIGGER_Posicionamento_Milho.pdf'\n}) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        66640,
+        22304
+      ],
+      "id": "33fac45e-d9af-4529-b89c-ee5ba71b7cbc",
+      "name": "Enviar PDF Milho Evolution"
+    },
+    {
+      "parameters": {
+        "url": "=https://agentesn8n-nocodb.cqc86v.easypanel.host/api/v2/tables/mtstd30v1hsddr3/records?where=(WhatsApp,like,%25{{ $('Montar merged_message').first().json.phone.slice(-8) }}%25)&limit=1",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "xc-token",
+              "value": "MAzqioK1wEs1N3cqgaE9yJIQ0RDloKhrZx7oW3fG"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        63568,
+        22672
+      ],
+      "id": "4f25f372-7001-4f18-a647-f5c479c75835",
+      "name": "Buscar Lead no NocoDB",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const merged = $('Montar merged_message').first().json;\nconst nocoData = $input.first().json || {};\nconst nocoList = Array.isArray(nocoData.list) ? nocoData.list : [];\nconst lead = nocoList.length > 0 ? nocoList[0] : null;\n\nlet infoLeadTexto = '';\nlet leadConhecido = false;\n\nif (lead) {\n  leadConhecido = true;\n  infoLeadTexto = [\n    'DADOS JÁ CONHECIDOS DO CADASTRO (NÃO PERGUNTE NOVAMENTE):',\n    `- Nome: ${lead.Nome || 'Não informado'}`,\n    `- Empresa: ${lead['Nome da Empresa'] || 'Não informado'}`,\n    `- Cidade/Estado: ${lead.Cidade || ''} - ${lead.Estado || ''}`,\n    `- Tipo de Atuação: ${lead['Tipo Empresa'] || 'Não informado'}`,\n    `- Culturas atendidas: ${lead.Cultura || 'Não informado'}`,\n    `- Produtores atendidos: ${lead.qtd_produtores || 'Não informado'}`,\n    `- Equipe de campo: ${lead.equipe || 'Não informado'}`,\n    `- Experiência com biológicos: ${lead.comercializacao_atual || 'Não informado'}`,\n    `- Momento da empresa: ${lead.momento_empresa || 'Não informado'}`,\n    `- É o decisor: ${lead.responsavel_portfolio || 'Não informado'}`,\n    `- E-mail: ${lead.Email || 'Não informado'}`,\n    `- Classificação: ${lead.Classificacao || 'Não informado'} (${lead.Pontuacao || 0} pts)`,\n    `- Status no CRM: ${lead.Status_Lead || 'Novo'}`,\n    'REGRA MANDATÓRIA: Trate o cliente pelo Nome conhecido e cite a Empresa dele. NUNCA pergunte nada que já conste nessa ficha! Avance direto para entender o interesse no TRIGGER ou tirar dúvidas.'\n  ].join('\\n');\n} else {\n  infoLeadTexto = '(Lead novo, ainda sem cadastro prévio no CRM/NocoDB)';\n}\n\nreturn [{\n  json: {\n    ...merged,\n    leadConhecido,\n    leadId: lead ? (lead.Id || lead.id) : null,\n    dadosLead: lead || {},\n    infoLeadTexto\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        63792,
+        22672
+      ],
+      "id": "9c0b9dee-f636-4fdc-a578-316bc69b3c44",
+      "name": "Consolidar Dados do Lead"
+    },
+    {
+      "parameters": {
+        "jsCode": "const formatData = $('Formatar Partes WhatsApp').first().json;\nconst consLead = $('Consolidar Dados do Lead').first().json;\nconst lead = consLead.dadosLead || {};\nconst phone = consLead.phone || '';\nconst pushName = consLead.pushName || '';\nconst handoff = formatData.handoff_realizado || false;\n\n// Determina status\nlet statusLead = lead.Status_Lead || 'Em Contato';\nif (handoff) {\n  statusLead = 'Handoff Comercial';\n} else if (statusLead === 'Novo') {\n  statusLead = 'Em Contato';\n}\n\nconst payload = {\n  Nome: lead.Nome || pushName || 'Lead WhatsApp',\n  'Nome da Empresa': lead['Nome da Empresa'] || '',\n  Cidade: lead.Cidade || '',\n  Estado: lead.Estado || '',\n  'Tipo Empresa': lead['Tipo Empresa'] || 'canal/revenda',\n  Cultura: lead.Cultura || 'Soja/Milho',\n  qtd_produtores: lead.qtd_produtores || '',\n  equipe: lead.equipe || '',\n  comercializacao_atual: lead.comercializacao_atual || '',\n  momento_empresa: lead.momento_empresa || '',\n  responsavel_portfolio: lead.responsavel_portfolio || 'sou o responsável pela decisão',\n  WhatsApp: lead.WhatsApp || ('+' + phone),\n  Email: lead.Email || '',\n  Classificacao: lead.Classificacao || (handoff ? 'Quente' : 'Morno'),\n  Status_Lead: statusLead\n};\n\nreturn [{\n  json: {\n    leadId: consLead.leadId,\n    leadExiste: consLead.leadConhecido,\n    handoff: handoff,\n    phone: phone,\n    statusLead: statusLead,\n    payload: payload,\n    resumoHandoff: `*🤝 Handoff Comercial Realizado!*\\n\\n*Nome:* ${payload.Nome}\\n*Empresa:* ${payload['Nome da Empresa'] || 'Não informada'}\\n*WhatsApp:* ${payload.WhatsApp}\\n*Local:* ${payload.Cidade} - ${payload.Estado}\\n*Status:* ${statusLead}\\n*Última Mensagem do Flávio:* ${formatData.respostaAgente}`\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        66864,
+        22448
+      ],
+      "id": "6df4d5b8-5f9c-4246-9e30-6cefd0b3f0a3",
+      "name": "Preparar Sincronização NocoDB"
+    },
+    {
+      "parameters": {
+        "method": "={{ $json.leadExiste ? \"PATCH\" : \"POST\" }}",
+        "url": "={{ $json.leadExiste ? \"https://agentesn8n-nocodb.cqc86v.easypanel.host/api/v2/tables/mtstd30v1hsddr3/records/\" + $json.leadId : \"https://agentesn8n-nocodb.cqc86v.easypanel.host/api/v2/tables/mtstd30v1hsddr3/records\" }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "xc-token",
+              "value": "MAzqioK1wEs1N3cqgaE9yJIQ0RDloKhrZx7oW3fG"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.payload) }}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        67088,
+        22448
+      ],
+      "id": "981fa6a9-3d00-44bb-b338-bbd44ebf932e",
+      "name": "Atualizar ou Criar Lead no NocoDB"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "check-handoff-true",
+              "leftValue": "={{ $('Preparar Sincronização NocoDB').first().json.handoff }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        67312,
+        22448
+      ],
+      "id": "0a40c0f7-685c-4adf-89c1-11f677383c2a",
+      "name": "Handoff Realizado?"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://evolution.agrometadigital.com/message/sendText/{{ $('Consolidar Dados do Lead').first().json.instance || 'Sound' }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "99151E2DDC10-459E-B141-F5DDEE6B40FE"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  number: \"120363430273566482@g.us\",\n  text: $('Preparar Sincronização NocoDB').first().json.resumoHandoff,\n  delay: 1000\n}) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        67536,
+        22448
+      ],
+      "id": "06e3bfa5-326a-49fd-9a03-8a1c5dca442e",
+      "name": "Notificar Grupo Sound Handoff"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook Evolution": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "É Áudio?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "É Áudio?": {
+      "main": [
+        [
+          {
+            "node": "Preparar Request Base64",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extrair Phone e Mensagem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Request Base64": {
+      "main": [
+        [
+          {
+            "node": "Baixar Base64 Áudio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baixar Base64 Áudio": {
+      "main": [
+        [
+          {
+            "node": "Converter Base64 para Binário",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Converter Base64 para Binário": {
+      "main": [
+        [
+          {
+            "node": "Transcrever Áudio Whisper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcrever Áudio Whisper": {
+      "main": [
+        [
+          {
+            "node": "Formatar Áudio Transcrito",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatar Áudio Transcrito": {
+      "main": [
+        [
+          {
+            "node": "Normalizar Entrada WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extrair Phone e Mensagem": {
+      "main": [
+        [
+          {
+            "node": "Normalizar Entrada WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalizar Entrada WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "Comando /reset?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Salvar no Buffer": {
+      "main": [
+        [
+          {
+            "node": "Aguardar Buffer 8s",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aguardar Buffer 8s": {
+      "main": [
+        [
+          {
+            "node": "Verificar Mais Nova",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificar Mais Nova": {
+      "main": [
+        [
+          {
+            "node": "É a Mensagem Mais Nova?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "É a Mensagem Mais Nova?": {
+      "main": [
+        [
+          {
+            "node": "Coletar Pendentes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Coletar Pendentes": {
+      "main": [
+        [
+          {
+            "node": "Montar merged_message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Montar merged_message": {
+      "main": [
+        [
+          {
+            "node": "Buscar Lead no NocoDB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Carregar Histórico": {
+      "main": [
+        [
+          {
+            "node": "Preparar Contexto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Contexto": {
+      "main": [
+        [
+          {
+            "node": "Roteador de Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Roteador de Leads": {
+      "main": [
+        [
+          {
+            "node": "Normalizar Perfil",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalizar Perfil": {
+      "main": [
+        [
+          {
+            "node": "Switch por Perfil",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch por Perfil": {
+      "main": [
+        [
+          {
+            "node": "Agente Produtor Rural (PRO)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Agente Canal & Revenda (CAN)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Agente RTV (Representante)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Agente Fornecedor & Geral",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Agente Triagem & Boas-Vindas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agente Produtor Rural (PRO)": {
+      "main": [
+        [
+          {
+            "node": "Formatar Partes WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agente Canal & Revenda (CAN)": {
+      "main": [
+        [
+          {
+            "node": "Formatar Partes WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agente RTV (Representante)": {
+      "main": [
+        [
+          {
+            "node": "Formatar Partes WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agente Fornecedor & Geral": {
+      "main": [
+        [
+          {
+            "node": "Formatar Partes WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agente Triagem & Boas-Vindas": {
+      "main": [
+        [
+          {
+            "node": "Formatar Partes WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatar Partes WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Messages": {
+      "main": [
+        [
+          {
+            "node": "Enviar PDF Milho?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Calcular Delay",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calcular Delay": {
+      "main": [
+        [
+          {
+            "node": "Enviar WhatsApp Evolution",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar WhatsApp Evolution": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model (GPT-4o)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Roteador de Leads",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Agente Produtor Rural (PRO)",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Agente Canal & Revenda (CAN)",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Agente RTV (Representante)",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Agente Fornecedor & Geral",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Agente Triagem & Boas-Vindas",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Carregar Histórico",
+            "type": "ai_memory",
+            "index": 0
+          },
+          {
+            "node": "Agente Produtor Rural (PRO)",
+            "type": "ai_memory",
+            "index": 0
+          },
+          {
+            "node": "Agente Canal & Revenda (CAN)",
+            "type": "ai_memory",
+            "index": 0
+          },
+          {
+            "node": "Agente RTV (Representante)",
+            "type": "ai_memory",
+            "index": 0
+          },
+          {
+            "node": "Agente Fornecedor & Geral",
+            "type": "ai_memory",
+            "index": 0
+          },
+          {
+            "node": "Agente Triagem & Boas-Vindas",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Comando /reset?": {
+      "main": [
+        [
+          {
+            "node": "Deduplicar Reset",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Salvar no Buffer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deduplicar Reset": {
+      "main": [
+        [
+          {
+            "node": "Executar Reset DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Executar Reset DB": {
+      "main": [
+        [
+          {
+            "node": "Confirmar Reset WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar PDF Milho?": {
+      "main": [
+        [
+          {
+            "node": "Enviar PDF Milho Evolution",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar Sincronização NocoDB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Lead no NocoDB": {
+      "main": [
+        [
+          {
+            "node": "Consolidar Dados do Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consolidar Dados do Lead": {
+      "main": [
+        [
+          {
+            "node": "Carregar Histórico",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar PDF Milho Evolution": {
+      "main": [
+        [
+          {
+            "node": "Preparar Sincronização NocoDB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Sincronização NocoDB": {
+      "main": [
+        [
+          {
+            "node": "Atualizar ou Criar Lead no NocoDB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Atualizar ou Criar Lead no NocoDB": {
+      "main": [
+        [
+          {
+            "node": "Handoff Realizado?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Handoff Realizado?": {
+      "main": [
+        [
+          {
+            "node": "Notificar Grupo Sound Handoff",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": true
+  },
+  "versionId": "8e536265-1024-4587-9172-8e4b13c3ada5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "aiBuilderAssisted": true,
+    "builderVariant": "mcp",
+    "instanceId": "c7d066142c3a204136686f25d3f060040ba0cd8d0715b784e06a52cadade21d7"
+  },
+  "nodeGroups": [],
+  "id": "Ur15vghu2L6jUBfW",
+  "tags": [
+    {
+      "updatedAt": "2026-09-04T09:53:12.314Z",
+      "createdAt": "2026-09-04T09:53:12.314Z",
+      "id": "c2OdpRsHaa7kBtgV",
+      "name": "whatsapp"
+    },
+    {
+      "updatedAt": "2026-09-04T09:53:12.319Z",
+      "createdAt": "2026-09-04T09:53:12.319Z",
+      "id": "gblXqSpc9m9PJdsA",
+      "name": "sound-agriculture"
+    },
+    {
+      "updatedAt": "2026-09-04T09:53:12.317Z",
+      "createdAt": "2026-09-04T09:53:12.317Z",
+      "id": "xs56fkVeWrz9bCE0",
+      "name": "agentes"
+    }
+  ]
+}

@@ -21,10 +21,10 @@ export default function ChartsSection({ leads = [] }) {
 
   // Funil de CRM
   const funil = [
-    { label: 'Total Inscritos',          count: leads.length,                                                                                         color: '#4F8EF7' },
-    { label: 'Leads Quentes (≥16 pts)',  count: leads.filter(l => getClassificacao(l) === 'Quente').length,                                            color: '#EF5B47' },
-    { label: 'Em Contato Comercial',     count: leads.filter(l => l.Status_Lead === 'Em Contato' || l.Status_Lead === 'Qualificado').length,           color: '#F5B731' },
-    { label: 'Aprovados / Parcerias',    count: leads.filter(l => l.Status_Lead === 'Qualificado' || l.Status_Lead === 'Convertido').length,           color: '#22C87A' },
+    { label: 'Total Inscritos', count: leads.length, color: '#4F8EF7' },
+    { label: 'Leads Quentes (≥16 pts)', count: leads.filter(l => getClassificacao(l) === 'Quente').length, color: '#EF5B47' },
+    { label: 'Em Contato / WhatsApp', count: leads.filter(l => ['Em Contato', 'Handoff Comercial', 'Qualificado'].includes(l.Status_Lead)).length, color: '#F5B731' },
+    { label: 'Handoff & Parcerias', count: leads.filter(l => ['Handoff Comercial', 'Qualificado', 'Convertido'].includes(l.Status_Lead)).length, color: '#22C87A' },
   ];
 
   // Momento Comercial (Urgência da base)

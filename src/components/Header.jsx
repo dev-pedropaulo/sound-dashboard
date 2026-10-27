@@ -49,7 +49,8 @@ export default function Header({
   onOpenPracasModal,
   pracasCount = 12,
   onLogout,
-  user
+  user,
+  onOpenChatConfig
 }) {
   const { isPrivacyMode, togglePrivacyMode } = usePrivacy();
 

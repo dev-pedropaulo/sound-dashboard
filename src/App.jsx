@@ -8,6 +8,7 @@ import LeadsTable from './components/LeadsTable';
 import LeadDetailModal from './components/LeadDetailModal';
 import NewLeadModal from './components/NewLeadModal';
 import PracasModal from './components/PracasModal';
+import ChatConfigModal from './components/ChatConfigModal';
 import LoginScreen from './components/LoginScreen';
 import { fetchLeads, updateLead, createLead } from './services/nocodb';
 import { getStoredPracas, buildCityIndex, getLeadPraca } from './services/pracasService';
@@ -31,12 +32,21 @@ export default function App() {
   const [pracas, setPracas] = useState(() => getStoredPracas());
   const [isPracasModalOpen, setIsPracasModalOpen] = useState(false);
 
+  // Gestão da Integração com o Postgres do n8n (sound_n8n_chat_histories)
+  const [isChatConfigOpen, setIsChatConfigOpen] = useState(false);
+  const [activeLeadTab, setActiveLeadTab] = useState('details'); // 'details' | 'chat'
+
   // Índice geográfico reativo das praças
   const cityIndex = useMemo(() => buildCityIndex(pracas), [pracas]);
   
   const [activeLeadDetail, setActiveLeadDetail] = useState(null);
   const [isNewModalOpen, setIsNewModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
+
+  const handleOpenLeadDetail = (lead, tab = 'details') => {
+    setActiveLeadDetail(lead);
+    setActiveLeadTab(tab);
+  };
 
   const showToast = (message, type = 'success') => {
     setToastMessage({ message, type });
@@ -170,6 +180,7 @@ export default function App() {
           setCurrentUser(null);
         }}
         user={currentUser}
+        onOpenChatConfig={() => setIsChatConfigOpen(true)}
       />
 
       {/* Alerta de Erro de Conexão */}
@@ -235,7 +246,7 @@ export default function App() {
                 <LeadsTable
                   leads={leads}
                   onUpdateStatus={handleUpdateStatus}
-                  onOpenLeadDetail={setActiveLeadDetail}
+                  onOpenLeadDetail={handleOpenLeadDetail}
                   selectedStateFilter={selectedState}
                   selectedClassFilter={selectedClassFilter}
                   pracas={pracas}
@@ -249,7 +260,7 @@ export default function App() {
               <KanbanBoard
                 leads={leads}
                 onUpdateStatus={handleUpdateStatus}
-                onOpenLeadDetail={setActiveLeadDetail}
+                onOpenLeadDetail={handleOpenLeadDetail}
                 pracas={pracas}
                 cityIndex={cityIndex}
               />
@@ -260,7 +271,7 @@ export default function App() {
               <LeadsTable
                 leads={leads}
                 onUpdateStatus={handleUpdateStatus}
-                onOpenLeadDetail={setActiveLeadDetail}
+                onOpenLeadDetail={handleOpenLeadDetail}
                 selectedStateFilter={selectedState}
                 selectedClassFilter={selectedClassFilter}
                 pracas={pracas}
@@ -276,6 +287,8 @@ export default function App() {
         <LeadDetailModal
           lead={activeLeadDetail}
           leadPraca={getLeadPraca(activeLeadDetail, cityIndex)}
+          initialTab={activeLeadTab}
+          onOpenChatConfig={() => setIsChatConfigOpen(true)}
           onClose={() => setActiveLeadDetail(null)}
           onUpdateStatus={handleUpdateStatus}
         />
@@ -294,6 +307,12 @@ export default function App() {
         onClose={() => setIsPracasModalOpen(false)}
         pracas={pracas}
         onUpdatePracas={setPracas}
+      />
+
+      {/* Modal de Configuração & Guia do n8n Postgres Chat */}
+      <ChatConfigModal
+        isOpen={isChatConfigOpen}
+        onClose={() => setIsChatConfigOpen(false)}
       />
 
       {/* Footer */}

@@ -1,15 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   X, Flame, Sparkles, Snowflake, Phone, Mail,
   Building2, MapPin, Sprout, Users, ShieldCheck,
-  Briefcase, Clock, UserCheck, ListChecks, Compass, Navigation
+  Briefcase, Clock, UserCheck, ListChecks, Compass, Navigation,
+  MessageSquare, Calendar
 } from 'lucide-react';
 import { getClassificacao, getTipoEmpresa, formatCulturaLabel } from '../services/nocodb';
+import { formatLeadDateTime } from '../utils/dateUtils';
 import { usePrivacy, SensitiveText } from '../context/PrivacyContext';
+import ChatHistoryView from './ChatHistoryView';
 
-export default function LeadDetailModal({ lead, onClose, onUpdateStatus, leadPraca }) {
+export default function LeadDetailModal({
+  lead,
+  onClose,
+  onUpdateStatus,
+  leadPraca,
+  initialTab = 'details',
+  onOpenChatConfig
+}) {
   if (!lead) return null;
 
+  const [activeTab, setActiveTab] = useState(initialTab || 'details');
   const { isPrivacyMode, maskPhone, maskEmail } = usePrivacy();
 
   const cleanPhone = (lead.WhatsApp || '').replace(/\D/g, '');
@@ -17,18 +28,18 @@ export default function LeadDetailModal({ lead, onClose, onUpdateStatus, leadPra
 
   const clsColor = cls === 'Quente' ? '#EF5B47' : cls === 'Morno' ? '#F5B731' : '#5A6478';
   const clsBadge = cls === 'Quente' ? 'badge-quente' : cls === 'Morno' ? 'badge-morno' : 'badge-frio';
-  const clsIcon  = cls === 'Quente' ? <Flame size={13}/> : cls === 'Morno' ? <Sparkles size={13}/> : <Snowflake size={13}/>;
+  const clsIcon = cls === 'Quente' ? <Flame size={13} /> : cls === 'Morno' ? <Sparkles size={13} /> : <Snowflake size={13} />;
 
   const questions = [
-    { num: 1, metric: 'Atuação',                  title: 'Sua empresa atua como:',                                                      value: getTipoEmpresa(lead),              icon: Building2 },
-    { num: 2, metric: 'Estado Principal',         title: 'Em qual estado sua empresa atua principalmente?',                             value: lead.Estado,                       icon: MapPin },
-    { num: 3, metric: 'Cidade Base',              title: 'Cidade / Município base:',                                                    value: lead.Cidade,                       icon: MapPin },
-    { num: 4, metric: 'Culturas Atendidas',       title: 'Quais culturas sua empresa atende mais?',                                     value: lead.Cultura ? formatCulturaLabel(lead.Cultura) : null, icon: Sprout },
-    { num: 5, metric: 'Produtores Atendidos',     title: 'Quantos produtores sua empresa atende hoje?',                                 value: lead.qtd_produtores,               icon: Users },
-    { num: 6, metric: 'Equipe de Campo',          title: 'Sua empresa tem equipe para atendimento no campo?',                           value: lead.equipe,                       icon: ShieldCheck },
-    { num: 7, metric: 'Nutrição / Fisiologia',    title: 'Já comercializa produtos de nutrição, fisiologia ou eficiência?',            value: lead.comercializacao_atual,        icon: Briefcase },
-    { num: 8, metric: 'Momento de Parceria',      title: 'Qual é o momento da sua empresa em relação a novos fornecedores?',           value: lead.momento_empresa,              icon: Clock },
-    { num: 9, metric: 'Decisão de Portfólio',     title: 'Você é responsável pela decisão de portfólio da empresa?',                    value: lead.responsavel_portfolio,        icon: UserCheck },
+    { num: 1, metric: 'Atuação', title: 'Sua empresa atua como:', value: getTipoEmpresa(lead), icon: Building2 },
+    { num: 2, metric: 'Estado Principal', title: 'Em qual estado sua empresa atua principalmente?', value: lead.Estado, icon: MapPin },
+    { num: 3, metric: 'Cidade Base', title: 'Cidade / Município base:', value: lead.Cidade, icon: MapPin },
+    { num: 4, metric: 'Culturas Atendidas', title: 'Quais culturas sua empresa atende mais?', value: lead.Cultura ? formatCulturaLabel(lead.Cultura) : null, icon: Sprout },
+    { num: 5, metric: 'Produtores Atendidos', title: 'Quantos produtores sua empresa atende hoje?', value: lead.qtd_produtores, icon: Users },
+    { num: 6, metric: 'Equipe de Campo', title: 'Sua empresa tem equipe para atendimento no campo?', value: lead.equipe, icon: ShieldCheck },
+    { num: 7, metric: 'Nutrição / Fisiologia', title: 'Já comercializa produtos de nutrição, fisiologia ou eficiência?', value: lead.comercializacao_atual, icon: Briefcase },
+    { num: 8, metric: 'Momento de Parceria', title: 'Qual é o momento da sua empresa em relação a novos fornecedores?', value: lead.momento_empresa, icon: Clock },
+    { num: 9, metric: 'Decisão de Portfólio', title: 'Você é responsável pela decisão de portfólio da empresa?', value: lead.responsavel_portfolio, icon: UserCheck },
   ];
 
   // Linha do pontuacao_motivos (vindas do n8n)
@@ -49,7 +60,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdateStatus, leadPra
         onClick={e => e.stopPropagation()}
         style={{
           width: '100%',
-          maxWidth: '800px',
+          maxWidth: '820px',
           maxHeight: '92vh',
           overflowY: 'auto',
           background: 'var(--bg-surface-elevated)',
@@ -89,12 +100,20 @@ export default function LeadDetailModal({ lead, onClose, onUpdateStatus, leadPra
                 {lead['Nome da Empresa'] || 'Empresa'}
               </SensitiveText>
             </h2>
-            <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-              Contato: <strong style={{ color: 'var(--text-secondary)' }}>
-                <SensitiveText placeholder="••••••••">
-                  {lead.Nome}
-                </SensitiveText>
-              </strong>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+              <div>
+                Contato: <strong style={{ color: 'var(--text-secondary)' }}>
+                  <SensitiveText placeholder="••••••••">
+                    {lead.Nome}
+                  </SensitiveText>
+                </strong>
+              </div>
+              {(lead.CreatedAt || lead.created_at) && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                  <Calendar size={12} style={{ color: '#4F8EF7' }} />
+                  <span>Recebido em: <strong style={{ color: 'var(--text-secondary)' }}>{formatLeadDateTime(lead.CreatedAt || lead.created_at)}</strong></span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -133,6 +152,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdateStatus, leadPra
               >
                 <option value="Novo">Novo</option>
                 <option value="Em Contato">Em Contato</option>
+                <option value="Handoff Comercial">🤝 Handoff Comercial</option>
                 <option value="Qualificado">Qualificado</option>
                 <option value="Convertido">Convertido</option>
                 <option value="Desqualificado">Desqualificado</option>
@@ -142,7 +162,7 @@ export default function LeadDetailModal({ lead, onClose, onUpdateStatus, leadPra
             <div style={{ display: 'flex', gap: '6px' }}>
               {cleanPhone && (
                 <a
-                  href={isPrivacyMode ? undefined : `https://wa.me/${cleanPhone}?text=Olá%20${encodeURIComponent(lead.Nome||'')}%2C%20aqui%20é%20da%20Sound%20Agriculture.`}
+                  href={isPrivacyMode ? undefined : `https://wa.me/${cleanPhone}?text=Olá%20${encodeURIComponent(lead.Nome || '')}%2C%20aqui%20é%20da%20Sound%20Agriculture.`}
                   target={isPrivacyMode ? undefined : "_blank"}
                   rel={isPrivacyMode ? undefined : "noopener noreferrer"}
                   className={`btn btn-whatsapp ${isPrivacyMode ? 'privacy-protected-action' : ''}`}
@@ -168,140 +188,208 @@ export default function LeadDetailModal({ lead, onClose, onUpdateStatus, leadPra
           </div>
         </div>
 
-        {/* Body */}
-        <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: '18px' }}>
+        {/* Abas de Navegação (Ficha vs Histórico WhatsApp) */}
+        <div style={{
+          padding: '0 24px',
+          background: 'rgba(0,0,0,0.25)',
+          borderBottom: '1px solid var(--border-subtle)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+        }}>
+          <button
+            onClick={() => setActiveTab('details')}
+            style={{
+              padding: '13px 18px',
+              background: 'none',
+              border: 'none',
+              borderBottom: activeTab === 'details' ? '2px solid #4F8EF7' : '2px solid transparent',
+              color: activeTab === 'details' ? 'var(--text-primary)' : 'var(--text-muted)',
+              fontWeight: activeTab === 'details' ? 700 : 500,
+              fontSize: '0.85rem',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              transition: 'all 0.15s ease',
+            }}
+          >
+            <ListChecks size={16} color={activeTab === 'details' ? '#4F8EF7' : 'var(--text-muted)'} />
+            <span>Ficha de Qualificação & Praça</span>
+          </button>
 
-          {/* Roteamento Territorial & Praça RC */}
-          <div style={{
-            background: leadPraca ? 'linear-gradient(135deg, rgba(0, 148, 110, 0.1) 0%, rgba(56, 97, 251, 0.08) 100%)' : 'rgba(255,255,255,0.02)',
-            border: `1px solid ${leadPraca ? 'rgba(0, 148, 110, 0.3)' : 'var(--border-subtle)'}`,
-            borderRadius: 'var(--radius-lg)',
-            padding: '16px 18px',
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', marginBottom: '12px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Compass size={18} color={leadPraca ? '#22C87A' : 'var(--text-muted)'} />
-                <span style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                  Roteamento Territorial & Praça Comercial (Raio 250 km)
-                </span>
-              </div>
-              <span style={{
-                background: leadPraca ? 'rgba(34, 200, 122, 0.15)' : 'rgba(255,255,255,0.06)',
-                color: leadPraca ? '#22C87A' : 'var(--text-muted)',
-                padding: '3px 10px',
-                borderRadius: '12px',
-                fontSize: '0.72rem',
-                fontWeight: 700
+          <button
+            onClick={() => setActiveTab('chat')}
+            style={{
+              padding: '13px 18px',
+              background: 'none',
+              border: 'none',
+              borderBottom: activeTab === 'chat' ? '2px solid #22C87A' : '2px solid transparent',
+              color: activeTab === 'chat' ? 'var(--text-primary)' : 'var(--text-muted)',
+              fontWeight: activeTab === 'chat' ? 700 : 500,
+              fontSize: '0.85rem',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              transition: 'all 0.15s ease',
+            }}
+          >
+            <MessageSquare size={16} color={activeTab === 'chat' ? '#22C87A' : 'var(--text-muted)'} />
+            <span>Histórico do Atendimento (WhatsApp)</span>
+            <span style={{
+              background: activeTab === 'chat' ? 'rgba(34, 200, 122, 0.2)' : 'rgba(255,255,255,0.06)',
+              color: activeTab === 'chat' ? '#22C87A' : 'var(--text-muted)',
+              padding: '2px 8px',
+              borderRadius: '12px',
+              fontSize: '0.68rem',
+              fontWeight: 800,
+              fontFamily: 'var(--font-mono)',
+            }}>
+              n8n Postgres
+            </span>
+          </button>
+        </div>
+
+        {/* Conteúdo da Aba */}
+        <div style={{ padding: '22px 24px' }}>
+          {activeTab === 'chat' ? (
+            <ChatHistoryView lead={lead} onOpenConfig={onOpenChatConfig} />
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+              {/* Roteamento Territorial & Praça RC */}
+              <div style={{
+                background: leadPraca ? 'linear-gradient(135deg, rgba(0, 148, 110, 0.1) 0%, rgba(56, 97, 251, 0.08) 100%)' : 'rgba(255,255,255,0.02)',
+                border: `1px solid ${leadPraca ? 'rgba(0, 148, 110, 0.3)' : 'var(--border-subtle)'}`,
+                borderRadius: 'var(--radius-lg)',
+                padding: '16px 18px',
               }}>
-                {leadPraca ? '✓ Dentro do Raio de Atendimento' : '⚡ Fora do Raio de 250km das Praças Ativas'}
-              </span>
-            </div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', marginBottom: '12px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Compass size={18} color={leadPraca ? '#22C87A' : 'var(--text-muted)'} />
+                    <span style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                      Roteamento Territorial & Praça Comercial (Raio 250 km)
+                    </span>
+                  </div>
+                  <span style={{
+                    background: leadPraca ? 'rgba(34, 200, 122, 0.15)' : 'rgba(255,255,255,0.06)',
+                    color: leadPraca ? '#22C87A' : 'var(--text-muted)',
+                    padding: '3px 10px',
+                    borderRadius: '12px',
+                    fontSize: '0.72rem',
+                    fontWeight: 700
+                  }}>
+                    {leadPraca ? '✓ Dentro do Raio de Atendimento' : '⚡ Fora do Raio de 250km das Praças Ativas'}
+                  </span>
+                </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
-              {/* Praça Polo */}
-              <div style={{ background: 'rgba(0,0,0,0.2)', padding: '10px 14px', borderRadius: 'var(--radius-md)' }}>
-                <span style={{ display: 'block', fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', marginBottom: '2px' }}>
-                  Praça / Polo Comercial
-                </span>
-                <span style={{ fontSize: '0.92rem', fontWeight: 800, color: leadPraca ? '#3861FB' : 'var(--text-secondary)' }}>
-                  {leadPraca ? `${leadPraca.codigo} - ${leadPraca.nome} (${leadPraca.uf})` : 'Sem praça vinculada'}
-                </span>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
+                  {/* Praça Polo */}
+                  <div style={{ background: 'rgba(0,0,0,0.2)', padding: '10px 14px', borderRadius: 'var(--radius-md)' }}>
+                    <span style={{ display: 'block', fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', marginBottom: '2px' }}>
+                      Praça / Polo Comercial
+                    </span>
+                    <span style={{ fontSize: '0.92rem', fontWeight: 800, color: leadPraca ? '#3861FB' : 'var(--text-secondary)' }}>
+                      {leadPraca ? `${leadPraca.codigo} - ${leadPraca.nome} (${leadPraca.uf})` : 'Sem praça vinculada'}
+                    </span>
+                  </div>
+
+                  {/* RC Responsável */}
+                  <div style={{ background: 'rgba(0,0,0,0.2)', padding: '10px 14px', borderRadius: 'var(--radius-md)' }}>
+                    <span style={{ display: 'block', fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', marginBottom: '2px' }}>
+                      Representante Comercial (RC)
+                    </span>
+                    <span style={{ fontSize: '0.92rem', fontWeight: 800, color: leadPraca?.responsavel && leadPraca.responsavel !== 'a definir' ? '#22C87A' : '#F5B731' }}>
+                      {leadPraca?.responsavel || 'A definir'}
+                    </span>
+                  </div>
+
+                  {/* Distância */}
+                  <div style={{ background: 'rgba(0,0,0,0.2)', padding: '10px 14px', borderRadius: 'var(--radius-md)' }}>
+                    <span style={{ display: 'block', fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', marginBottom: '2px' }}>
+                      Distância até a Cidade Polo
+                    </span>
+                    <span style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
+                      {leadPraca ? (leadPraca.dist_km === 0 ? 'Cidade Polo (0 km)' : `${leadPraca.dist_km} km`) : '—'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Outras praças cobrindo */}
+                {leadPraca?.outrasPracas && leadPraca.outrasPracas.length > 0 && (
+                  <div style={{ marginTop: '10px', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                    Também coberto secundariamente por: {leadPraca.outrasPracas.map(o => `${o.codigo} (${o.dist_km} km)`).join(', ')}
+                  </div>
+                )}
               </div>
 
-              {/* RC Responsável */}
-              <div style={{ background: 'rgba(0,0,0,0.2)', padding: '10px 14px', borderRadius: 'var(--radius-md)' }}>
-                <span style={{ display: 'block', fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', marginBottom: '2px' }}>
-                  Representante Comercial (RC)
-                </span>
-                <span style={{ fontSize: '0.92rem', fontWeight: 800, color: leadPraca?.responsavel && leadPraca.responsavel !== 'a definir' ? '#22C87A' : '#F5B731' }}>
-                  {leadPraca?.responsavel || 'A definir'}
-                </span>
+              {/* Respostas do Formulário */}
+              <div>
+                <div style={{ fontSize: '0.72rem', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '10px' }}>
+                  Respostas do Formulário
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '8px' }}>
+                  {questions.map(q => {
+                    const Icon = q.icon;
+                    return (
+                      <div key={q.num} style={{
+                        background: 'rgba(255,255,255,0.03)',
+                        border: '1px solid var(--border-subtle)',
+                        borderRadius: 'var(--radius-md)',
+                        padding: '12px 14px',
+                      }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '5px' }}>
+                          <Icon size={12} color="#4F8EF7" />
+                          <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                            Q{q.num} · {q.metric}
+                          </span>
+                        </div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '3px' }}>{q.title}</div>
+                        <div style={{ fontSize: '0.88rem', fontWeight: '700', color: 'var(--text-primary)' }}>
+                          {q.value || <span style={{ color: 'var(--text-muted)', fontWeight: '400' }}>Não informado</span>}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
 
-              {/* Distância */}
-              <div style={{ background: 'rgba(0,0,0,0.2)', padding: '10px 14px', borderRadius: 'var(--radius-md)' }}>
-                <span style={{ display: 'block', fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', marginBottom: '2px' }}>
-                  Distância até a Cidade Polo
-                </span>
-                <span style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
-                  {leadPraca ? (leadPraca.dist_km === 0 ? 'Cidade Polo (0 km)' : `${leadPraca.dist_km} km`) : '—'}
-                </span>
-              </div>
-            </div>
-
-            {/* Outras praças cobrindo */}
-            {leadPraca?.outrasPracas && leadPraca.outrasPracas.length > 0 && (
-              <div style={{ marginTop: '10px', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                Também coberto secundariamente por: {leadPraca.outrasPracas.map(o => `${o.codigo} (${o.dist_km} km)`).join(', ')}
-              </div>
-            )}
-          </div>
-
-          {/* Respostas do Formulário */}
-          <div>
-            <div style={{ fontSize: '0.72rem', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '10px' }}>
-              Respostas do Formulário
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '8px' }}>
-              {questions.map(q => {
-                const Icon = q.icon;
-                return (
-                  <div key={q.num} style={{
-                    background: 'rgba(255,255,255,0.03)',
+              {/* Detalhamento da Pontuação (pontuacao_motivos do n8n) */}
+              {motivosPts.length > 0 && (
+                <div>
+                  <div style={{ fontSize: '0.72rem', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    <ListChecks size={12} />
+                    Detalhamento da Pontuação
+                  </div>
+                  <div style={{
+                    background: 'rgba(255,255,255,0.02)',
                     border: '1px solid var(--border-subtle)',
                     borderRadius: 'var(--radius-md)',
-                    padding: '12px 14px',
+                    padding: '14px 16px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '5px',
                   }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '5px' }}>
-                      <Icon size={12} color="#4F8EF7" />
-                      <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                        Q{q.num} · {q.metric}
-                      </span>
-                    </div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '3px' }}>{q.title}</div>
-                    <div style={{ fontSize: '0.88rem', fontWeight: '700', color: 'var(--text-primary)' }}>
-                      {q.value || <span style={{ color: 'var(--text-muted)', fontWeight: '400' }}>Não informado</span>}
-                    </div>
+                    {motivosPts.map((linha, i) => {
+                      const isDesk = linha.includes('DESQUALIFICADO');
+                      const isPos = linha.includes('+');
+                      return (
+                        <div key={i} style={{
+                          fontSize: '0.8rem',
+                          fontFamily: 'var(--font-mono)',
+                          color: isDesk ? '#EF5B47' : isPos ? '#22C87A' : 'var(--text-secondary)',
+                          display: 'flex',
+                          alignItems: 'flex-start',
+                          gap: '6px',
+                        }}>
+                          <span style={{ opacity: 0.4, minWidth: '14px' }}>{i + 1}.</span>
+                          {linha.trim()}
+                        </div>
+                      );
+                    })}
                   </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Detalhamento da Pontuação (pontuacao_motivos do n8n) */}
-          {motivosPts.length > 0 && (
-            <div>
-              <div style={{ fontSize: '0.72rem', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                <ListChecks size={12} />
-                Detalhamento da Pontuação
-              </div>
-              <div style={{
-                background: 'rgba(255,255,255,0.02)',
-                border: '1px solid var(--border-subtle)',
-                borderRadius: 'var(--radius-md)',
-                padding: '14px 16px',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '5px',
-              }}>
-                {motivosPts.map((linha, i) => {
-                  const isDesk = linha.includes('DESQUALIFICADO');
-                  const isPos  = linha.includes('+');
-                  return (
-                    <div key={i} style={{
-                      fontSize: '0.8rem',
-                      fontFamily: 'var(--font-mono)',
-                      color: isDesk ? '#EF5B47' : isPos ? '#22C87A' : 'var(--text-secondary)',
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      gap: '6px',
-                    }}>
-                      <span style={{ opacity: 0.4, minWidth: '14px' }}>{i + 1}.</span>
-                      {linha.trim()}
-                    </div>
-                  );
-                })}
-              </div>
+                </div>
+              )}
             </div>
           )}
         </div>

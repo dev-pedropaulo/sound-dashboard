@@ -1,9 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import {
   Search, Download, Flame, Sparkles, Snowflake,
-  Phone, Mail, ExternalLink, ArrowUpDown, MapPin,
+  Phone, Mail, ExternalLink, ArrowUpDown, ArrowUp, ArrowDown, MapPin,
   Filter, SlidersHorizontal, ChevronDown, ChevronUp, X,
-  Building2, Sprout, Users, ShieldCheck, Clock, Compass
+  Building2, Sprout, Users, ShieldCheck, Clock, Compass, MessageSquare, Calendar
 } from 'lucide-react';
 import {
   getTipoEmpresa, getClassificacao, norm, formatCulturaLabel,
@@ -11,65 +11,67 @@ import {
 } from '../services/nocodb';
 import { normalizeState } from '../utils/normalizeState';
 import { getLeadPraca } from '../services/pracasService';
+import { getLeadTimestamp, formatLeadDate, formatLeadDateTime } from '../utils/dateUtils';
 import MultiSelectDropdown from './MultiSelectDropdown';
 import { usePrivacy, SensitiveText } from '../context/PrivacyContext';
 
 const TIPO_OPTIONS = [
   { id: 'distribuidor', label: '🏢 Distribuidor' },
-  { id: 'revenda',      label: '🏪 Revenda Agrícola' },
-  { id: 'cooperativa',  label: '🤝 Cooperativa' },
-  { id: 'rtv',          label: '💼 Representante (RTV)' },
-  { id: 'outro',        label: '📦 Outro Perfil' },
+  { id: 'revenda', label: '🏪 Revenda Agrícola' },
+  { id: 'cooperativa', label: '🤝 Cooperativa' },
+  { id: 'rtv', label: '💼 Representante (RTV)' },
+  { id: 'outro', label: '📦 Outro Perfil' },
 ];
 
 const CLASS_OPTIONS = [
-  { id: 'Quente',      label: '🔥 Quentes (≥16 pts)' },
-  { id: 'Morno',       label: '⚡ Mornos (11-15 pts)' },
+  { id: 'Quente', label: '🔥 Quentes (≥16 pts)' },
+  { id: 'Morno', label: '⚡ Mornos (11-15 pts)' },
   { id: 'Frio / Fora', label: '❄️ Frios / Fora (≤10 pts)' },
 ];
 
 const STATE_OPTIONS = [
-  { id: 'MT',    label: 'Mato Grosso' },
-  { id: 'GO',    label: 'Goiás' },
-  { id: 'MS',    label: 'Mato Grosso do Sul' },
-  { id: 'PR',    label: 'Paraná' },
+  { id: 'MT', label: 'Mato Grosso' },
+  { id: 'GO', label: 'Goiás' },
+  { id: 'MS', label: 'Mato Grosso do Sul' },
+  { id: 'PR', label: 'Paraná' },
   { id: 'OUTRO', label: 'Outros Estados' },
 ];
 
 const STATUS_OPTIONS = [
-  { id: 'Novo',           label: 'Novo' },
-  { id: 'Em Contato',     label: 'Em Contato' },
-  { id: 'Qualificado',    label: 'Qualificado' },
-  { id: 'Convertido',     label: 'Convertido' },
+  { id: 'Novo', label: 'Novo' },
+  { id: 'Em Contato', label: 'Em Contato' },
+  { id: 'Handoff Comercial', label: '🤝 Handoff Comercial' },
+  { id: 'Qualificado', label: 'Qualificado' },
+  { id: 'Convertido', label: 'Convertido' },
   { id: 'Desqualificado', label: 'Desqualificado' },
 ];
 
 const CULTURA_OPTIONS = [
-  { id: 'soja',   label: '🌱 Soja' },
-  { id: 'milho',  label: '🌽 Milho' },
-  { id: 'algod',  label: '☁️ Algodão' },
-  { id: 'cafe',   label: '☕ Café' },
-  { id: 'trigo',  label: '🌾 Trigo' },
-  { id: 'cana',   label: '🎋 Cana' },
+  { id: 'soja', label: '🌱 Soja' },
+  { id: 'milho', label: '🌽 Milho' },
+  { id: 'algod', label: '☁️ Algodão' },
+  { id: 'cafe', label: '☕ Café' },
+  { id: 'trigo', label: '🌾 Trigo' },
+  { id: 'cana', label: '🎋 Cana' },
   { id: 'outras', label: '🌾 Outras' },
 ];
 
 const PRODUTORES_OPTIONS = [
   { id: 'acima_150', label: '👥 Acima de 150 produtores' },
-  { id: '51_150',    label: '👥 51 a 150 produtores' },
-  { id: 'ate_50',     label: '👥 Até 50 produtores' },
+  { id: '51_150', label: '👥 51 a 150 produtores' },
+  { id: 'ate_50', label: '👥 Até 50 produtores' },
 ];
 
 const EQUIPE_OPTIONS = [
-  { id: 'completa',     label: '🏆 Comercial e Técnica' },
-  { id: 'somente',      label: '👤 Somente Comercial/Técnica' },
+  { id: 'completa', label: '🏆 Comercial e Técnica' },
+  { id: 'somente', label: '👤 Somente Comercial/Técnica' },
   { id: 'estruturando', label: '🛠️ Estruturando Equipe' },
 ];
 
 const MOMENTO_OPTIONS = [
-  { id: 'agora',      label: '🔥 Fechar parceria agora' },
-  { id: 'avaliando',   label: '⚡ Avaliando fornecedores' },
-  { id: 'conhecendo',  label: '👀 Só conhecendo mercado' },
+  { id: 'agora', label: '🔥 Fechar parceria agora' },
+  { id: 'avaliando', label: '⚡ Avaliando fornecedores' },
+  { id: 'conhecendo', label: '👀 Só conhecendo mercado' },
 ];
 
 export default function LeadsTable({
@@ -83,21 +85,21 @@ export default function LeadsTable({
 }) {
   const { isPrivacyMode, maskText, maskPhone, maskEmail } = usePrivacy();
 
-  const [searchTerm, setSearchTerm]         = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   const [selectedClasses, setSelectedClasses] = useState(new Set());
-  const [selectedStates, setSelectedStates]   = useState(new Set());
+  const [selectedStates, setSelectedStates] = useState(new Set());
   const [selectedStatuses, setSelectedStatuses] = useState(new Set());
-  const [selectedTipos, setSelectedTipos]     = useState(new Set());
+  const [selectedTipos, setSelectedTipos] = useState(new Set());
   const [selectedCulturas, setSelectedCulturas] = useState(new Set());
   const [selectedProdutores, setSelectedProdutores] = useState(new Set());
   const [selectedEquipes, setSelectedEquipes] = useState(new Set());
   const [selectedMomentos, setSelectedMomentos] = useState(new Set());
-  const [selectedPracas, setSelectedPracas]   = useState(new Set());
-  const [selectedRCs, setSelectedRCs]         = useState(new Set());
+  const [selectedPracas, setSelectedPracas] = useState(new Set());
+  const [selectedRCs, setSelectedRCs] = useState(new Set());
 
-  const [showAdvanced, setShowAdvanced]     = useState(false);
-  const [sortBy, setSortBy]                 = useState('Pontuacao');
-  const [sortOrder, setSortOrder]           = useState('desc');
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [sortBy, setSortBy] = useState('Pontuacao');
+  const [sortOrder, setSortOrder] = useState('desc');
 
   // Opções dinâmicas de Praças a partir das praças ativas
   const pracaOptions = useMemo(() => {
@@ -214,24 +216,45 @@ export default function LeadsTable({
       }
 
       // Novos Filtros Multi-select
-      const mTipo       = matchTipoEmpresa(lead, selectedTipos);
-      const mCultura    = matchCultura(lead, selectedCulturas);
+      const mTipo = matchTipoEmpresa(lead, selectedTipos);
+      const mCultura = matchCultura(lead, selectedCulturas);
       const mProdutores = matchProdutores(lead, selectedProdutores);
-      const mEquipe     = matchEquipe(lead, selectedEquipes);
-      const mMomento    = matchMomento(lead, selectedMomentos);
+      const mEquipe = matchEquipe(lead, selectedEquipes);
+      const mMomento = matchMomento(lead, selectedMomentos);
 
       return matchSearch && matchClass && matchState && matchStatus && matchPraca && matchRC && mTipo && mCultura && mProdutores && mEquipe && mMomento;
     }).sort((a, b) => {
-      let valA = a[sortBy], valB = b[sortBy];
-      if (sortBy === 'Pontuacao' || sortBy === 'Id') {
-        valA = Number(valA) || 0; valB = Number(valB) || 0;
+      let comparison = 0;
+
+      if (sortBy === 'CreatedAt' || sortBy === 'Data') {
+        const timeA = getLeadTimestamp(a);
+        const timeB = getLeadTimestamp(b);
+        comparison = timeA < timeB ? -1 : timeA > timeB ? 1 : 0;
+      } else if (sortBy === 'Estado' || sortBy === 'Regiao') {
+        const ufA = normalizeState(a.Estado);
+        const ufB = normalizeState(b.Estado);
+        comparison = ufA.localeCompare(ufB, 'pt-BR');
+        // Desempate por cidade
+        if (comparison === 0) {
+          comparison = (a.Cidade || '').localeCompare(b.Cidade || '', 'pt-BR');
+        }
+      } else if (sortBy === 'Cidade') {
+        comparison = (a.Cidade || '').localeCompare(b.Cidade || '', 'pt-BR');
+      } else if (sortBy === 'Praca') {
+        const pracaA = a._praca ? a._praca.nome : 'ZZZ';
+        const pracaB = b._praca ? b._praca.nome : 'ZZZ';
+        comparison = pracaA.localeCompare(pracaB, 'pt-BR');
+      } else if (sortBy === 'Pontuacao' || sortBy === 'Id') {
+        const valA = Number(a[sortBy]) || 0;
+        const valB = Number(b[sortBy]) || 0;
+        comparison = valA < valB ? -1 : valA > valB ? 1 : 0;
       } else {
-        valA = (valA || '').toString().toLowerCase();
-        valB = (valB || '').toString().toLowerCase();
+        const valA = (a[sortBy] || '').toString().toLowerCase();
+        const valB = (b[sortBy] || '').toString().toLowerCase();
+        comparison = valA.localeCompare(valB, 'pt-BR');
       }
-      if (valA < valB) return sortOrder === 'asc' ? -1 : 1;
-      if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
-      return 0;
+
+      return sortOrder === 'asc' ? comparison : -comparison;
     });
   }, [
     leadsWithPraca, searchTerm, selectedClasses, selectedStates, selectedStatuses,
@@ -241,36 +264,43 @@ export default function LeadsTable({
   ]);
 
   const toggleSort = (field) => {
-    if (sortBy === field) setSortOrder(o => o === 'asc' ? 'desc' : 'asc');
-    else { setSortBy(field); setSortOrder('desc'); }
+    if (sortBy === field) {
+      setSortOrder(o => o === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortBy(field);
+      const defaultDesc = ['Pontuacao', 'Id', 'CreatedAt', 'Data'];
+      setSortOrder(defaultDesc.includes(field) ? 'desc' : 'asc');
+    }
   };
 
   const handleExportCSV = () => {
     const headers = [
-      'ID','Nome','Empresa','Tipo Empresa','Cidade','Estado',
-      'Praça Polo','Código Praça','RC Responsável','Distância Polo (km)',
-      'Cultura','Produtores','Equipe','Momento','Pontuacao','Classificacao','Status','WhatsApp','Email'
+      'ID', 'Nome', 'Empresa', 'Tipo Empresa', 'Cidade', 'Estado',
+      'Praça Polo', 'Código Praça', 'RC Responsável', 'Distância Polo (km)',
+      'Cultura', 'Produtores', 'Equipe', 'Momento', 'Pontuacao', 'Classificacao', 'Status',
+      'Data Recebimento', 'WhatsApp', 'Email'
     ];
     const rows = filteredLeads.map(l => [
       l.Id,
-      `"${isPrivacyMode ? maskText(l.Nome, 'Confidencial') : (l.Nome||'')}"`,
-      `"${isPrivacyMode ? maskText(l['Nome da Empresa'], 'Empresa Confidencial') : (l['Nome da Empresa']||'')}"`,
+      `"${isPrivacyMode ? maskText(l.Nome, 'Confidencial') : (l.Nome || '')}"`,
+      `"${isPrivacyMode ? maskText(l['Nome da Empresa'], 'Empresa Confidencial') : (l['Nome da Empresa'] || '')}"`,
       `"${getTipoEmpresa(l)}"`,
-      `"${l.Cidade||''}"`, `"${l.Estado||''}"`,
+      `"${l.Cidade || ''}"`, `"${l.Estado || ''}"`,
       `"${l._praca ? l._praca.nome : 'Fora de Raio'}"`,
       `"${l._praca ? l._praca.codigo : '—'}"`,
       `"${l._praca ? l._praca.responsavel : '—'}"`,
       l._praca ? l._praca.dist_km : '',
-      `"${l.Cultura||''}"`,
-      `"${l.qtd_produtores||''}"`, `"${l.equipe||''}"`, `"${l.momento_empresa||''}"`,
-      l.Pontuacao||0, `"${getClassificacao(l)}"`, `"${l.Status_Lead||''}"`,
-      `"${isPrivacyMode ? maskPhone(l.WhatsApp) : (l.WhatsApp||'')}"`,
-      `"${isPrivacyMode ? maskEmail(l.Email) : (l.Email||'')}"`
+      `"${l.Cultura || ''}"`,
+      `"${l.qtd_produtores || ''}"`, `"${l.equipe || ''}"`, `"${l.momento_empresa || ''}"`,
+      l.Pontuacao || 0, `"${getClassificacao(l)}"`, `"${l.Status_Lead || ''}"`,
+      `"${formatLeadDateTime(l.CreatedAt || l.created_at)}"`,
+      `"${isPrivacyMode ? maskPhone(l.WhatsApp) : (l.WhatsApp || '')}"`,
+      `"${isPrivacyMode ? maskEmail(l.Email) : (l.Email || '')}"`
     ]);
     const csv = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
     const link = document.createElement('a');
     link.setAttribute('href', encodeURI(csv));
-    link.setAttribute('download', `leads_sound_${new Date().toISOString().slice(0,10)}.csv`);
+    link.setAttribute('download', `leads_sound_${new Date().toISOString().slice(0, 10)}.csv`);
     document.body.appendChild(link); link.click(); document.body.removeChild(link);
   };
 
@@ -288,9 +318,9 @@ export default function LeadsTable({
   const ClassBadge = ({ lead }) => {
     const cls = getClassificacao(lead);
     const map = {
-      'Quente':      { cls: 'badge-quente', icon: <Flame size={10}/> },
-      'Morno':       { cls: 'badge-morno',  icon: <Sparkles size={10}/> },
-      'Frio / Fora': { cls: 'badge-frio',   icon: <Snowflake size={10}/> },
+      'Quente': { cls: 'badge-quente', icon: <Flame size={10} /> },
+      'Morno': { cls: 'badge-morno', icon: <Sparkles size={10} /> },
+      'Frio / Fora': { cls: 'badge-frio', icon: <Snowflake size={10} /> },
     };
     const b = map[cls] || map['Frio / Fora'];
     return (
@@ -440,6 +470,50 @@ export default function LeadsTable({
           {showAdvanced ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
         </button>
 
+        {/* Seletor de Ordenação Rápida */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px',
+          background: 'rgba(255,255,255,0.03)',
+          border: '1px solid var(--border-subtle)',
+          borderRadius: 'var(--radius-md)',
+          padding: '2px 8px'
+        }}>
+          <ArrowUpDown size={13} style={{ color: 'var(--text-muted)' }} />
+          <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>Ordenar:</span>
+          <select
+            value={`${sortBy}_${sortOrder}`}
+            onChange={e => {
+              const [f, o] = e.target.value.split('_');
+              setSortBy(f);
+              setSortOrder(o);
+            }}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              color: 'var(--text-primary)',
+              fontSize: '0.78rem',
+              fontWeight: '600',
+              cursor: 'pointer',
+              outline: 'none',
+              padding: '5px 2px',
+            }}
+            title="Ordenar leads por data, região ou score"
+          >
+            <option value="CreatedAt_desc">📅 Mais Recentes Primeiro</option>
+            <option value="CreatedAt_asc">📅 Mais Antigos Primeiro</option>
+            <option value="Estado_asc">📍 Estado / Região (A-Z)</option>
+            <option value="Estado_desc">📍 Estado / Região (Z-A)</option>
+            <option value="Cidade_asc">🏙️ Cidade (A-Z)</option>
+            <option value="Praca_asc">🧭 Praça Comercial (A-Z)</option>
+            <option value="Pontuacao_desc">🔥 Maior Pontuação</option>
+            <option value="Pontuacao_asc">❄️ Menor Pontuação</option>
+            <option value="Nome da Empresa_asc">🏢 Empresa (A-Z)</option>
+            <option value="Status_Lead_asc">📋 Status CRM</option>
+          </select>
+        </div>
+
         {/* Limpar todos os filtros */}
         {hasActiveFilters && (
           <button
@@ -571,7 +645,7 @@ export default function LeadsTable({
           flexWrap: 'wrap',
         }}>
           <span style={{ color: '#4F8EF7', fontWeight: '600' }}>Filtros ativos:</span>
-          
+
           {selectedTipos.size > 0 && selectedTipos.size < TIPO_OPTIONS.length && (
             <span className="badge badge-frio" style={{ padding: '2px 8px', fontSize: '0.7rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
               Tipos ({selectedTipos.size})
@@ -649,30 +723,51 @@ export default function LeadsTable({
           <thead>
             <tr style={{ borderBottom: '1px solid var(--border-subtle)', color: 'var(--text-muted)' }}>
               {[
-                { label: 'Score',             field: 'Pontuacao' },
+                { label: 'Score', field: 'Pontuacao' },
                 { label: 'Empresa / Contato', field: 'Nome da Empresa' },
-                { label: 'Localização',       field: 'Estado' },
-                { label: 'Canal & Cultura',   field: null },
-                { label: 'Status CRM',        field: 'Status_Lead' },
-                { label: '',                  field: null },
-              ].map((col, i) => (
-                <th
-                  key={i}
-                  style={{ padding: '11px 16px', fontWeight: '600', fontSize: '0.73rem', textTransform: 'uppercase', letterSpacing: '0.04em', cursor: col.field ? 'pointer' : 'default', textAlign: i === 5 ? 'right' : 'left', whiteSpace: 'nowrap' }}
-                  onClick={() => col.field && toggleSort(col.field)}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    {col.label}
-                    {col.field && <ArrowUpDown size={11} style={{ opacity: 0.5 }} />}
-                  </div>
-                </th>
-              ))}
+                { label: 'Localização / Região', field: 'Estado' },
+                { label: 'Canal & Cultura', field: null },
+                { label: 'Status CRM', field: 'Status_Lead' },
+                { label: 'Recebido em', field: 'CreatedAt' },
+                { label: '', field: null },
+              ].map((col, i) => {
+                const isSorted = col.field && sortBy === col.field;
+                return (
+                  <th
+                    key={i}
+                    style={{
+                      padding: '11px 16px',
+                      fontWeight: '600',
+                      fontSize: '0.73rem',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.04em',
+                      cursor: col.field ? 'pointer' : 'default',
+                      textAlign: i === 6 ? 'right' : 'left',
+                      whiteSpace: 'nowrap',
+                      color: isSorted ? 'var(--text-primary)' : 'var(--text-muted)',
+                      transition: 'color 0.15s ease'
+                    }}
+                    onClick={() => col.field && toggleSort(col.field)}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      {col.label}
+                      {col.field && (
+                        isSorted ? (
+                          sortOrder === 'asc' ? <ArrowUp size={12} color="#3861FB" /> : <ArrowDown size={12} color="#3861FB" />
+                        ) : (
+                          <ArrowUpDown size={11} style={{ opacity: 0.35 }} />
+                        )
+                      )}
+                    </div>
+                  </th>
+                );
+              })}
             </tr>
           </thead>
           <tbody>
             {filteredLeads.length === 0 ? (
               <tr>
-                <td colSpan={6} style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                <td colSpan={7} style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
                   {hasActiveFilters
                     ? <>Nenhum lead encontrado com os filtros selecionados. <button onClick={clearFilters} style={{ background: 'none', border: 'none', color: '#4F8EF7', cursor: 'pointer', textDecoration: 'underline', fontSize: 'inherit' }}>Limpar filtros</button></>
                     : 'Nenhum lead cadastrado.'
@@ -702,7 +797,7 @@ export default function LeadsTable({
                           fontSize: '1rem',
                           fontWeight: '800',
                           color: getClassificacao(lead) === 'Quente' ? '#EF5B47' :
-                                 getClassificacao(lead) === 'Morno'  ? '#F5B731' : '#5A6478'
+                            getClassificacao(lead) === 'Morno' ? '#F5B731' : '#5A6478'
                         }}>
                           {lead.Pontuacao || 0}
                         </span>
@@ -779,18 +874,37 @@ export default function LeadsTable({
                           fontWeight: '600',
                           cursor: 'pointer',
                           outline: 'none',
-                          color: lead.Status_Lead === 'Qualificado'    ? '#4ADE96' :
-                                 lead.Status_Lead === 'Em Contato'     ? '#FBBF24' :
-                                 lead.Status_Lead === 'Convertido'     ? '#BDB0FF' :
-                                 lead.Status_Lead === 'Desqualificado' ? '#F87171' : '#7BB8FF',
+                          color: lead.Status_Lead === 'Qualificado' ? '#4ADE96' :
+                            lead.Status_Lead === 'Handoff Comercial' ? '#FF9A3C' :
+                              lead.Status_Lead === 'Em Contato' ? '#FBBF24' :
+                                lead.Status_Lead === 'Convertido' ? '#BDB0FF' :
+                                  lead.Status_Lead === 'Desqualificado' ? '#F87171' : '#7BB8FF',
                         }}
                       >
                         <option value="Novo">Novo</option>
                         <option value="Em Contato">Em Contato</option>
+                        <option value="Handoff Comercial">🤝 Handoff Comercial</option>
                         <option value="Qualificado">Qualificado</option>
                         <option value="Convertido">Convertido</option>
                         <option value="Desqualificado">Desqualificado</option>
                       </select>
+                    </td>
+
+                    {/* Recebido em */}
+                    <td style={{ padding: '13px 16px', whiteSpace: 'nowrap' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.8rem', color: 'var(--text-primary)', fontWeight: '600' }}>
+                          <Calendar size={12} style={{ color: '#4F8EF7' }} />
+                          <span>{formatLeadDate(lead.CreatedAt || lead.created_at)}</span>
+                        </div>
+                        <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+                          {lead.CreatedAt || lead.created_at ? (
+                            new Date(lead.CreatedAt || lead.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+                          ) : lead.Id ? (
+                            `#ID ${lead.Id}`
+                          ) : '—'}
+                        </div>
+                      </div>
                     </td>
 
                     {/* Ações */}
@@ -798,7 +912,7 @@ export default function LeadsTable({
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '6px' }}>
                         {cleanPhone && (
                           <a
-                            href={isPrivacyMode ? undefined : `https://wa.me/${cleanPhone}?text=Olá%20${encodeURIComponent(lead.Nome||'')}%2C%20aqui%20é%20da%20Sound%20Agriculture.`}
+                            href={isPrivacyMode ? undefined : `https://wa.me/${cleanPhone}?text=Olá%20${encodeURIComponent(lead.Nome || '')}%2C%20aqui%20é%20da%20Sound%20Agriculture.`}
                             target={isPrivacyMode ? undefined : "_blank"}
                             rel={isPrivacyMode ? undefined : "noopener noreferrer"}
                             className={`btn btn-whatsapp ${isPrivacyMode ? 'privacy-protected-action' : ''}`}
@@ -807,7 +921,7 @@ export default function LeadsTable({
                             onClick={isPrivacyMode ? (e) => e.preventDefault() : undefined}
                           >
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-                              <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.73-1.464L0 24zm6.59-4.846c1.6.95 3.197 1.451 4.787 1.451 5.512 0 9.997-4.493 10-10.013.002-2.673-1.03-5.184-2.907-7.067C16.592 1.639 14.09 1.587 12 1.587c-5.514 0-10.002 4.492-10.006 10.012-.003 1.83.477 3.627 1.391 5.197L2.4 21.6l4.247-1.446zm12.518-8.313c-.154-.077-.911-.449-1.052-.5-.141-.051-.244-.077-.346.077-.102.154-.397.5-.487.603-.09.103-.18.115-.334.038-.154-.077-.65-.239-1.238-.764-.457-.408-.766-.912-.856-1.066-.09-.154-.01-.238.067-.315.069-.069.154-.18.231-.269.077-.09.103-.154.154-.256.051-.103.026-.192-.013-.269-.039-.077-.346-.834-.475-1.144-.125-.302-.25-.262-.346-.267-.09-.004-.192-.005-.294-.005-.102 0-.27.039-.41.192-.141.154-.539.526-.539 1.283 0 .756.551 1.487.628 1.59.077.103 1.085 1.657 2.628 2.324.367.159.654.254.877.325.369.117.705.101.97.062.296-.044.911-.372 1.039-.73.129-.359.129-.667.09-.73-.039-.064-.141-.103-.295-.18z"/>
+                              <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.73-1.464L0 24zm6.59-4.846c1.6.95 3.197 1.451 4.787 1.451 5.512 0 9.997-4.493 10-10.013.002-2.673-1.03-5.184-2.907-7.067C16.592 1.639 14.09 1.587 12 1.587c-5.514 0-10.002 4.492-10.006 10.012-.003 1.83.477 3.627 1.391 5.197L2.4 21.6l4.247-1.446zm12.518-8.313c-.154-.077-.911-.449-1.052-.5-.141-.051-.244-.077-.346.077-.102.154-.397.5-.487.603-.09.103-.18.115-.334.038-.154-.077-.65-.239-1.238-.764-.457-.408-.766-.912-.856-1.066-.09-.154-.01-.238.067-.315.069-.069.154-.18.231-.269.077-.09.103-.154.154-.256.051-.103.026-.192-.013-.269-.039-.077-.346-.834-.475-1.144-.125-.302-.25-.262-.346-.267-.09-.004-.192-.005-.294-.005-.102 0-.27.039-.41.192-.141.154-.539.526-.539 1.283 0 .756.551 1.487.628 1.59.077.103 1.085 1.657 2.628 2.324.367.159.654.254.877.325.369.117.705.101.97.062.296-.044.911-.372 1.039-.73.129-.359.129-.667.09-.73-.039-.064-.141-.103-.295-.18z" />
                             </svg>
                           </a>
                         )}
@@ -823,9 +937,18 @@ export default function LeadsTable({
                           </a>
                         )}
                         <button
-                          onClick={() => onOpenLeadDetail(lead)}
+                          onClick={() => onOpenLeadDetail(lead, 'chat')}
+                          className="btn btn-secondary"
+                          style={{ padding: '6px 10px', color: '#22C87A' }}
+                          title="Ver histórico de atendimento no WhatsApp"
+                        >
+                          <MessageSquare size={15} />
+                        </button>
+                        <button
+                          onClick={() => onOpenLeadDetail(lead, 'details')}
                           className="btn btn-secondary"
                           style={{ padding: '6px 10px' }}
+                          title="Ver detalhes da qualificação"
                         >
                           <ExternalLink size={15} />
                         </button>
