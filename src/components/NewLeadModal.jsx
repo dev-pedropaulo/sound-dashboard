@@ -6,6 +6,7 @@ export default function NewLeadModal({ onClose, onSubmit }) {
   const [formData, setFormData] = useState({
     Nome: '',
     'Nome da Empresa': '',
+    cnpj: '',
     Cidade: '',
     Estado: 'Mato Grosso',
     estado_digitado: '',
@@ -194,7 +195,20 @@ export default function NewLeadModal({ onClose, onSubmit }) {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px' }}>
+            <div>
+              <label style={labelStyle}>
+                CNPJ da Empresa
+              </label>
+              <input
+                type="text"
+                placeholder="00.000.000/0001-00"
+                value={formData.cnpj}
+                onChange={(e) => handleChange('cnpj', e.target.value)}
+                style={inputStyle}
+              />
+            </div>
+
             <div>
               <label style={labelStyle}>
                 WhatsApp / Celular

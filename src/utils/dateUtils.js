@@ -7,7 +7,7 @@
  */
 export function getLeadTimestamp(lead) {
   if (!lead) return 0;
-  const rawDate = lead.CreatedAt || lead.created_at || lead.createdAt || lead.Data;
+  const rawDate = lead.Data_Criacao || lead.CreatedAt || lead.created_at || lead.createdAt || lead.Data;
   if (rawDate) {
     const time = new Date(rawDate).getTime();
     if (!isNaN(time) && time > 0) return time;

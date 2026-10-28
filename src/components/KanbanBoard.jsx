@@ -125,6 +125,9 @@ export default function KanbanBoard({
         (lead.Nome && lead.Nome.toLowerCase().includes(s)) ||
         (lead['Nome da Empresa'] && lead['Nome da Empresa'].toLowerCase().includes(s)) ||
         (lead.Cidade && lead.Cidade.toLowerCase().includes(s)) ||
+        (lead.cnpj && lead.cnpj.toLowerCase().includes(s)) ||
+        (lead.Campanha && lead.Campanha.toLowerCase().includes(s)) ||
+        (lead.Plataforma && lead.Plataforma.toLowerCase().includes(s)) ||
         (lead._praca && (
           lead._praca.nome.toLowerCase().includes(s) ||
           lead._praca.codigo.toLowerCase().includes(s) ||
@@ -566,6 +569,19 @@ export default function KanbanBoard({
                             <span style={{ background: 'rgba(34,200,122,0.08)', color: '#22C87A', padding: '2px 6px', borderRadius: '4px', fontSize: '0.67rem', border: '1px solid rgba(34,200,122,0.15)' }}>
                               {formatCulturaLabel(lead.Cultura)}
                             </span>
+                            {lead.Plataforma && (
+                              <span style={{
+                                background: lead.Plataforma === 'Instagram' ? 'rgba(225, 48, 108, 0.12)' : 'rgba(24, 119, 242, 0.12)',
+                                color: lead.Plataforma === 'Instagram' ? '#FF5E97' : '#4F8EF7',
+                                border: `1px solid ${lead.Plataforma === 'Instagram' ? 'rgba(225, 48, 108, 0.25)' : 'rgba(24, 119, 242, 0.25)'}`,
+                                padding: '2px 6px',
+                                borderRadius: '4px',
+                                fontSize: '0.67rem',
+                                fontWeight: 700
+                              }}>
+                                {lead.Plataforma === 'Instagram' ? '📷 Insta' : lead.Plataforma === 'Facebook' ? '👤 Face' : lead.Plataforma}
+                              </span>
+                            )}
                             {isQueroFechar && (
                               <span style={{ background: 'rgba(239,91,71,0.12)', color: '#EF5B47', padding: '2px 6px', borderRadius: '4px', fontSize: '0.67rem', border: '1px solid rgba(239,91,71,0.2)', fontWeight: '600' }}>
                                 ⚡ Fechar Agora
@@ -586,8 +602,16 @@ export default function KanbanBoard({
                             }}>
                               {/* Detalhes rápidos */}
                               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', color: 'var(--text-muted)' }}>
+                                {lead.cnpj && (
+                                  <div>CNPJ: <strong style={{ color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>
+                                    <SensitiveText placeholder="••.•••.•••/••••-••">{lead.cnpj}</SensitiveText>
+                                  </strong></div>
+                                )}
                                 <div>Produtores: <strong style={{ color: 'var(--text-secondary)' }}>{lead.qtd_produtores || 'N/I'}</strong></div>
                                 <div>Equipe: <strong style={{ color: 'var(--text-secondary)' }}>{lead.equipe || 'N/I'}</strong></div>
+                                {lead.Campanha && (
+                                  <div>Campanha: <strong style={{ color: 'var(--text-secondary)' }}>{lead.Campanha}</strong></div>
+                                )}
                                 {lead.Email && (
                                   <div>
                                     E-mail: <strong style={{ color: 'var(--text-secondary)' }}>

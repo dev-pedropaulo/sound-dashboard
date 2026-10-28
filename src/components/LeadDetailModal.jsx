@@ -3,7 +3,7 @@ import {
   X, Flame, Sparkles, Snowflake, Phone, Mail,
   Building2, MapPin, Sprout, Users, ShieldCheck,
   Briefcase, Clock, UserCheck, ListChecks, Compass, Navigation,
-  MessageSquare, Calendar
+  MessageSquare, Calendar, Fingerprint, Megaphone, Target
 } from 'lucide-react';
 import { getClassificacao, getTipoEmpresa, formatCulturaLabel } from '../services/nocodb';
 import { formatLeadDateTime } from '../utils/dateUtils';
@@ -31,6 +31,7 @@ export default function LeadDetailModal({
   const clsIcon = cls === 'Quente' ? <Flame size={13} /> : cls === 'Morno' ? <Sparkles size={13} /> : <Snowflake size={13} />;
 
   const questions = [
+    ...(lead.cnpj ? [{ num: 'CNPJ', metric: 'Identificação Cadastral', title: 'CNPJ da Empresa:', value: lead.cnpj, icon: Fingerprint }] : []),
     { num: 1, metric: 'Atuação', title: 'Sua empresa atua como:', value: getTipoEmpresa(lead), icon: Building2 },
     { num: 2, metric: 'Estado Principal', title: 'Em qual estado sua empresa atua principalmente?', value: lead.Estado, icon: MapPin },
     { num: 3, metric: 'Cidade Base', title: 'Cidade / Município base:', value: lead.Cidade, icon: MapPin },
@@ -81,7 +82,7 @@ export default function LeadDetailModal({
         }}>
           <div style={{ flex: 1 }}>
             {/* Badges */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', flexWrap: 'wrap' }}>
               <span className={`badge ${clsBadge}`} style={{ padding: '3px 10px', fontSize: '0.75rem' }}>
                 {clsIcon} {cls}
               </span>
@@ -93,6 +94,22 @@ export default function LeadDetailModal({
               }}>
                 {lead.Pontuacao || 0} <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: '400' }}>pts</span>
               </span>
+              {lead.Plataforma && (
+                <span style={{
+                  background: lead.Plataforma === 'Instagram' ? 'linear-gradient(135deg, rgba(225, 48, 108, 0.2), rgba(245, 96, 64, 0.2))' : 'rgba(24, 119, 242, 0.2)',
+                  color: lead.Plataforma === 'Instagram' ? '#FF5E97' : '#4F8EF7',
+                  border: `1px solid ${lead.Plataforma === 'Instagram' ? 'rgba(225, 48, 108, 0.35)' : 'rgba(24, 119, 242, 0.35)'}`,
+                  padding: '2px 8px',
+                  borderRadius: '12px',
+                  fontSize: '0.72rem',
+                  fontWeight: 800,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}>
+                  {lead.Plataforma === 'Instagram' ? '📷 Instagram' : lead.Plataforma === 'Facebook' ? '👤 Facebook' : lead.Plataforma}
+                </span>
+              )}
             </div>
 
             <h2 style={{ fontSize: '1.35rem', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '3px' }}>
@@ -100,7 +117,7 @@ export default function LeadDetailModal({
                 {lead['Nome da Empresa'] || 'Empresa'}
               </SensitiveText>
             </h2>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
               <div>
                 Contato: <strong style={{ color: 'var(--text-secondary)' }}>
                   <SensitiveText placeholder="••••••••">
@@ -108,10 +125,23 @@ export default function LeadDetailModal({
                   </SensitiveText>
                 </strong>
               </div>
-              {(lead.CreatedAt || lead.created_at) && (
+              {lead.cnpj && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                  <Fingerprint size={13} style={{ color: '#F5B731' }} />
+                  <span>CNPJ: <strong style={{ color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>
+                    <SensitiveText placeholder="••.•••.•••/••••-••">{lead.cnpj}</SensitiveText>
+                  </strong></span>
+                </div>
+              )}
+              {(lead.Data_Criacao || lead.CreatedAt || lead.created_at) && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
                   <Calendar size={12} style={{ color: '#4F8EF7' }} />
-                  <span>Recebido em: <strong style={{ color: 'var(--text-secondary)' }}>{formatLeadDateTime(lead.CreatedAt || lead.created_at)}</strong></span>
+                  <span>
+                    {lead.Data_Criacao ? 'Criado (Meta): ' : 'Recebido em: '}
+                    <strong style={{ color: 'var(--text-secondary)' }}>
+                      {formatLeadDateTime(lead.Data_Criacao || lead.CreatedAt || lead.created_at)}
+                    </strong>
+                  </span>
                 </div>
               )}
             </div>
@@ -322,6 +352,85 @@ export default function LeadDetailModal({
                   </div>
                 )}
               </div>
+
+              {/* Rastreamento & Origem de Anúncios (Meta Ads) */}
+              {(lead.Plataforma || lead.Campanha || lead.Conjunto_Anuncios || lead.Anuncio || lead.Lead_ID_Meta || lead.Data_Criacao) && (
+                <div style={{
+                  background: 'linear-gradient(135deg, rgba(56, 97, 251, 0.08) 0%, rgba(138, 58, 247, 0.08) 100%)',
+                  border: '1px solid rgba(56, 97, 251, 0.25)',
+                  borderRadius: 'var(--radius-lg)',
+                  padding: '16px 18px',
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', marginBottom: '12px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <Megaphone size={18} color="#3861FB" />
+                      <span style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                        Rastreamento & Origem da Conversão (Meta Ads)
+                      </span>
+                    </div>
+                    {lead.Plataforma && (
+                      <span style={{
+                        background: lead.Plataforma === 'Instagram' ? 'rgba(225, 48, 108, 0.15)' : 'rgba(24, 119, 242, 0.15)',
+                        color: lead.Plataforma === 'Instagram' ? '#FF5E97' : '#4F8EF7',
+                        border: `1px solid ${lead.Plataforma === 'Instagram' ? 'rgba(225, 48, 108, 0.3)' : 'rgba(24, 119, 242, 0.3)'}`,
+                        padding: '3px 10px',
+                        borderRadius: '12px',
+                        fontSize: '0.72rem',
+                        fontWeight: 800
+                      }}>
+                        {lead.Plataforma === 'Instagram' ? '📷 Instagram Ads' : lead.Plataforma === 'Facebook' ? '👤 Facebook Ads' : lead.Plataforma}
+                      </span>
+                    )}
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
+                    {/* Campanha */}
+                    <div style={{ background: 'rgba(0,0,0,0.2)', padding: '10px 14px', borderRadius: 'var(--radius-md)' }}>
+                      <span style={{ display: 'block', fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', marginBottom: '2px' }}>
+                        Campanha
+                      </span>
+                      <span style={{ fontSize: '0.86rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                        {lead.Campanha || 'Formulário Padrão'}
+                      </span>
+                    </div>
+
+                    {/* Conjunto de Anúncios */}
+                    <div style={{ background: 'rgba(0,0,0,0.2)', padding: '10px 14px', borderRadius: 'var(--radius-md)' }}>
+                      <span style={{ display: 'block', fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', marginBottom: '2px' }}>
+                        Conjunto de Anúncios
+                      </span>
+                      <span style={{ fontSize: '0.86rem', fontWeight: 700, color: 'var(--text-secondary)' }}>
+                        {lead.Conjunto_Anuncios || 'Não informado'}
+                      </span>
+                    </div>
+
+                    {/* Criativo / Anúncio */}
+                    <div style={{ background: 'rgba(0,0,0,0.2)', padding: '10px 14px', borderRadius: 'var(--radius-md)' }}>
+                      <span style={{ display: 'block', fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', marginBottom: '2px' }}>
+                        Anúncio / Criativo
+                      </span>
+                      <span style={{ fontSize: '0.86rem', fontWeight: 700, color: '#22C87A' }}>
+                        {lead.Anuncio || 'Não informado'}
+                      </span>
+                    </div>
+
+                    {/* Data Criação Meta / ID */}
+                    <div style={{ background: 'rgba(0,0,0,0.2)', padding: '10px 14px', borderRadius: 'var(--radius-md)' }}>
+                      <span style={{ display: 'block', fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', marginBottom: '2px' }}>
+                        Data de Criação (Meta) · ID
+                      </span>
+                      <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-secondary)' }}>
+                        {lead.Data_Criacao ? formatLeadDateTime(lead.Data_Criacao) : '—'}
+                      </span>
+                      {lead.Lead_ID_Meta && (
+                        <span style={{ display: 'block', fontSize: '0.68rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
+                          ID Meta: {lead.Lead_ID_Meta}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Respostas do Formulário */}
               <div>

@@ -164,6 +164,9 @@ export default function LeadsTable({
         (lead.Cidade && lead.Cidade.toLowerCase().includes(s)) ||
         (lead.Email && lead.Email.toLowerCase().includes(s)) ||
         (lead.WhatsApp && lead.WhatsApp.includes(s)) ||
+        (lead.cnpj && lead.cnpj.toLowerCase().includes(s)) ||
+        (lead.Campanha && lead.Campanha.toLowerCase().includes(s)) ||
+        (lead.Plataforma && lead.Plataforma.toLowerCase().includes(s)) ||
         (lead._praca && (
           lead._praca.nome.toLowerCase().includes(s) ||
           lead._praca.codigo.toLowerCase().includes(s) ||
@@ -820,6 +823,14 @@ export default function LeadsTable({
                           {lead.Nome}
                         </SensitiveText>
                       </div>
+                      {lead.cnpj && (
+                        <div style={{ fontSize: '0.71rem', color: 'var(--text-muted)', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <span style={{ opacity: 0.6 }}>CNPJ:</span>
+                          <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                            <SensitiveText placeholder="••.•••.•••/••••-••">{lead.cnpj}</SensitiveText>
+                          </span>
+                        </div>
+                      )}
                     </td>
 
                     {/* Localização & Praça */}
@@ -858,6 +869,24 @@ export default function LeadsTable({
                       <div style={{ fontSize: '0.75rem', color: '#22C87A', fontWeight: '600' }}>
                         {formatCulturaLabel(lead.Cultura)}
                       </div>
+                      {lead.Plataforma && (
+                        <div style={{ marginTop: '4px' }}>
+                          <span style={{
+                            background: lead.Plataforma === 'Instagram' ? 'rgba(225, 48, 108, 0.12)' : 'rgba(24, 119, 242, 0.12)',
+                            color: lead.Plataforma === 'Instagram' ? '#FF5E97' : '#4F8EF7',
+                            border: `1px solid ${lead.Plataforma === 'Instagram' ? 'rgba(225, 48, 108, 0.25)' : 'rgba(24, 119, 242, 0.25)'}`,
+                            padding: '1px 6px',
+                            borderRadius: '4px',
+                            fontSize: '0.67rem',
+                            fontWeight: 700,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '3px'
+                          }}>
+                            {lead.Plataforma === 'Instagram' ? '📷 Instagram' : lead.Plataforma === 'Facebook' ? '👤 Facebook' : lead.Plataforma}
+                          </span>
+                        </div>
+                      )}
                     </td>
 
                     {/* Status CRM */}
@@ -894,11 +923,13 @@ export default function LeadsTable({
                     <td style={{ padding: '13px 16px', whiteSpace: 'nowrap' }}>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.8rem', color: 'var(--text-primary)', fontWeight: '600' }}>
-                          <Calendar size={12} style={{ color: '#4F8EF7' }} />
-                          <span>{formatLeadDate(lead.CreatedAt || lead.created_at)}</span>
+                          <Calendar size={12} style={{ color: lead.Data_Criacao ? '#22C87A' : '#4F8EF7' }} />
+                          <span>{formatLeadDate(lead.Data_Criacao || lead.CreatedAt || lead.created_at)}</span>
                         </div>
                         <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
-                          {lead.CreatedAt || lead.created_at ? (
+                          {lead.Data_Criacao ? (
+                            <span style={{ color: '#22C87A', fontWeight: 600 }}>Meta Ads</span>
+                          ) : lead.CreatedAt || lead.created_at ? (
                             new Date(lead.CreatedAt || lead.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
                           ) : lead.Id ? (
                             `#ID ${lead.Id}`
