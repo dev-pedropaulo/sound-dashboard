@@ -322,6 +322,21 @@ export default function LeadDetailModal({
                     <span style={{ fontSize: '0.92rem', fontWeight: 800, color: leadPraca ? '#3861FB' : 'var(--text-secondary)' }}>
                       {leadPraca ? `${leadPraca.codigo} - ${leadPraca.nome} (${leadPraca.uf})` : 'Sem praça vinculada'}
                     </span>
+                    {leadPraca?.regional && (
+                      <div style={{ marginTop: '4px' }}>
+                        <span style={{
+                          background: leadPraca.regional === 'Cerrado' ? 'rgba(34, 200, 122, 0.15)' : 'rgba(139, 92, 246, 0.15)',
+                          color: leadPraca.regional === 'Cerrado' ? '#22C87A' : '#A78BFA',
+                          border: `1px solid ${leadPraca.regional === 'Cerrado' ? 'rgba(34, 200, 122, 0.25)' : 'rgba(139, 92, 246, 0.25)'}`,
+                          padding: '1px 6px',
+                          borderRadius: '4px',
+                          fontSize: '0.68rem',
+                          fontWeight: 700
+                        }}>
+                          Regional {leadPraca.regional}
+                        </span>
+                      </div>
+                    )}
                   </div>
 
                   {/* RC Responsável */}
@@ -329,8 +344,13 @@ export default function LeadDetailModal({
                     <span style={{ display: 'block', fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', marginBottom: '2px' }}>
                       Representante Comercial (RC)
                     </span>
-                    <span style={{ fontSize: '0.92rem', fontWeight: 800, color: leadPraca?.responsavel && leadPraca.responsavel !== 'a definir' ? '#22C87A' : '#F5B731' }}>
-                      {leadPraca?.responsavel || 'A definir'}
+                    <span style={{
+                      fontSize: '0.92rem',
+                      fontWeight: 800,
+                      color: leadPraca?.responsavel === 'OPEN' ? '#F5B731' :
+                        leadPraca?.responsavel && leadPraca.responsavel !== 'a definir' ? '#22C87A' : '#F5B731'
+                    }}>
+                      {leadPraca?.responsavel === 'OPEN' ? 'Vaga Aberta (OPEN)' : (leadPraca?.responsavel || 'A definir')}
                     </span>
                   </div>
 

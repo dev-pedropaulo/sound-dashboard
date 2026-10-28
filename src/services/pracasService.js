@@ -1,7 +1,7 @@
 import * as XLSX from 'xlsx';
 import defaultPracasData from '../data/defaultPracas.json';
 
-const STORAGE_KEY = 'sound_custom_pracas_v1';
+const STORAGE_KEY = 'sound_custom_pracas_v2';
 
 /**
  * Normaliza strings para busca e correspondência geográfica:
@@ -60,6 +60,7 @@ export function saveStoredPracas(pracas) {
 export function resetToDefaultPracas() {
   try {
     localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem('sound_custom_pracas_v1');
   } catch (e) {
     // ignore
   }
@@ -88,6 +89,7 @@ export function buildCityIndex(pracas) {
       codigo: pCode,
       nome: pNome,
       uf: pUf,
+      regional: praca.regional || 'N/A',
       responsavel: pResp,
       dist_km: 0,
       isPolo: true,
@@ -100,6 +102,7 @@ export function buildCityIndex(pracas) {
       codigo: pCode,
       nome: pNome,
       uf: pUf,
+      regional: praca.regional || 'N/A',
       responsavel: pResp,
       dist_km: 0,
       isPolo: true,
@@ -118,6 +121,7 @@ export function buildCityIndex(pracas) {
         codigo: pCode,
         nome: pNome,
         uf: pUf,
+        regional: praca.regional || 'N/A',
         responsavel: pResp,
         dist_km: dist,
         isPolo: dist < 5,
@@ -170,6 +174,7 @@ export function getLeadPraca(lead, cityIndex) {
     codigo: best.codigo,
     nome: best.nome,
     uf: best.uf,
+    regional: best.regional,
     responsavel: best.responsavel,
     dist_km: best.dist_km,
     isPolo: best.isPolo,
@@ -201,6 +206,7 @@ export async function parsePracasExcel(file) {
           resumoRows.forEach(row => {
             const nome = (row['Praça'] || row['Praca'] || row['Nome'] || '').toString().trim();
             const uf = (row['UF'] || row['Estado'] || '').toString().trim().toUpperCase();
+            const regional = (row['Regional'] || row['Região'] || row['Regiao'] || '').toString().trim();
             const codigo = (row['Código'] || row['Codigo'] || row['Cod'] || nome.slice(0, 3).toUpperCase()).toString().trim();
             const responsavel = (row['Responsável'] || row['Responsavel'] || row['RC'] || 'a definir').toString().trim();
 
@@ -209,6 +215,7 @@ export async function parsePracasExcel(file) {
                 codigo,
                 nome: nome || codigo,
                 uf,
+                regional: regional || (['MT'].includes(uf) ? 'Cerrado' : 'Sul'),
                 responsavel: responsavel || 'a definir',
                 cidades: []
               };
@@ -322,6 +329,7 @@ export function exportPracasExcel(pracas) {
   const resumoData = (pracas || []).map(p => ({
     'Praça': p.nome,
     'UF': p.uf,
+    'Regional': p.regional || 'N/A',
     'Código': p.codigo,
     'Responsável': p.responsavel || 'a definir',
     'Cidades no raio 250km': p.cidades?.length || 0

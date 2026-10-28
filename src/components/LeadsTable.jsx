@@ -121,7 +121,7 @@ export default function LeadsTable({
     });
     const opts = Array.from(rcs).map(r => ({
       id: r,
-      label: `👤 RC ${r}`
+      label: r === 'OPEN' ? '⚠️ OPEN (Vaga aberta)' : `👤 RC ${r}`
     }));
     opts.push({ id: 'a definir', label: '⏳ RC a definir' });
     opts.push({ id: 'SEM_RC', label: '❌ Sem RC (Fora de Raio)' });

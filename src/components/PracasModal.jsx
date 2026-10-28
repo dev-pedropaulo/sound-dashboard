@@ -368,6 +368,7 @@ export default function PracasModal({
                     <tr style={{ borderBottom: '1px solid var(--border-subtle)', color: 'var(--text-muted)', background: 'rgba(255,255,255,0.02)' }}>
                       <th style={{ padding: '10px 14px', textAlign: 'left', fontWeight: '600' }}>CÓD</th>
                       <th style={{ padding: '10px 14px', textAlign: 'left', fontWeight: '600' }}>PRAÇA / POLO</th>
+                      <th style={{ padding: '10px 14px', textAlign: 'left', fontWeight: '600' }}>REGIONAL</th>
                       <th style={{ padding: '10px 14px', textAlign: 'left', fontWeight: '600' }}>UF</th>
                       <th style={{ padding: '10px 14px', textAlign: 'left', fontWeight: '600' }}>RC RESPONSÁVEL</th>
                       <th style={{ padding: '10px 14px', textAlign: 'center', fontWeight: '600' }}>RAIO 250KM</th>
@@ -377,7 +378,7 @@ export default function PracasModal({
                   <tbody>
                     {filteredPracas.length === 0 ? (
                       <tr>
-                        <td colSpan={6} style={{ padding: '30px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                        <td colSpan={7} style={{ padding: '30px', textAlign: 'center', color: 'var(--text-muted)' }}>
                           Nenhuma praça encontrada.
                         </td>
                       </tr>
@@ -403,6 +404,21 @@ export default function PracasModal({
                               {/* Praça */}
                               <td style={{ padding: '11px 14px', fontWeight: 600, color: 'var(--text-primary)' }}>
                                 {p.nome}
+                              </td>
+
+                              {/* Regional */}
+                              <td style={{ padding: '11px 14px' }}>
+                                <span style={{
+                                  background: p.regional === 'Cerrado' ? 'rgba(34, 200, 122, 0.12)' : 'rgba(139, 92, 246, 0.12)',
+                                  color: p.regional === 'Cerrado' ? '#22C87A' : '#A78BFA',
+                                  border: `1px solid ${p.regional === 'Cerrado' ? 'rgba(34, 200, 122, 0.25)' : 'rgba(139, 92, 246, 0.25)'}`,
+                                  padding: '2px 8px',
+                                  borderRadius: '4px',
+                                  fontSize: '0.72rem',
+                                  fontWeight: 700
+                                }}>
+                                  {p.regional || '—'}
+                                </span>
                               </td>
 
                               {/* UF */}
@@ -465,12 +481,26 @@ export default function PracasModal({
                                   </div>
                                 ) : (
                                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                    <span style={{
-                                      fontWeight: p.responsavel && p.responsavel !== 'a definir' ? 700 : 400,
-                                      color: p.responsavel && p.responsavel !== 'a definir' ? '#22C87A' : 'var(--text-muted)'
-                                    }}>
-                                      {p.responsavel || 'a definir'}
-                                    </span>
+                                    {p.responsavel === 'OPEN' ? (
+                                      <span style={{
+                                        background: 'rgba(245, 183, 49, 0.15)',
+                                        color: '#F5B731',
+                                        border: '1px solid rgba(245, 183, 49, 0.3)',
+                                        padding: '2px 8px',
+                                        borderRadius: '4px',
+                                        fontSize: '0.72rem',
+                                        fontWeight: 800
+                                      }}>
+                                        Vaga Aberta (OPEN)
+                                      </span>
+                                    ) : (
+                                      <span style={{
+                                        fontWeight: p.responsavel && p.responsavel !== 'a definir' ? 700 : 400,
+                                        color: p.responsavel && p.responsavel !== 'a definir' ? '#22C87A' : 'var(--text-muted)'
+                                      }}>
+                                        {p.responsavel || 'a definir'}
+                                      </span>
+                                    )}
                                     <button
                                       onClick={() => setEditingResp({ codigo: p.codigo, value: p.responsavel === 'a definir' ? '' : p.responsavel })}
                                       title="Editar RC Responsável"
