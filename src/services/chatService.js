@@ -130,7 +130,7 @@ export function parseLangChainMessage(rawRow, index = 0) {
  * Busca o histórico de mensagens para um telefone via Webhook do n8n
  */
 export async function fetchChatHistory(phone, leadData = null) {
-  const { clean, withPlus } = normalizeChatPhone(phone);
+  const { clean, withPlus, last8, last9 } = normalizeChatPhone(phone);
   if (!clean) {
     return {
       success: false,
